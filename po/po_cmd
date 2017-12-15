@@ -1,2 +1,0 @@
-xgettext -k_ -o kylin-display-switch.pot display_service.py switchers_service.py enums.py key_service_xlib.py kylin_display_switch.py ui_mainwindow.py
-msgfmt -o kylin-display-switch.mo po/zh_CN.po

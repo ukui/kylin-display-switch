@@ -4,23 +4,18 @@ import glob
 from distutils.core import setup
 from subprocess import call
 
-PO_DIR = 'po'
-MO_DIR = os.path.join('build', 'po')
+import DistUtilsExtra.command.build_extra
+import DistUtilsExtra.command.build_i18n
+import DistUtilsExtra.command.clean_i18n
 
-for po in glob.glob(os.path.join(PO_DIR, '*.po')):
-    lang = os.path.basename(po[:-3])
-    mo = os.path.join(MO_DIR, lang, 'kylin-display-switch.mo')
-    target_dir = os.path.dirname(mo)
-    if not os.path.isdir(target_dir):
-        os.makedirs(target_dir)
-    try:
-        return_code = call(['msgfmt', '-o', mo, po])
-    except OSError:
-        print('Translation not available, please install gettext')
-        break
-    if return_code:
-        raise Warning('Error when building locales')
-
+def datafilelist(installbase, sourcebase):
+    datafileList = []
+    for root, subFolders, files in os.walk(sourcebase):
+        fileList = []
+        for f in files:
+            fileList.append(os.path.join(root, f))
+        datafileList.append((root.replace(sourcebase, installbase), fileList))
+    return datafileList
 
 data_files=[
     ('bin/', ['kds']),
@@ -29,21 +24,21 @@ data_files=[
     ('share/kylin-display-switch/res/', glob.glob('res/*.png')),
     ]
 
-def find_mo_files():
-    data_files = []
-    for mo in glob.glob(os.path.join(MO_DIR, '*', 'kylin-display-switch.mo')):
-        lang = os.path.basename(os.path.dirname(mo))
-        dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
-        data_files.append((dest, [mo]))
-    return data_files
 
-data_files.extend(find_mo_files())
+data_files.extend(datafilelist('share/locale', 'build/mo'))
+
+cmdclass = {
+             "build" : DistUtilsExtra.command.build_extra.build_extra,
+             "build_i18n" :  DistUtilsExtra.command.build_i18n.build_i18n,
+             "clean": DistUtilsExtra.command.clean_i18n.clean_i18n,
+}
 
 setup(name="kylin-display-switch",
       version="1.0.0",
       author="shine",
-      author_email="shenghuang@ubuntukylin.com",
-      url="www.ubuntukylin.com",
-      license="GNU General Public License (GPL)",
+      author_email="huangsheng@kylinos.cn",
+      url="https://github.com/ukui/kylin-display-switch",
+      license="GPLv3",
       data_files=data_files,
+      cmdclass = cmdclass,
       )
