@@ -2,12 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-<<<<<<< HEAD
-=======
-import importlib
-importlib.reload(sys)
-#sys.setdefaultencoding('utf8')
->>>>>>> 4637c7313ad71431a2cb151749377861a56abe0b
 from PyQt5.QtCore import QThread, pyqtSignal
 from Xlib import X, XK, display
 from Xlib.ext import record
