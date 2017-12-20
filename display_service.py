@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import subprocess
-from PyQt4.QtGui import QApplication
 from enums import DisplayMode
 
 
@@ -19,7 +16,8 @@ class DisplayService:
         handle = subprocess.Popen(XRANDR_STATUS, shell=True, stdout=subprocess.PIPE)
         handle.wait()
         res = handle.communicate()[0]
-        lines = res.split("\n")
+        res = res.decode()
+        lines = res.splitlines()
 
         monitors = []
         modes = {}
@@ -48,13 +46,13 @@ class DisplayService:
         # add last monitor's mode
         modes[current_monitor] = modes_one
 
-        print "found monitors :", monitors
+        print("found monitors :", monitors)
 
         if(len(monitors) < 2):
             handle = subprocess.Popen("xrandr --output " + monitors[0] + " --auto", shell=True, stdout=subprocess.PIPE)
             handle.wait()
             self.current_display_mode = DisplayMode.MODE_ONLY_ORI
-            print "only one monitor, do nothing."
+            print("only one monitor, do nothing.")
             return (self.current_display_mode, False)
 
         else:
@@ -74,8 +72,8 @@ class DisplayService:
                 if(is_find == True):
                     break
 
-            print "max display mode :", MAX_MODE_MONITOR_0, ",", MAX_MODE_MONITOR_1
-            print "best clone mode :", BEST_CLONE_MODE
+            print("max display mode :", MAX_MODE_MONITOR_0, ",", MAX_MODE_MONITOR_1)
+            print("best clone mode :", BEST_CLONE_MODE)
 
             XRANDR_ORIONLY = "xrandr --output " + monitors[0] + " --auto --output " + monitors[1] + " --off"
             XRANDR_CLONE = "xrandr --output " + monitors[0] + " --mode " + BEST_CLONE_MODE + " --output " + monitors[1] + " --mode " + BEST_CLONE_MODE + " --same-as " + monitors[0]
@@ -106,18 +104,18 @@ class DisplayService:
                     self.current_display_mode = DisplayMode.MODE_ONLY_OUT
 
                 return (self.current_display_mode, True)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 return (self.current_display_mode, False)
 
 
 def main():
-    app = QApplication(sys.argv)
+    # app = QApplication(sys.argv)
 
     w = DisplayService()
     w.switch_display(1)
 
-    sys.exit(app.exec_())
+    # sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
