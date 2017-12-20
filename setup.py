@@ -34,11 +34,15 @@ cmdclass = {
 }
 
 setup(name="kylin-display-switch",
-      version="1.0.0",
+      version="1.0.1",
       author="shine",
       author_email="huangsheng@kylinos.cn",
       url="https://github.com/ukui/kylin-display-switch",
       license="GPLv3",
       data_files=data_files,
       cmdclass = cmdclass,
+      install_requires=[
+          'python3-pyqt5',
+          'python3-xlib'
+      ],
       )
