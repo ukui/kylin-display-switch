@@ -18,11 +18,14 @@ def datafilelist(installbase, sourcebase):
     return datafileList
 
 data_files=[
+    ("share/man/man1",
+     glob.glob("man/*.1")
+    ),
     ('bin/', ['kds']),
     ('../etc/xdg/autostart/', ['kylin-display-switch.desktop']),
     ('share/kylin-display-switch/', ['display_service.py', 'switchers_service.py', 'enums.py', 'key_service_xlib.py', 'kylin_display_switch.py', 'ui_mainwindow.py']),
     ('share/kylin-display-switch/res/', glob.glob('res/*.png')),
-    ]
+]
 
 
 data_files.extend(datafilelist('share/locale', 'build/mo'))
