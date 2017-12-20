@@ -1,14 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import SIGNAL
+from PyQt5.QtCore import pyqtSignal
 
 
 class Signals:
-    signal_switch_select = SIGNAL("signal-switch-select")
-    signal_switch_confirm = SIGNAL("signal-switch-confirm")
-    signal_tip_capslock = SIGNAL("signal-tip-capslock")
-    signal_tip_numlock = SIGNAL("signal-tip-numlock")
+    pass
+    # signal_switch_select = pyqtSignal("signal-switch-select")
+    # signal_switch_confirm = pyqtSignal("signal-switch-confirm")
+    # signal_tip_capslock = pyqtSignal("signal-tip-capslock")
+    # signal_tip_numlock = pyqtSignal("signal-tip-numlock")
 
 class DisplayMode:
     MODE_ONLY_ORI = 1

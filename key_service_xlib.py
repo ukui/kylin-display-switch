@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-from PyQt4.QtCore import QThread
+import importlib
+importlib.reload(sys)
+#sys.setdefaultencoding('utf8')
+from PyQt5.QtCore import QThread, pyqtSignal
 from Xlib import X, XK, display
 from Xlib.ext import record
 from Xlib.protocol import rq
-from enums import Signals
 
 
 # python X global event， need python-xlib
@@ -21,14 +21,19 @@ class KeyServiceXlib(QThread):
     is_modify_key_press = False
     is_active = False
 
+    signal_switch_select = pyqtSignal()
+    signal_switch_confirm = pyqtSignal()
+    signal_tip_capslock = pyqtSignal()
+    signal_tip_numlock = pyqtSignal()
+
     def __init__(self, main_window):
         QThread.__init__(self)
         self.main_window = main_window
 
-        self.main_window.connect(self, Signals.signal_switch_select, self.main_window.slot_switch_select)
-        self.main_window.connect(self, Signals.signal_switch_confirm, self.main_window.slot_switch_confirm)
-        self.main_window.connect(self, Signals.signal_tip_capslock, self.main_window.slot_tip_capslock)
-        self.main_window.connect(self, Signals.signal_tip_numlock, self.main_window.slot_tip_numlock)
+        self.signal_switch_select.connect(self.main_window.slot_switch_select)
+        self.signal_switch_confirm.connect(self.main_window.slot_switch_confirm)
+        self.signal_tip_capslock.connect(self.main_window.slot_tip_capslock)
+        self.signal_tip_numlock.connect(self.main_window.slot_tip_numlock)
 
     def run(self):
         self.check_record_extension()
@@ -89,7 +94,7 @@ class KeyServiceXlib(QThread):
                     if keysym == XK.XK_F3 or keysym == XK.XK_F7 or keysym == XK.XK_p:
                         if self.is_modify_key_press == True:
                             self.is_active = True
-                            self.emit(Signals.signal_switch_select)
+                            self.signal_switch_select.emit()
 
                     # dev, press ESC to exit
                     # if keysym == XK.XK_Escape:
@@ -102,12 +107,12 @@ class KeyServiceXlib(QThread):
                         self.is_modify_key_press = False
                         if(self.is_active == True):
                             self.is_active = False
-                            self.emit(Signals.signal_switch_confirm)
+                            self.signal_switch_confirm.emit()
 
                     if keysym == XK.XK_Caps_Lock:
-                        self.emit(Signals.signal_tip_capslock)
+                        self.signal_tip_capslock.emit()
                     if keysym == XK.XK_Num_Lock:
-                        self.emit(Signals.signal_tip_numlock)
+                        self.signal_tip_numlock.emit()
 
 
 def main():

@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+import importlib
+importlib.reload(sys)
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import locale
 import gettext
 locale.setlocale(locale.LC_ALL, "")
@@ -17,7 +18,6 @@ from key_service_xlib import KeyServiceXlib
 from display_service import DisplayService
 from switchers_service import SwitchersService
 import fcntl
-import keybinder
 
 
 class KylinDisplaySwitch(QWidget):
@@ -47,7 +47,7 @@ class KylinDisplaySwitch(QWidget):
         try:
             fcntl.lockf(self.instance_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
-            print "only allow one instance..."
+            print("only allow one instance...")
             sys.exit()
 
     def init_ui(self):
@@ -140,7 +140,7 @@ class KylinDisplaySwitch(QWidget):
         self.show()
 
         desktop = QApplication.desktop()
-        if(desktop.screenCount > 1):
+        if(desktop.screenCount() > 1):
             desktop = desktop.screenGeometry(0)
         self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) *10 / 21)
 
@@ -172,7 +172,7 @@ class KylinDisplaySwitch(QWidget):
             self.ui.caps_off_widget.show()
 
         desktop = QApplication.desktop()
-        if (desktop.screenCount > 1):
+        if (desktop.screenCount() > 1):
             desktop = desktop.screenGeometry(0)
         self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
         self.ui.tipWidget.show()
@@ -214,8 +214,7 @@ def callback():
 
 def main():
     app = QApplication(sys.argv)
-    QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
-    QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
+    QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF8"))
 
     globalfont = QFont()
     globalfont.setPixelSize(16)
@@ -224,12 +223,12 @@ def main():
     KylinDisplaySwitch()
 
     # disable global output
-    keystr1 = "<Super>P"
-    keybinder.bind(keystr1, callback)
-    keystr2 = "<Super>F3"
-    keybinder.bind(keystr2, callback)
-    keystr3 = "<Super>F7"
-    keybinder.bind(keystr3, callback)
+    # keystr1 = "<Super>P"
+    # keybinder.bind(keystr1, callback)
+    # keystr2 = "<Super>F3"
+    # keybinder.bind(keystr2, callback)
+    # keystr3 = "<Super>F7"
+    # keybinder.bind(keystr3, callback)
 
     sys.exit(app.exec_())
 
