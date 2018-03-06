@@ -4,6 +4,6 @@ Name[zh_CN]=麒麟显示切换
 Comment=Kylin Display Swtich
 Comment[zh_CN]=麒麟显示切换
 Exec=/usr/bin/kds
-StartupNotify=true
+StartupNotify=false
 Terminal=false
 Type=Application
