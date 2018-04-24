@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -41,7 +42,7 @@ class KylinDisplaySwitch(QWidget):
 
     # singleton
     def check_singleton(self):
-        self.instance_file = open("/tmp/instance_kds.lock", 'w')
+        self.instance_file = open(os.path.expanduser('~') + "/.instance_kds.lock", 'w')
         try:
             fcntl.lockf(self.instance_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
