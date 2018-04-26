@@ -195,7 +195,7 @@ class KylinDisplaySwitch(QWidget):
             self.ui.num_off_widget.show()
 
         desktop = QApplication.desktop()
-        if (desktop.screenCount > 1):
+        if (desktop.screenCount() > 1):
             desktop = desktop.screenGeometry(0)
         self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
         self.ui.tipWidget.show()
