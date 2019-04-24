@@ -1,0 +1,12 @@
+kylin-display-switch (1.0.3-1) unstable; urgency=medium
+
+  * Fix the wrong permission of file 'instance.lock' again.
+  * Fix the crash when press numlock.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 28 Sep 2018 15:05:40 +0800
+
+kylin-display-switch (1.0.2-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903688)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 13 Jul 2018 11:37:06 +0800
