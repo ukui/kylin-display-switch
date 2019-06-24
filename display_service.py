@@ -24,11 +24,13 @@ class DisplayService:
         modes_one = []
         current_monitor = None
         flag = False
+        primary = 0
 
         for line in lines:
             if(line.find(" connected") != -1):
                 monitor_name = line[: line.find(" ")]
-
+                if(line.find(" primary") != -1):
+                    primary = len(monitors)
                 monitors.append(monitor_name)
 
                 # find monitor again，add to dict
@@ -43,6 +45,7 @@ class DisplayService:
                 if(flag == True and line.startswith(" ") == True):
                     modes_one.append(line.strip().split(" ")[0])
 
+        monitors[0], monitors[primary] = monitors[primary], monitors[0]
         # add last monitor's mode
         modes[current_monitor] = modes_one
 
