@@ -1,3 +1,9 @@
+kylin-display-switch (1.0.3-2) unstable; urgency=medium
+
+  * Fix the crash when switch user on 20.04.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 07 Apr 2020 11:13:03 +0800
+
 kylin-display-switch (1.0.3-1) unstable; urgency=medium
 
   * Fix the wrong permission of file 'instance.lock' again.
