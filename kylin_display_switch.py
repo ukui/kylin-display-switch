@@ -43,7 +43,7 @@ class KylinDisplaySwitch(QWidget):
     def check_singleton(self):
         homepath = os.path.expanduser('~')
         lockpath = "/tmp/instance_kds_" + homepath[homepath.rfind('/')+1:] + ".lock"
-        
+
         if(os.path.exists(lockpath) == False):
             new_instance_file = open(lockpath, 'w')
             new_instance_file.close()

@@ -1,8 +1,13 @@
-kylin-display-switch (1.0.3-2) unstable; urgency=medium
+kylin-display-switch (1.0.4-1) unstable; urgency=medium
 
-  * Fix the crash when switch user on 20.04.
+  * New upstream bugfix release:
+    - Fix the crash when switch user.
+  * debian:
+    - Use debhelper-compat notation.
+    - Bump standards-version to 4.5.0.
+    - Set Rules-Requires-Root to no.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 07 Apr 2020 11:13:03 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 07 Apr 2020 14:21:34 +0800
 
 kylin-display-switch (1.0.3-1) unstable; urgency=medium
 
