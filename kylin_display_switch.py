@@ -41,12 +41,15 @@ class KylinDisplaySwitch(QWidget):
 
     # singleton
     def check_singleton(self):
-        if(os.path.exists("/tmp/instance_kds.lock") == False):
-            new_instance_file = open("/tmp/instance_kds.lock", 'w')
+        homepath = os.path.expanduser('~')
+        lockpath = "/tmp/instance_kds_" + homepath[homepath.rfind('/')+1:] + ".lock"
+        
+        if(os.path.exists(lockpath) == False):
+            new_instance_file = open(lockpath, 'w')
             new_instance_file.close()
-            os.chmod("/tmp/instance_kds.lock", stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+            os.chmod(lockpath, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
 
-        self.instance_file = open("/tmp/instance_kds.lock", 'w')
+        self.instance_file = open(lockpath, 'w')
         try:
             fcntl.lockf(self.instance_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
