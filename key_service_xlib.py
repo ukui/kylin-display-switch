@@ -112,10 +112,10 @@ class KeyServiceXlib(QThread):
                         self.signal_switch_confirm.emit()
 
                     # dev, press ESC to exit
-                    if keysym == XK.XK_Escape:
-                        self.local_dpy.record_disable_context(self.ctx)
-                        self.local_dpy.flush()
-                        sys.exit(0)
+                    #if keysym == XK.XK_Escape:
+                    #    self.local_dpy.record_disable_context(self.ctx)
+                    #    self.local_dpy.flush()
+                    #    sys.exit(0)
 
                 elif event.type == X.KeyRelease:
                     if(keysym == XK.XK_Super_L):
