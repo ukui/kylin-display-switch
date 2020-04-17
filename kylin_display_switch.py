@@ -43,7 +43,7 @@ class KylinDisplaySwitch(QWidget):
     def check_singleton(self):
         homepath = os.path.expanduser('~')
         lockpath = "/tmp/instance_kds_" + homepath[homepath.rfind('/')+1:] + ".lock"
-
+        
         if(os.path.exists(lockpath) == False):
             new_instance_file = open(lockpath, 'w')
             new_instance_file.close()
@@ -63,16 +63,32 @@ class KylinDisplaySwitch(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.ToolTip)
 
+        # main window radius
+        rect = self.rect()
+        rectf = QRectF(rect)
+        blurPath = QPainterPath()
+        blurPath.addRoundedRect(rectf, 24, 24)
+        self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
+
+        self.setWindowOpacity(0.7)
+
         self.ui.centralWidget.setAutoFillBackground(True)
-        pc = QPalette()
-        img_bg = QPixmap("res/bg.png")
-        pc.setBrush(QPalette.Window, QBrush(img_bg))
-        self.ui.centralWidget.setPalette(pc)
+        self.ui.centralWidget.setStyleSheet("#centralWidget{background-color: rgba(0,0,0,1); border-radius: 24px;}")
+
+        self.ui.lb_title.setText(_("Display Switch"))
+        self.ui.lb_title.setStyleSheet("#lb_title{color:white; font-size: 22px;}")
+        self.ui.lb_title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+
+        self.ui.lb_phone.setText(_("Control cellphone"))
 
         self.ui.lb_mode_1.setText(_("Computer"))
         self.ui.lb_mode_2.setText(_("Clone"))
         self.ui.lb_mode_3.setText(_("Extend"))
         self.ui.lb_mode_4.setText(_("Output"))
+        self.ui.lb_mode_1.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.ui.lb_mode_2.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.ui.lb_mode_3.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.ui.lb_mode_4.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         self.ui.lb_caps_on.setText(_("Caps on"))
         self.ui.lb_caps_off.setText(_("Caps off"))
@@ -89,43 +105,85 @@ class KylinDisplaySwitch(QWidget):
         self.ui.lb_num_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
         self.ui.lb_num_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
 
+        self.ui.widget_1.setStyleSheet("#widget_1{background-color: rgba(255,255,255,0.05);}")
+        self.ui.widget_3.setStyleSheet("#widget_3{background-color: rgba(255,255,255,0.05);}")
+
         self.ui.bg_mode_1.setStyleSheet("QWidget{background-image:url(res/btn1.png); border:0px;}")
         self.ui.bg_mode_2.setStyleSheet("QWidget{background-image:url(res/btn2.png); border:0px;}")
         self.ui.bg_mode_3.setStyleSheet("QWidget{background-image:url(res/btn3.png); border:0px;}")
         self.ui.bg_mode_4.setStyleSheet("QWidget{background-image:url(res/btn4.png); border:0px;}")
 
-        self.ui.split_1.setStyleSheet("QLabel{background-image:url(res/split.png); border:0px;}")
-        self.ui.split_2.setStyleSheet("QLabel{background-image:url(res/split.png); border:0px;}")
-        self.ui.split_3.setStyleSheet("QLabel{background-image:url(res/split.png); border:0px;}")
+        self.ui.s_mode_1.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
+        self.ui.s_mode_2.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
+        self.ui.s_mode_3.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
+        self.ui.s_mode_4.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
 
-        self.ui.mode_1.setStyleSheet("QPushButton{background-image:url(res/hover.png); border:0px;}")
-        self.ui.mode_2.setStyleSheet("QPushButton{background-image:url(res/hover.png); border:0px;}")
-        self.ui.mode_3.setStyleSheet("QPushButton{background-image:url(res/hover.png); border:0px;}")
-        self.ui.mode_4.setStyleSheet("QPushButton{background-image:url(res/hover.png); border:0px;}")
+        self.ui.lb_mode_1.setStyleSheet("QLabel{color: white; font-size: 18px;}")
+        self.ui.lb_mode_2.setStyleSheet("QLabel{color: white; font-size: 18px;}")
+        self.ui.lb_mode_3.setStyleSheet("QLabel{color: white; font-size: 18px;}")
+        self.ui.lb_mode_4.setStyleSheet("QLabel{color: white; font-size: 18px;}")
+
+        self.ui.mode_1.setStyleSheet("QPushButton{background-color: rgba(255,255,255,0.12); border:0px;}")
+        self.ui.mode_2.setStyleSheet("QPushButton{background-color: rgba(255,255,255,0.12); border:0px;}")
+        self.ui.mode_3.setStyleSheet("QPushButton{background-color: rgba(255,255,255,0.12); border:0px;}")
+        self.ui.mode_4.setStyleSheet("QPushButton{background-color: rgba(255,255,255,0.12); border:0px;}")
 
         self.ui.mode_1.setFocusPolicy(Qt.NoFocus)
         self.ui.mode_2.setFocusPolicy(Qt.NoFocus)
         self.ui.mode_3.setFocusPolicy(Qt.NoFocus)
         self.ui.mode_4.setFocusPolicy(Qt.NoFocus)
 
+        self.ui.bmode_1.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.8);}")
+        self.ui.bmode_2.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.8);}")
+        self.ui.bmode_3.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.8);}")
+        self.ui.bmode_4.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.8);}")
+
+        self.ui.bmode_1.setFocusPolicy(Qt.NoFocus)
+        self.ui.bmode_2.setFocusPolicy(Qt.NoFocus)
+        self.ui.bmode_3.setFocusPolicy(Qt.NoFocus)
+        self.ui.bmode_4.setFocusPolicy(Qt.NoFocus)
+
+        self.ui.split_1.setStyleSheet("QLabel{background-color: rgba(255,255,255,0.2); border:0px;}")
+
+        self.ui.bg_phone.setStyleSheet("#bg_phone{background-image:url(res/phone.png); border:0px;}")
+        self.ui.lb_phone.setStyleSheet("#lb_phone{color: rgba(220,220,220,0.8); font-size: 16px;}")
+
         self.timer_tip = QTimer()
         self.timer_tip.timeout.connect(self.slot_hide_tip)
         self.ui.tipWidget.hide()
+
+        self.ui.bmode_1.clicked.connect(self.slot_switch_confirm_push_1)
+        self.ui.bmode_2.clicked.connect(self.slot_switch_confirm_push_2)
+        self.ui.bmode_3.clicked.connect(self.slot_switch_confirm_push_3)
+        self.ui.bmode_4.clicked.connect(self.slot_switch_confirm_push_4)
+
+        # self.ui.s_mode_1.hide()
+        self.ui.s_mode_2.hide()
+        self.ui.s_mode_3.hide()
+        self.ui.s_mode_4.hide()
+
+        self.resize(400, 500)
+        self.ui.centralWidget.resize(400, 500)
 
     def start_listen(self):
         self.key_service = KeyServiceXlib(self)
         self.key_service.start()
 
-    def switch_button(self):
+    def switch_button(self, direction=3):
         self.ui.mode_1.hide()
         self.ui.mode_2.hide()
         self.ui.mode_3.hide()
         self.ui.mode_4.hide()
 
-        self.current_button += 1
+        if direction == 1:
+            self.current_button += 1
+        else:
+            self.current_button -= 1
 
         if self.current_button > 4:
             self.current_button = 1
+        if self.current_button < 1:
+            self.current_button = 4
 
         if self.current_button == 1:
             self.ui.mode_1.show()
@@ -136,12 +194,28 @@ class KylinDisplaySwitch(QWidget):
         if self.current_button == 4:
             self.ui.mode_4.show()
 
+    def switch_show_selected(self):
+        self.ui.s_mode_1.hide()
+        self.ui.s_mode_2.hide()
+        self.ui.s_mode_3.hide()
+        self.ui.s_mode_4.hide()
+
+        print(self.current_button)
+        if self.current_button == 0:
+            self.ui.s_mode_1.show()
+        if self.current_button == 1:
+            self.ui.s_mode_2.show()
+        if self.current_button == 2:
+            self.ui.s_mode_3.show()
+        if self.current_button == 3:
+            self.ui.s_mode_4.show()
+
     # swich select mode
-    def slot_switch_select(self):
+    def slot_switch_select(self, direction=1):
         self.timer_tip.stop()
-        self.resize(744, 126)
+        self.resize(400, 500)
         self.ui.tipWidget.hide()
-        self.ui.centralWidget.resize(744, 126)
+        self.ui.centralWidget.resize(400, 500)
         self.ui.centralWidget.show()
         self.show()
 
@@ -150,7 +224,44 @@ class KylinDisplaySwitch(QWidget):
             desktop = desktop.screenGeometry(0)
         self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) *10 / 21)
 
-        self.switch_button()
+        self.switch_button(direction)
+
+    # confirm current selected mode
+    def slot_switch_confirm_push_1(self):
+        self.hide()
+        (current_mode, flag) = self.display_service.switch_display(1)
+        # keep select mode when next active
+        self.current_button = current_mode - 1
+        self.key_service.is_active = False
+        self.key_service.is_shown = False
+        self.switch_show_selected()
+
+    def slot_switch_confirm_push_2(self):
+        self.hide()
+        (current_mode, flag) = self.display_service.switch_display(2)
+        # keep select mode when next active
+        self.current_button = current_mode - 1
+        self.key_service.is_active = False
+        self.key_service.is_shown = False
+        self.switch_show_selected()
+
+    def slot_switch_confirm_push_3(self):
+        self.hide()
+        (current_mode, flag) = self.display_service.switch_display(3)
+        # keep select mode when next active
+        self.current_button = current_mode - 1
+        self.key_service.is_active = False
+        self.key_service.is_shown = False
+        self.switch_show_selected()
+
+    def slot_switch_confirm_push_4(self):
+        self.hide()
+        (current_mode, flag) = self.display_service.switch_display(4)
+        # keep select mode when next active
+        self.current_button = current_mode - 1
+        self.key_service.is_active = False
+        self.key_service.is_shown = False
+        self.switch_show_selected()
 
     # confirm current selected mode
     def slot_switch_confirm(self):
@@ -159,6 +270,7 @@ class KylinDisplaySwitch(QWidget):
         (current_mode, flag) = self.display_service.switch_display(self.current_button)
         # keep select mode when next active
         self.current_button = current_mode - 1
+        self.switch_show_selected()
 
     # CapsLock tip
     def slot_tip_capslock(self):

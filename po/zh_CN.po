@@ -48,3 +48,11 @@ msgstr "数字键 开启"
 #: kylin_display_switch.py:74
 msgid "Num off"
 msgstr "数字键 关闭"
+
+#: kylin_display_switch.py:78
+msgid "Display Switch"
+msgstr "系统投屏"
+
+#: kylin_display_switch.py:81
+msgid "Control cellphone"
+msgstr "控制你的手机"

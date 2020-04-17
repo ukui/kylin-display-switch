@@ -17,8 +17,10 @@ class KeyServiceXlib(QThread):
     ctx = None
     is_modify_key_press = False
     is_active = False
+    is_shown = False
+    press_time = 0
 
-    signal_switch_select = pyqtSignal()
+    signal_switch_select = pyqtSignal(int)
     signal_switch_confirm = pyqtSignal()
     signal_tip_capslock = pyqtSignal()
     signal_tip_numlock = pyqtSignal()
@@ -88,23 +90,42 @@ class KeyServiceXlib(QThread):
                 if event.type == X.KeyPress:
                     if keysym == XK.XK_Super_L:
                         self.is_modify_key_press = True
+                        self.press_time = 0
                     if keysym == XK.XK_F3 or keysym == XK.XK_F7 or keysym == XK.XK_p:
-                        if self.is_modify_key_press == True:
+                        if self.is_modify_key_press == True and self.is_shown == False:
                             self.is_active = True
-                            self.signal_switch_select.emit()
+                            self.press_time = self.press_time + 1
+                            self.signal_switch_select.emit(1)
+
+                    # left button
+                    if keysym == XK.XK_Up and self.is_shown == True:
+                        self.signal_switch_select.emit(2)
+
+                    # right button
+                    if keysym == XK.XK_Down and self.is_shown == True:
+                        self.signal_switch_select.emit(1)
+
+                    # enter button
+                    if (keysym == XK.XK_KP_Enter or keysym == XK.XK_Return) and self.is_shown == True:
+                        self.is_active = False
+                        self.is_shown = False
+                        self.signal_switch_confirm.emit()
 
                     # dev, press ESC to exit
-                    # if keysym == XK.XK_Escape:
-                    #     self.local_dpy.record_disable_context(self.ctx)
-                    #     self.local_dpy.flush()
-                    #     sys.exit(0)
+                    if keysym == XK.XK_Escape:
+                        self.local_dpy.record_disable_context(self.ctx)
+                        self.local_dpy.flush()
+                        sys.exit(0)
 
                 elif event.type == X.KeyRelease:
                     if(keysym == XK.XK_Super_L):
                         self.is_modify_key_press = False
-                        if(self.is_active == True):
-                            self.is_active = False
-                            self.signal_switch_confirm.emit()
+                        if self.is_active == True:
+                            self.is_shown = True
+                            if self.press_time > 1:
+                                self.is_active = False
+                                self.is_shown = False
+                                self.signal_switch_confirm.emit()
 
                     if keysym == XK.XK_Caps_Lock:
                         self.signal_tip_capslock.emit()
