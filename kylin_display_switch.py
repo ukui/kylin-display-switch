@@ -108,10 +108,10 @@ class KylinDisplaySwitch(QWidget):
         self.ui.widget_1.setStyleSheet("#widget_1{background-color: rgba(255,255,255,0.05);}")
         self.ui.widget_3.setStyleSheet("#widget_3{background-color: rgba(255,255,255,0.05);}")
 
-        self.ui.bg_mode_1.setStyleSheet("QWidget{background-image:url(res/btn1.png); border:0px;}")
-        self.ui.bg_mode_2.setStyleSheet("QWidget{background-image:url(res/btn2.png); border:0px;}")
-        self.ui.bg_mode_3.setStyleSheet("QWidget{background-image:url(res/btn3.png); border:0px;}")
-        self.ui.bg_mode_4.setStyleSheet("QWidget{background-image:url(res/btn4.png); border:0px;}")
+        self.ui.bg_mode_1.setStyleSheet("QWidget{border-image:url(res/btn1.png); border:0px;}")
+        self.ui.bg_mode_2.setStyleSheet("QWidget{border-image:url(res/btn2.png); border:0px;}")
+        self.ui.bg_mode_3.setStyleSheet("QWidget{border-image:url(res/btn3.png); border:0px;}")
+        self.ui.bg_mode_4.setStyleSheet("QWidget{border-image:url(res/btn4.png); border:0px;}")
 
         self.ui.s_mode_1.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
         self.ui.s_mode_2.setStyleSheet("QWidget{background-image:url(res/selected.png); border:0px;}")
@@ -145,8 +145,9 @@ class KylinDisplaySwitch(QWidget):
 
         self.ui.split_1.setStyleSheet("QLabel{background-color: rgba(255,255,255,0.2); border:0px;}")
 
-        self.ui.bg_phone.setStyleSheet("#bg_phone{background-image:url(res/phone.png); border:0px;}")
+        self.ui.bg_phone.setStyleSheet("#bg_phone{border-image:url(res/phone.png); border:0px;}")
         self.ui.lb_phone.setStyleSheet("#lb_phone{color: rgba(220,220,220,0.8); font-size: 16px;}")
+        self.ui.lb_phone.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         self.timer_tip = QTimer()
         self.timer_tip.timeout.connect(self.slot_hide_tip)

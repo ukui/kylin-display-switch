@@ -101,19 +101,19 @@ class Ui_MainWindow(object):
 
         # button pic
         self.bg_mode_1 = QtWidgets.QLabel(self.widget_1)
-        self.bg_mode_1.setGeometry(QtCore.QRect(24, 16, 60, 35))
+        self.bg_mode_1.setGeometry(QtCore.QRect(24, 5, 60, 60))
         self.bg_mode_1.setText(_fromUtf8(""))
         self.bg_mode_1.setObjectName(_fromUtf8("bg_mode_1"))
         self.bg_mode_2 = QtWidgets.QLabel(self.widget_2)
-        self.bg_mode_2.setGeometry(QtCore.QRect(24, 16, 60, 35))
+        self.bg_mode_2.setGeometry(QtCore.QRect(24, 5, 60, 60))
         self.bg_mode_2.setText(_fromUtf8(""))
         self.bg_mode_2.setObjectName(_fromUtf8("bg_mode_2"))
         self.bg_mode_3 = QtWidgets.QLabel(self.widget_3)
-        self.bg_mode_3.setGeometry(QtCore.QRect(24, 16, 60, 35))
+        self.bg_mode_3.setGeometry(QtCore.QRect(24, 5, 60, 60))
         self.bg_mode_3.setText(_fromUtf8(""))
         self.bg_mode_3.setObjectName(_fromUtf8("bg_mode_3"))
         self.bg_mode_4 = QtWidgets.QLabel(self.widget_4)
-        self.bg_mode_4.setGeometry(QtCore.QRect(24, 16, 60, 35))
+        self.bg_mode_4.setGeometry(QtCore.QRect(24, 5, 60, 60))
         self.bg_mode_4.setText(_fromUtf8(""))
         self.bg_mode_4.setObjectName(_fromUtf8("bg_mode_4"))
 
@@ -183,12 +183,12 @@ class Ui_MainWindow(object):
 
         # conn to phone
         self.bg_phone = QtWidgets.QLabel(self.centralWidget)
-        self.bg_phone.setGeometry(QtCore.QRect(128, 438, 21, 30))
+        self.bg_phone.setGeometry(QtCore.QRect(123, 438, 30, 30))
         self.bg_phone.setText(_fromUtf8(""))
         self.bg_phone.setObjectName(_fromUtf8("bg_phone"))
 
         self.lb_phone = QtWidgets.QLabel(self.centralWidget)
-        self.lb_phone.setGeometry(QtCore.QRect(165, 445, 120, 20))
+        self.lb_phone.setGeometry(QtCore.QRect(165, 442, 130, 20))
         self.lb_phone.setText(_fromUtf8(""))
         self.lb_phone.setObjectName(_fromUtf8("lb_phone"))
 
