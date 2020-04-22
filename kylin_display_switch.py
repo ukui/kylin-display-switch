@@ -56,6 +56,27 @@ class KylinDisplaySwitch(QWidget):
             print("only allow one instance...")
             sys.exit()
 
+    def switch_window_type(self, big):
+        if big:
+            # main window radius
+            rect = self.rect()
+            rectf = QRectF(rect)
+            blurPath = QPainterPath()
+            blurPath.addRoundedRect(rectf, 24, 24)
+            self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
+
+            self.setWindowOpacity(0.7)
+
+        else:
+            # main window radius
+            rect = self.rect()
+            rectf = QRectF(rect)
+            blurPath = QPainterPath()
+            blurPath.addRoundedRect(rectf, 4, 4)
+            self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
+
+            self.setWindowOpacity(0.95)
+
     def init_ui(self):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -63,17 +84,10 @@ class KylinDisplaySwitch(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.ToolTip)
 
-        # main window radius
-        rect = self.rect()
-        rectf = QRectF(rect)
-        blurPath = QPainterPath()
-        blurPath.addRoundedRect(rectf, 24, 24)
-        self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
-
-        self.setWindowOpacity(0.7)
-
         self.ui.centralWidget.setAutoFillBackground(True)
         self.ui.centralWidget.setStyleSheet("#centralWidget{background-color: rgba(0,0,0,1); border-radius: 24px;}")
+
+        self.switch_window_type(True)
 
         self.ui.lb_title.setText(_("Display Switch"))
         self.ui.lb_title.setStyleSheet("#lb_title{color:white; font-size: 22px;}")
@@ -133,10 +147,10 @@ class KylinDisplaySwitch(QWidget):
         self.ui.mode_3.setFocusPolicy(Qt.NoFocus)
         self.ui.mode_4.setFocusPolicy(Qt.NoFocus)
 
-        self.ui.bmode_1.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.12);}")
-        self.ui.bmode_2.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.12);}")
-        self.ui.bmode_3.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.12);}")
-        self.ui.bmode_4.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.12);}")
+        self.ui.bmode_1.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.04);}")
+        self.ui.bmode_2.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.08);}")
+        self.ui.bmode_3.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.08);} QPushButton:Pressed{background-color: rgba(255,255,255,0.04);}")
+        self.ui.bmode_4.setStyleSheet("QPushButton{border:0px;} QPushButton:Hover{background-color: rgba(255,255,255,0.12);} QPushButton:Pressed{background-color: rgba(255,255,255,0.08);}")
 
         self.ui.bmode_1.setFocusPolicy(Qt.NoFocus)
         self.ui.bmode_2.setFocusPolicy(Qt.NoFocus)
@@ -214,7 +228,7 @@ class KylinDisplaySwitch(QWidget):
     # swich select mode
     def slot_switch_select(self, direction=1):
         self.timer_tip.stop()
-        self.setWindowOpacity(0.7)
+        self.switch_window_type(True)
         self.resize(400, 500)
         self.ui.tipWidget.hide()
         self.ui.centralWidget.resize(400, 500)
@@ -276,7 +290,7 @@ class KylinDisplaySwitch(QWidget):
 
     # CapsLock tip
     def slot_tip_capslock(self):
-        self.setWindowOpacity(1)
+        self.switch_window_type(False)
         self.key_service.is_active = False
         self.key_service.is_shown = False
 
@@ -304,7 +318,7 @@ class KylinDisplaySwitch(QWidget):
 
     # NumLock tip
     def slot_tip_numlock(self):
-        self.setWindowOpacity(1)
+        self.switch_window_type(False)
         self.key_service.is_active = False
         self.key_service.is_shown = False
 
