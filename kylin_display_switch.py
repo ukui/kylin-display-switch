@@ -57,13 +57,20 @@ class KylinDisplaySwitch(QWidget):
             sys.exit()
 
     def switch_window_type(self, big):
+        qtVersion = int(QT_VERSION_STR.split('.')[1])
+
         if big:
             # main window radius
             rect = self.rect()
             rectf = QRectF(rect)
             blurPath = QPainterPath()
             blurPath.addRoundedRect(rectf, 24, 24)
-            self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
+
+            if qtVersion < 11:
+                qtsf = QTransform()
+                self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon(qtsf).toPolygon()))
+            else:
+                self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
 
             self.setWindowOpacity(0.7)
 
@@ -73,7 +80,12 @@ class KylinDisplaySwitch(QWidget):
             rectf = QRectF(rect)
             blurPath = QPainterPath()
             blurPath.addRoundedRect(rectf, 4, 4)
-            self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
+
+            if qtVersion < 11:
+                qtsf = QTransform()
+                self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon(qtsf).toPolygon()))
+            else:
+                self.setProperty("blurRegion", QRegion(blurPath.toFillPolygon().toPolygon()))
 
             self.setWindowOpacity(0.95)
 
