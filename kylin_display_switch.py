@@ -237,7 +237,7 @@ class KylinDisplaySwitch(QWidget):
         if self.current_button == 3:
             self.ui.s_mode_4.show()
 
-    # swich select mode
+    # switch select mode
     def slot_switch_select(self, direction=1):
         self.timer_tip.stop()
         self.switch_window_type(True)
