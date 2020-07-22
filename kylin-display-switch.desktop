@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Kylin Display Swtich
+Name=Kylin Display Switch
 Name[zh_CN]=麒麟显示切换
-Comment=Kylin Display Swtich
+Comment=Kylin Display Switch
 Comment[zh_CN]=麒麟显示切换
 Exec=/usr/bin/kds
 StartupNotify=false
