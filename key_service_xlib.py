@@ -35,6 +35,8 @@ class KeyServiceXlib(QThread):
 
     signal_switch_select = pyqtSignal(int)
     signal_switch_confirm = pyqtSignal()
+    signal_switch_esc = pyqtSignal()
+    signal_switch_esc2 = pyqtSignal(int, int)
     signal_tip_capslock = pyqtSignal()
     signal_tip_numlock = pyqtSignal()
 
@@ -44,6 +46,8 @@ class KeyServiceXlib(QThread):
 
         self.signal_switch_select.connect(self.main_window.slot_switch_select)
         self.signal_switch_confirm.connect(self.main_window.slot_switch_confirm)
+        self.signal_switch_esc.connect(self.main_window.slot_switch_esc)
+        self.signal_switch_esc2.connect(self.main_window.slot_switch_esc2)
         self.signal_tip_capslock.connect(self.main_window.slot_tip_capslock)
         self.signal_tip_numlock.connect(self.main_window.slot_tip_numlock)
 
@@ -97,32 +101,39 @@ class KeyServiceXlib(QThread):
         while len(data):
             event, data = rq.EventField(None).parse_binary_value(data, self.record_dpy.display, None, None)
 
-            if event.type in [X.KeyPress, X.KeyRelease]:
+            if event.type in [X.KeyPress, X.KeyRelease, X.ButtonPress, X.ButtonRelease]:
                 keysym = self.local_dpy.keycode_to_keysym(event.detail, 0)
 
                 if event.type == X.KeyPress:
                     if keysym == XK.XK_Super_L:
                         self.is_modify_key_press = True
                         self.press_time = 0
-                    if keysym == XK.XK_F3 or keysym == XK.XK_F7 or keysym == XK.XK_p:
+                    elif keysym == XK.XK_F3 or keysym == XK.XK_F7 or keysym == XK.XK_p:
                         if self.is_modify_key_press == True and self.is_shown == False:
                             self.is_active = True
                             self.press_time = self.press_time + 1
                             self.signal_switch_select.emit(1)
+                        elif self.is_modify_key_press == True and self.is_shown == True:
+                            self.signal_switch_select.emit(1)
 
                     # left button
-                    if keysym == XK.XK_Up and self.is_shown == True:
+                    elif keysym == XK.XK_Up and self.is_shown == True:
                         self.signal_switch_select.emit(2)
 
                     # right button
-                    if keysym == XK.XK_Down and self.is_shown == True:
+                    elif keysym == XK.XK_Down and self.is_shown == True:
                         self.signal_switch_select.emit(1)
 
                     # enter button
-                    if (keysym == XK.XK_KP_Enter or keysym == XK.XK_Return) and self.is_shown == True:
+                    elif (keysym == XK.XK_KP_Enter or keysym == XK.XK_Return) and self.is_shown == True:
                         self.is_active = False
                         self.is_shown = False
                         self.signal_switch_confirm.emit()
+
+                    else:
+                        self.is_active = False
+                        self.is_shown = False
+                        self.signal_switch_esc.emit()
 
                     # dev, press ESC to exit
                     #if keysym == XK.XK_Escape:
@@ -144,6 +155,13 @@ class KeyServiceXlib(QThread):
                         self.signal_tip_capslock.emit()
                     if keysym == XK.XK_Num_Lock:
                         self.signal_tip_numlock.emit()
+
+                elif event.type == X.ButtonPress:
+                    #self.is_active = False
+                    #self.is_shown = False
+                    rootPointX = event.root_x
+                    rootPointY = event.root_y
+                    self.signal_switch_esc2.emit(rootPointX, rootPointY)
 
 
 def main():

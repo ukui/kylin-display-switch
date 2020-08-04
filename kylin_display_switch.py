@@ -339,6 +339,17 @@ class KylinDisplaySwitch(QWidget):
         self.current_button = current_mode - 1
         self.switch_show_selected()
 
+    # esc by any key pressed
+    def slot_switch_esc(self):
+        self.hide()
+
+    # esc by any clicked
+    def slot_switch_esc2(self, x, y):
+        if self.key_service.is_active and self.key_service.is_shown and not self.geometry().contains(x, y):
+            self.key_service.is_active = False
+            self.key_service.is_shown = False
+            self.hide()
+
     # CapsLock tip
     def slot_tip_capslock(self):
         self.switch_window_type(False)
