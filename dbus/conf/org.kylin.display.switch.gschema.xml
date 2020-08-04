@@ -1,0 +1,9 @@
+<schemalist gettext-domain="kylin-display-switch">
+  <schema id="org.kylin.display.switch" path="/org/kylin/display/switch/">
+    <key name="screen" type="b">
+      <default>true</default>
+      <summary>Current Screen open or close</summary>
+      <description>Recored the value of screen status, open or close.</description>
+    </key>
+  </schema>
+</schemalist>

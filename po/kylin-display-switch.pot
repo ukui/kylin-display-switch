@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-12 15:01+0800\n"
+"POT-Creation-Date: 2020-08-04 14:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,42 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: kylin_display_switch.py:66
+#: ../kylin_display_switch.py:127
+msgid "Display Switch"
+msgstr ""
+
+#: ../kylin_display_switch.py:131
+msgid "Control cellphone"
+msgstr ""
+
+#: ../kylin_display_switch.py:133
 msgid "Computer"
 msgstr ""
 
-#: kylin_display_switch.py:67
+#: ../kylin_display_switch.py:134
 msgid "Clone"
 msgstr ""
 
-#: kylin_display_switch.py:68
+#: ../kylin_display_switch.py:135
 msgid "Extend"
 msgstr ""
 
-#: kylin_display_switch.py:69
+#: ../kylin_display_switch.py:136
 msgid "Output"
 msgstr ""
 
-#: kylin_display_switch.py:71
+#: ../kylin_display_switch.py:142
 msgid "Caps on"
 msgstr ""
 
-#: kylin_display_switch.py:72
+#: ../kylin_display_switch.py:143
 msgid "Caps off"
 msgstr ""
 
-#: kylin_display_switch.py:73
+#: ../kylin_display_switch.py:144
 msgid "Num on"
 msgstr ""
 
-#: kylin_display_switch.py:74
+#: ../kylin_display_switch.py:145
 msgid "Num off"
 msgstr ""

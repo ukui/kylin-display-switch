@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.kylin.display.switch
+Exec=/usr/bin/kdsSysDbusLauncher.py
+User=root

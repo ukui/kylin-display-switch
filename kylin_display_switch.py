@@ -28,7 +28,12 @@ from ui_mainwindow import Ui_MainWindow
 from key_service_xlib import KeyServiceXlib
 from display_service import DisplayService
 from switchers_service import SwitchersService
+from mediakey_service import MediakeyService
 import fcntl
+
+from key_service_dbus import KeyServiceDbus
+
+import enums as Keys
 
 
 class KylinDisplaySwitch(QWidget):
@@ -39,6 +44,9 @@ class KylinDisplaySwitch(QWidget):
     settings = None
     current_button = 0
 
+    key_dbus_service = None
+    mediakey_service = None
+
     def __init__(self, parent = None):
         super(KylinDisplaySwitch, self).__init__(parent)
 
@@ -48,9 +56,11 @@ class KylinDisplaySwitch(QWidget):
 
         self.display_service = DisplayService()
         self.switchers_service = SwitchersService()
+        self.mediakey_service = MediakeyService()
         self.settings = QSettings("kylinos.cn", "KylinDisplaySwitch")
 
         self.start_listen()
+        self.start_listen_dbus()
 
     # singleton
     def check_singleton(self):
@@ -208,6 +218,10 @@ class KylinDisplaySwitch(QWidget):
     def start_listen(self):
         self.key_service = KeyServiceXlib(self)
         self.key_service.start()
+
+    def start_listen_dbus(self):
+        self.key_dbus_service = KeyServiceDbus(self)
+        self.key_dbus_service.start()
 
     def switch_button(self, direction=3):
         self.ui.mode_1.hide()
@@ -368,6 +382,12 @@ class KylinDisplaySwitch(QWidget):
         self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
         self.ui.tipWidget.show()
         self.show()
+
+    # MediaKey listen
+    def slot_mediakey_trigger(self, keyCode = -1, keyValue = -1):
+        """keyCode: Which key is it
+           keyValue: The key is pressed or released"""
+        print("the", keyCode, "is trigger")
 
     def slot_hide_tip(self):
         self.timer_tip.stop()

@@ -38,8 +38,13 @@ data_files=[
     ),
     ('bin/', ['kds']),
     ('../etc/xdg/autostart/', ['kylin-display-switch.desktop']),
-    ('share/kylin-display-switch/', ['display_service.py', 'switchers_service.py', 'enums.py', 'key_service_xlib.py', 'kylin_display_switch.py', 'ui_mainwindow.py']),
+    ('share/kylin-display-switch/', ['display_service.py', 'switchers_service.py', 'mediakey_service.py','enums.py', 'key_service_xlib.py', 'key_service_dbus.py', 'super_kylin_display_switch.py', 'kylin_display_switch.py', 'ui_mainwindow.py']),
     ('share/kylin-display-switch/res/', glob.glob('res/*.png')),
+    ('../etc/dbus-1/system.d/', ['dbus/conf/com.kylin.display.switch.conf']),
+    ('share/dbus-1/system-services/', ['dbus/conf/com.kylin.display.switch.service']),
+    ('../lib/systemd/system/', ['conf/kylin-display-switch.service']),
+    ('share/glib-2.0/schemas/', ['dbus/conf/org.kylin.display.switch.gschema.xml']),
+    ('bin/', ['dbus/kdsSysDbusLauncher.py']),
 ]
 
 
