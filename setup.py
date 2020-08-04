@@ -44,7 +44,7 @@ data_files=[
     ('share/dbus-1/system-services/', ['dbus/conf/com.kylin.display.switch.service']),
     ('../lib/systemd/system/', ['conf/kylin-display-switch.service']),
     ('share/glib-2.0/schemas/', ['dbus/conf/org.kylin.display.switch.gschema.xml']),
-    ('bin/', ['dbus/kdsSysDbusLauncher.py']),
+    ('bin/', ['dbus/kdsSysDbusLauncher']),
 ]
 
 
