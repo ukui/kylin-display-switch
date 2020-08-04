@@ -20,3 +20,22 @@ class DisplayMode:
     MODE_CLONE = 2
     MODE_EXTEND = 3
     MODE_ONLY_OUT = 4
+
+# The Key Code 431 is Fn + F6
+keyDic = { "muteOnOff"    :  113, \
+           "volumeDown"    :  114, \
+           "volumeUp"    : 115, \
+           "screenOnOff"    :  431, \
+           "brightnessDown"    :  224, \
+           "brightnessUp"    : 225, \
+           "cameraOnOff"    : 212, \
+           "micmuteOnOff"    : 248, \
+           "bluetoothOnOff"    :  237, \
+           "wlanOnOff"    :  238, \
+           "touchpadOnOff"  :  530, \
+           "touchpadOn"   :  531, \
+           "touchpadOff"    :  532, \
+           "videoModeSwitch"    :  227, \
+           "debugKeyCode1" :  65, \
+           "debugKeyCode2" :  66, \
+}
