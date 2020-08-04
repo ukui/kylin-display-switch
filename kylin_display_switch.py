@@ -31,9 +31,25 @@ from switchers_service import SwitchersService
 from mediakey_service import MediakeyService
 import fcntl
 
+from gi.repository import Gio
 from key_service_dbus import KeyServiceDbus
 
 import enums as Keys
+
+
+"""
+get tip status
+@return: no return
+"""
+def get_lock_tip_show():
+    giosss = Gio.SettingsSchemaSource.get_default()
+    schema = giosss.lookup('org.ukui.control-center.osd', True)
+    if not schema:
+        return True
+
+    settings = Gio.Settings(settings_schema=schema)
+    value = settings.get_boolean('show-lock-tip')
+    return value
 
 
 class KylinDisplaySwitch(QWidget):
@@ -352,6 +368,9 @@ class KylinDisplaySwitch(QWidget):
 
     # CapsLock tip
     def slot_tip_capslock(self):
+        if not get_lock_tip_show():
+            return
+
         self.switch_window_type(False)
         self.key_service.is_active = False
         self.key_service.is_shown = False
@@ -386,6 +405,9 @@ class KylinDisplaySwitch(QWidget):
 
     # NumLock tip
     def slot_tip_numlock(self):
+        if not get_lock_tip_show():
+            return
+
         self.switch_window_type(False)
         self.key_service.is_active = False
         self.key_service.is_shown = False

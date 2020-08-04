@@ -1,3 +1,33 @@
+kylin-display-switch (2.0.8-1) unstable; urgency=medium
+
+  [hebing]
+    * enable/disable key press tip
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.7-1) unstable; urgency=medium
+
+  [hebing]
+    * add feature, the switch window will esc when pressed any key or click any where that outof window
+    * add feature, pressed win + p the selected will continue change when the switch window is shown
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.6-1) unstable; urgency=medium
+
+  [hebing]
+    * add function of touchpad on/off, bluetooth on/off, wlan on/off
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.4-1) unstable; urgency=medium
+
+  [hebing]
+    * add dbus module
+    * add evdev monitor but not enable because lintian
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
 kylin-display-switch (2.0.3-1) unstable; urgency=medium
 
   * support qt 5.6.
