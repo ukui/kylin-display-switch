@@ -1,3 +1,10 @@
+kylin-display-switch (2.0.9-1) unstable; urgency=medium
+
+  [hebing]
+    * support 4k
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
 kylin-display-switch (2.0.8-1) unstable; urgency=medium
 
   [hebing]

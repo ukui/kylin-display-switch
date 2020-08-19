@@ -530,6 +530,9 @@ def callback():
 def main():
     app = QApplication(sys.argv)
     QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF8"))
+    if app.desktop().width() >= 2560:
+        QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+        QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
     globalfont = QFont()
     globalfont.setPixelSize(16)
