@@ -7,3 +7,4 @@ Exec=/usr/bin/kds
 StartupNotify=false
 Terminal=false
 Type=Application
+NoDisplay=true
