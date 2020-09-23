@@ -25,6 +25,7 @@ gettext.bindtextdomain("kylin-display-switch", "/usr/share/locale")
 gettext.textdomain("kylin-display-switch")
 _ = gettext.gettext
 from ui_mainwindow import Ui_MainWindow
+from ui_mainwindow import Tips
 from key_service_xlib import KeyServiceXlib
 from display_service import DisplayService
 from switchers_service import SwitchersService
@@ -35,6 +36,8 @@ from gi.repository import Gio
 from key_service_dbus import KeyServiceDbus
 
 import enums as Keys
+
+posBottom = 50
 
 
 """
@@ -155,32 +158,32 @@ class KylinDisplaySwitch(QWidget):
         self.ui.lb_mode_3.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.ui.lb_mode_4.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-        self.ui.lb_caps_on.setText(_("Caps on"))
-        self.ui.lb_caps_off.setText(_("Caps off"))
-        self.ui.lb_num_on.setText(_("Num on"))
-        self.ui.lb_num_off.setText(_("Num off"))
+#        self.ui.lb_caps_on.setText(_("Caps on"))
+#        self.ui.lb_caps_off.setText(_("Caps off"))
+#        self.ui.lb_num_on.setText(_("Num on"))
+#        self.ui.lb_num_off.setText(_("Num off"))
 
-        self.ui.caps_on_bg.setStyleSheet("QWidget{background-image:url(res/capslock-on.png); border:0px;}")
-        self.ui.caps_off_bg.setStyleSheet("QWidget{background-image:url(res/capslock-off.png); border:0px;}")
-        self.ui.num_on_bg.setStyleSheet("QWidget{background-image:url(res/numlock-on.png); border:0px;}")
-        self.ui.num_off_bg.setStyleSheet("QWidget{background-image:url(res/numlock-off.png); border:0px;}")
-        self.ui.tp_on_bg.setStyleSheet("QWidget{background-image:url(res/touchpad-on.png); border:0px;}")
-        self.ui.tp_off_bg.setStyleSheet("QWidget{background-image:url(res/touchpad-off.png); border:0px;}")
-        self.ui.wlan_on_bg.setStyleSheet("QWidget{background-image:url(res/wlan-on.png); border:0px;}")
-        self.ui.wlan_off_bg.setStyleSheet("QWidget{background-image:url(res/wlan-off.png); border:0px;}")
-        self.ui.bluetooth_on_bg.setStyleSheet("QWidget{background-image:url(res/bluetooth-on.png); border:0px;}")
-        self.ui.bluetooth_off_bg.setStyleSheet("QWidget{background-image:url(res/bluetooth-off.png); border:0px;}")
+        self.ui.caps_on_bg.setStyleSheet("QWidget{border-image:url(res/capslockOn.png); border: none; border-radius: 8px;}")
+        self.ui.caps_off_bg.setStyleSheet("QWidget{border-image:url(res/capslockOff.png); border: none; border-radius: 8px;}")
+        self.ui.num_on_bg.setStyleSheet("QWidget{border-image:url(res/numlockOn.png); border:0px; border-radius: 8px;}")
+        self.ui.num_off_bg.setStyleSheet("QWidget{border-image:url(res/numlockOff.png); border:0px; border-radius: 8px;}")
+        self.ui.tp_on_bg.setStyleSheet("QWidget{border-image:url(res/touchpadOn.png); border:0px; border-radius: 8px;}")
+        self.ui.tp_off_bg.setStyleSheet("QWidget{border-image:url(res/touchpadOff.png); border:0px; border-radius: 8px;}")
+        self.ui.wlan_on_bg.setStyleSheet("QWidget{border-image:url(res/wlanOn.png); border:0px; border-radius: 8px;}")
+        self.ui.wlan_off_bg.setStyleSheet("QWidget{border-image:url(res/wlanOff.png); border:0px; border-radius: 8px;}")
+        self.ui.bluetooth_on_bg.setStyleSheet("QWidget{border-image:url(res/bluetoothOn.png); border:0px; border-radius: 8px;}")
+        self.ui.bluetooth_off_bg.setStyleSheet("QWidget{border-image:url(res/bluetoothOff.png); border:0px; border-radius: 8px;}")
 
-        self.ui.lb_caps_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_caps_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_num_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_num_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_tp_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_tp_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_wlan_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_wlan_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_bluetooth_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_bluetooth_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_caps_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_caps_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_num_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_num_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_tp_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_tp_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_wlan_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_wlan_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_bluetooth_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_bluetooth_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
 
         self.ui.widget_1.setStyleSheet("#widget_1{background-color: rgba(255,255,255,0.05);}")
         self.ui.widget_3.setStyleSheet("#widget_3{background-color: rgba(255,255,255,0.05);}")
@@ -378,28 +381,30 @@ class KylinDisplaySwitch(QWidget):
         self.timer_tip.stop()
         self.timer_tip.start(2500)
 
-        self.resize(190, 190)
+#        self.resize(190, 190)
+#        self.ui.centralWidget.hide()
+#        self.ui.caps_on_widget.hide()
+#        self.ui.caps_off_widget.hide()
+#        self.ui.num_on_widget.hide()
+#        self.ui.num_off_widget.hide()
+#        self.ui.tp_on_widget.hide()
+#        self.ui.tp_off_widget.hide()
+#        self.ui.wlan_on_widget.hide()
+#        self.ui.wlan_off_widget.hide()
+#        self.ui.bluetooth_on_widget.hide()
+#        self.ui.bluetooth_off_widget.hide()
+        # 隐藏显示切换界面
         self.ui.centralWidget.hide()
-        self.ui.caps_on_widget.hide()
-        self.ui.caps_off_widget.hide()
-        self.ui.num_on_widget.hide()
-        self.ui.num_off_widget.hide()
-        self.ui.tp_on_widget.hide()
-        self.ui.tp_off_widget.hide()
-        self.ui.wlan_on_widget.hide()
-        self.ui.wlan_off_widget.hide()
-        self.ui.bluetooth_on_widget.hide()
-        self.ui.bluetooth_off_widget.hide()
 
         if(self.switchers_service.get_capslock_status() == True):
-            self.ui.caps_on_widget.show()
+            self.ui.tipWidget.setCurrentIndex(Tips.CAPS_ON)
         else:
-            self.ui.caps_off_widget.show()
+            self.ui.tipWidget.setCurrentIndex(Tips.CAPS_OFF)
 
         desktop = QApplication.desktop()
         if (desktop.screenCount() > 1):
             desktop = desktop.screenGeometry(0)
-        self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
+        self.move(desktop.width() * 3 / 4, (desktop.height() - posBottom - self.ui.tipWidget.width()))
         self.ui.tipWidget.show()
         self.show()
 
@@ -415,30 +420,20 @@ class KylinDisplaySwitch(QWidget):
         self.timer_tip.stop()
         self.timer_tip.start(2500)
 
-        self.resize(190, 190)
         self.ui.centralWidget.hide()
-        self.ui.caps_on_widget.hide()
-        self.ui.caps_off_widget.hide()
-        self.ui.num_on_widget.hide()
-        self.ui.num_off_widget.hide()
-        self.ui.tp_on_widget.hide()
-        self.ui.tp_off_widget.hide()
-        self.ui.wlan_on_widget.hide()
-        self.ui.wlan_off_widget.hide()
-        self.ui.bluetooth_on_widget.hide()
-        self.ui.bluetooth_off_widget.hide()
 
         if(self.switchers_service.get_numlock_status() == True):
-            self.ui.num_on_widget.show()
+            self.ui.tipWidget.setCurrentIndex(Tips.NUM_ON)
         else:
-            self.ui.num_off_widget.show()
+            self.ui.tipWidget.setCurrentIndex(Tips.NUM_OFF)
 
         desktop = QApplication.desktop()
         if (desktop.screenCount() > 1):
             desktop = desktop.screenGeometry(0)
-        self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
+        self.move(desktop.width() * 3 / 4, (desktop.height() - posBottom - self.ui.tipWidget.width()))
         self.ui.tipWidget.show()
         self.show()
+
 
     # MediaKey listen
     def slot_mediakey_trigger(self, keyCode = -1, keyValue = -1):
@@ -446,76 +441,63 @@ class KylinDisplaySwitch(QWidget):
            keyValue: The key is pressed or released"""
         print("the", keyCode, "is trigger")
 
-        self.timer_tip.stop()
-        self.timer_tip.start(2500)
+        def showOsdOnDesktop():
 
-        self.resize(190, 190)
-        self.ui.centralWidget.hide()
-        self.ui.caps_on_widget.hide()
-        self.ui.caps_off_widget.hide()
-        self.ui.num_on_widget.hide()
-        self.ui.num_off_widget.hide()
-        self.ui.tp_on_widget.hide()
-        self.ui.tp_off_widget.hide()
-        self.ui.wlan_on_widget.hide()
-        self.ui.wlan_off_widget.hide()
-        self.ui.bluetooth_on_widget.hide()
-        self.ui.bluetooth_off_widget.hide()
+            desktop = QApplication.desktop()
+            if (desktop.screenCount() > 1):
+                desktop = desktop.screenGeometry(0)
 
-        if keyCode == Keys.keyDic.get("touchpadOnOff"):
-            pass
+            self.move(desktop.width() * 3 / 4, (desktop.height() - posBottom - self.ui.tipWidget.width()))
+            self.ui.centralWidget.hide()
+#            self.ui.tipWidget.show()
+            self.show()
 
-        elif keyCode == Keys.keyDic.get("touchpadOn"):
-            self.mediakey_service.touchpadToggle(True)
-            self.ui.tp_on_widget.show()
+        def touchpadOnMethod():
+#            self.mediakey_service.touchpadToggle(True)
+            self.ui.tipWidget.setCurrentIndex(Tips.TP_ON)
+            showOsdOnDesktop()
 
-        elif keyCode == Keys.keyDic.get("touchpadOff"):
-            self.mediakey_service.touchpadToggle(False)
-            self.ui.tp_off_widget.show()
+        def touchpadOffMethod():
+#            self.mediakey_service.touchpadToggle(False)
+            self.ui.tipWidget.setCurrentIndex(Tips.TP_OFF)
+            showOsdOnDesktop()
 
-        elif keyCode == Keys.keyDic.get("muteOnOff"):
-            pass
-
-        elif keyCode == Keys.keyDic.get("volumeDown"):
-            pass
-
-        elif keyCode == Keys.keyDic.get("volumeUp"):
-            pass
-
-        elif keyCode == Keys.keyDic.get("brightnessDown"):
-            pass
-
-        elif keyCode == Keys.keyDic.get("brightnessUp"):
-            pass
-
-        elif keyCode == Keys.keyDic.get("bluetoothOnOff"):
+        def bluetoothOnOffMethod():
             # switch bluetooth status
             self.mediakey_service.bluetoothToggle()
 
             # show osd icon
             if self.mediakey_service.bluetoothStatus:
-                self.ui.bluetooth_on_widget.show()
+                self.ui.tipWidget.setCurrentIndex(Tips.BLUETOOTH_ON)
             else:
-                self.ui.bluetooth_off_widget.show()
-        elif keyCode == Keys.keyDic.get("wlanOnOff"):
-            # switch wlan status
-            self.mediakey_service.wlanToggle()
+                self.ui.tipWidget.setCurrentIndex(Tips.BLUETOOTH_OFF)
+            showOsdOnDesktop()
 
-            # show osd icon
-            if self.mediakey_service.wlanStatus:
-                self.ui.wlan_on_widget.show()
-            else:
-                self.ui.wlan_off_widget.show()
-
-        elif keyCode == Keys.keyDic.get("videoModeSwitch"):
+        def default():
             pass
 
-        desktop = QApplication.desktop()
-        if (desktop.screenCount() > 1):
-            desktop = desktop.screenGeometry(0)
-        self.move((desktop.width() - self.width()) / 2, (desktop.height() - self.height()) / 2)
-        self.ui.tipWidget.show()
-        self.show()
+            mediakeysMethod = { 113 : muteOnOffMethod, \
+                            114 : volumeDownMethod, \
+                            115 : volumeUpMethod, \
+    #                        152 : screenlockMethod, \
+                            66 : cameraOnOffMethod, \
+                            224 : brightnessDownMethod, \
+                            225 : brightnessUpMethod, \
+                            227 : videoModeSwitchMethod, \
+                            237 : bluetoothOnOffMethod, \
+                            238 : flightModeOnOffMethod, \
+                            248 : microphoneOnOffMethod, \
+                            431 : screenOnOffMethod, \
+                            530 : touchpadOnOffMethod, \
+                            531 : touchpadOnMethod, \
+                            532 : touchpadOffMethod, \
+                            }
+
+        self.timer_tip.stop()
+        self.timer_tip.start(2500)
+
+        mediakeysMethod.get(keyCode, default)()
+
 
     def slot_hide_tip(self):
         self.timer_tip.stop()
