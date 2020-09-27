@@ -1,5 +1,18 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 3 as
+# published by the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, sys, stat
 from PyQt5.QtGui import *
@@ -74,20 +87,20 @@ class KylinDisplaySwitch(QWidget):
         self.ui.lb_mode_3.setText(_("Extend"))
         self.ui.lb_mode_4.setText(_("Output"))
 
-        self.ui.lb_caps_on.setText(_("Caps on"))
-        self.ui.lb_caps_off.setText(_("Caps off"))
-        self.ui.lb_num_on.setText(_("Num on"))
-        self.ui.lb_num_off.setText(_("Num off"))
+#        self.ui.lb_caps_on.setText(_("Caps on"))
+#        self.ui.lb_caps_off.setText(_("Caps off"))
+#        self.ui.lb_num_on.setText(_("Num on"))
+#        self.ui.lb_num_off.setText(_("Num off"))
 
         self.ui.caps_on_bg.setStyleSheet("QWidget{background-image:url(res/capslock-on.png); border:0px;}")
         self.ui.caps_off_bg.setStyleSheet("QWidget{background-image:url(res/capslock-off.png); border:0px;}")
         self.ui.num_on_bg.setStyleSheet("QWidget{background-image:url(res/numlock-on.png); border:0px;}")
         self.ui.num_off_bg.setStyleSheet("QWidget{background-image:url(res/numlock-off.png); border:0px;}")
 
-        self.ui.lb_caps_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_caps_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_num_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
-        self.ui.lb_num_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_caps_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_caps_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_num_on.setStyleSheet("QLabel{color:white;font-size:19px;}")
+#        self.ui.lb_num_off.setStyleSheet("QLabel{color:white;font-size:19px;}")
 
         self.ui.bg_mode_1.setStyleSheet("QWidget{background-image:url(res/btn1.png); border:0px;}")
         self.ui.bg_mode_2.setStyleSheet("QWidget{background-image:url(res/btn2.png); border:0px;}")

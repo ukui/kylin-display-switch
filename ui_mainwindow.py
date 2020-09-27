@@ -1,4 +1,17 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017, Tianjin KYLIN Information Technology Co., Ltd.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 3 as
+# published by the Free Software Foundation.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -22,39 +35,39 @@ class Ui_MainWindow(object):
         MainWindow.resize(744, 126)
 
         self.tipWidget = QtWidgets.QWidget(MainWindow)
-        self.tipWidget.setGeometry(0, 0, 190, 190)
+        self.tipWidget.setGeometry(0, 0, 72, 72)
 
         self.caps_on_widget = QtWidgets.QWidget(self.tipWidget)
-        self.caps_on_widget.setGeometry(0, 0, 190, 190)
+        self.caps_on_widget.setGeometry(0, 0, 72, 72)
         self.caps_on_bg = QtWidgets.QLabel(self.caps_on_widget)
-        self.caps_on_bg.setGeometry(0, 0, 190, 190)
-        self.lb_caps_on = QtWidgets.QLabel(self.caps_on_widget)
-        self.lb_caps_on.setGeometry(QtCore.QRect(45, 20, 100, 20))
-        self.lb_caps_on.setAlignment(QtCore.Qt.AlignCenter)
+        self.caps_on_bg.setGeometry(0, 0, 72, 72)
+#        self.lb_caps_on = QtWidgets.QLabel(self.caps_on_widget)
+#        self.lb_caps_on.setGeometry(QtCore.QRect(45, 20, 100, 20))
+#        self.lb_caps_on.setAlignment(QtCore.Qt.AlignCenter)
 
         self.caps_off_widget = QtWidgets.QWidget(self.tipWidget)
-        self.caps_off_widget.setGeometry(0, 0, 190, 190)
+        self.caps_off_widget.setGeometry(0, 0, 72, 72)
         self.caps_off_bg = QtWidgets.QLabel(self.caps_off_widget)
-        self.caps_off_bg.setGeometry(0, 0, 190, 190)
-        self.lb_caps_off = QtWidgets.QLabel(self.caps_off_widget)
-        self.lb_caps_off.setGeometry(QtCore.QRect(45, 20, 100, 20))
-        self.lb_caps_off.setAlignment(QtCore.Qt.AlignCenter)
+        self.caps_off_bg.setGeometry(0, 0, 72, 72)
+#        self.lb_caps_off = QtWidgets.QLabel(self.caps_off_widget)
+#        self.lb_caps_off.setGeometry(QtCore.QRect(45, 20, 100, 20))
+#        self.lb_caps_off.setAlignment(QtCore.Qt.AlignCenter)
 
         self.num_on_widget = QtWidgets.QWidget(self.tipWidget)
-        self.num_on_widget.setGeometry(0, 0, 190, 190)
+        self.num_on_widget.setGeometry(0, 0, 72, 72)
         self.num_on_bg = QtWidgets.QLabel(self.num_on_widget)
-        self.num_on_bg.setGeometry(0, 0, 190, 190)
-        self.lb_num_on = QtWidgets.QLabel(self.num_on_widget)
-        self.lb_num_on.setGeometry(QtCore.QRect(40, 20, 110, 20))
-        self.lb_num_on.setAlignment(QtCore.Qt.AlignCenter)
+        self.num_on_bg.setGeometry(0, 0, 72, 72)
+#        self.lb_num_on = QtWidgets.QLabel(self.num_on_widget)
+#        self.lb_num_on.setGeometry(QtCore.QRect(40, 20, 110, 20))
+#        self.lb_num_on.setAlignment(QtCore.Qt.AlignCenter)
 
         self.num_off_widget = QtWidgets.QWidget(self.tipWidget)
-        self.num_off_widget.setGeometry(0, 0, 190, 190)
+        self.num_off_widget.setGeometry(0, 0, 72, 72)
         self.num_off_bg = QtWidgets.QLabel(self.num_off_widget)
-        self.num_off_bg.setGeometry(0, 0, 190, 190)
-        self.lb_num_off = QtWidgets.QLabel(self.num_off_widget)
-        self.lb_num_off.setGeometry(QtCore.QRect(40, 20, 110, 20))
-        self.lb_num_off.setAlignment(QtCore.Qt.AlignCenter)
+        self.num_off_bg.setGeometry(0, 0, 72, 72)
+#        self.lb_num_off = QtWidgets.QLabel(self.num_off_widget)
+#        self.lb_num_off.setGeometry(QtCore.QRect(40, 20, 110, 20))
+#        self.lb_num_off.setAlignment(QtCore.Qt.AlignCenter)
 
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
