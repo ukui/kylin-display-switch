@@ -1,3 +1,9 @@
+kylin-display-switch (2.0.12-1) unstable; urgency=medium
+
+  * Fix lintian error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 29 Oct 2020 20:12:24 +0800
+
 kylin-display-switch (2.0.11-1) unstable; urgency=medium
 
   [hebing]
@@ -5,7 +11,7 @@ kylin-display-switch (2.0.11-1) unstable; urgency=medium
 
  -- hebing <hebing@kylinos.cn>  Wed, 23 Sep 2020 17:08:19 +0800
 
-kylin-display-switch (2.0.10-1) v101; urgency=medium
+kylin-display-switch (2.0.10-1) unstable; urgency=medium
 
   [hebing]
     * desktop add NoDisplay=true
