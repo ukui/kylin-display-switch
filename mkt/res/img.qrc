@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/capslockOff.png</file>
+        <file>img/capslockOn.png</file>
+        <file>img/numlockOff.png</file>
+        <file>img/numlockOn.png</file>
+    </qresource>
+</RCC>

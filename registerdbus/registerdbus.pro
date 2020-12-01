@@ -1,28 +1,34 @@
 QT += core dbus
 QT -= gui
 
-CONFIG += link_pkgconfig
 CONFIG += c++11
-PKGCONFIG += xcb xcb-util
+CONFIG += link_pkgconfig
 
-TARGET = kmdaemon
-#CONFIG += console
-#CONFIG -= app_bundle
+TARGET = registerdbus
+CONFIG -= app_bundle
 
 TEMPLATE = app
+TARGET = launchdbus
+DESTDIR = .
 
-LIBS += -lX11 -lXext -lXtst -lgsettings-qt
 
 
 target.source += $$TARGET
 target.path = /usr/bin
+service.source += conf/org.ukui.kds.service
+service.path = /usr/share/dbus-1/system-services/
+conffile.source += conf/org.ukui.kds.conf
+conffile.path = /etc/dbus-1/system.d/
+
 
 INSTALLS +=  \
             target \
+            service \
+            conffile
+
 
 SOURCES += main.cpp \
-    keymonitorthread.cpp \
-    kmdaemon.cpp
+    classrealize.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -35,8 +41,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-FORMS +=
-
 HEADERS += \
-    keymonitorthread.h \
-    kmdaemon.h
+    classrealize.h

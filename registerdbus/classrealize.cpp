@@ -17,38 +17,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef KEYMONITORTHREAD_H
-#define KEYMONITORTHREAD_H
 
-#include <QThread>
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
+#include <QCoreApplication>
+#include <QProcess>
 
+#include "classrealize.h"
 
-class KeyMonitorThread : public QThread
+ClassRealize::ClassRealize()
 {
-    Q_OBJECT
 
-public:
-    explicit KeyMonitorThread(QObject *parent = 0);
-    ~KeyMonitorThread();
+}
 
-public:
-    void run();
-    void callJobComplete();
+ClassRealize::~ClassRealize(){
 
-signals:
-    void keyPress(KeySym keysym, KeyCode keyCode);
-    void keyRelease(KeySym keysym, KeyCode keyCode);
-    void jobComplete();
+}
 
-protected:
-    static void callback(XPointer trash, XRecordInterceptData* data);
-    void handleRecordEvent(XRecordInterceptData *);
+void ClassRealize::exitService(){
+    qApp->exit(0);
+}
 
-private:
-    Display * display;
+QString ClassRealize::helloWorld(){
+    return "hello world!";
+}
 
-};
+void ClassRealize::helloWorldWithSignal(){
+    emit debug0("hello world");
+}
 
-#endif // KEYMONITORTHREAD_H
+void ClassRealize::emitShowTipsSignal(int index){
+    emit signalShowTips(index);
+}

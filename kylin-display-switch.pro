@@ -7,4 +7,5 @@ SUBDIRS =  \
           daemon \
           kds \
           mkt \
+    registerdbus
 

@@ -1,3 +1,4 @@
+#ifndef KMDAEMON_H
 /* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
  * Copyright (C) 2019 Tianjin KYLIN Information Technology Co., Ltd.
@@ -17,38 +18,47 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef KEYMONITORTHREAD_H
-#define KEYMONITORTHREAD_H
+#define KMDAEMON_H
 
+#include <QObject>
 #include <QThread>
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QGSettings/QGSettings>
 
+#include <QDebug>
 
-class KeyMonitorThread : public QThread
+#include "keymonitorthread.h"
+
+class KMDaemon : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit KeyMonitorThread(QObject *parent = 0);
-    ~KeyMonitorThread();
+    explicit KMDaemon();
+    ~KMDaemon();
+
 
 public:
-    void run();
-    void callJobComplete();
+    void begin();
 
-signals:
-    void keyPress(KeySym keysym, KeyCode keyCode);
-    void keyRelease(KeySym keysym, KeyCode keyCode);
-    void jobComplete();
-
-protected:
-    static void callback(XPointer trash, XRecordInterceptData* data);
-    void handleRecordEvent(XRecordInterceptData *);
+public:
+    bool getCurrentCapslockStatus();
+    bool getCurrentNumlockStatus();
 
 private:
-    Display * display;
+    QThread * thrd;
+    KeyMonitorThread * kmt;
 
+    QDBusInterface * iface;
+
+private:
+    bool modifyKeyPressed;
+
+    bool capslockStatus;
+    bool numlockStatus;
+
+    QGSettings * settings;
 };
 
-#endif // KEYMONITORTHREAD_H
+#endif // KMDAEMON_H

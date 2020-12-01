@@ -17,38 +17,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef KEYMONITORTHREAD_H
-#define KEYMONITORTHREAD_H
+#ifndef CLASSREALIZE_H
+#define CLASSREALIZE_H
 
-#include <QThread>
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
+#include <QObject>
 
-
-class KeyMonitorThread : public QThread
+class ClassRealize : public QObject
 {
     Q_OBJECT
 
-public:
-    explicit KeyMonitorThread(QObject *parent = 0);
-    ~KeyMonitorThread();
+    Q_CLASSINFO("D-Bus Interface", "org.ukui.kds.interface")
 
 public:
-    void run();
-    void callJobComplete();
+    explicit ClassRealize();
+    ~ClassRealize();
+
 
 signals:
-    void keyPress(KeySym keysym, KeyCode keyCode);
-    void keyRelease(KeySym keysym, KeyCode keyCode);
-    void jobComplete();
+    Q_SCRIPTABLE void debug0(QString);
+    Q_SCRIPTABLE void signalShowTips(int index);
 
-protected:
-    static void callback(XPointer trash, XRecordInterceptData* data);
-    void handleRecordEvent(XRecordInterceptData *);
+public slots:
+    Q_SCRIPTABLE void exitService();
+    Q_SCRIPTABLE QString helloWorld();
+    Q_SCRIPTABLE void helloWorldWithSignal();
 
-private:
-    Display * display;
+    Q_SCRIPTABLE void emitShowTipsSignal(int index);
 
 };
 
-#endif // KEYMONITORTHREAD_H
+#endif // CLASSREALIZE_H

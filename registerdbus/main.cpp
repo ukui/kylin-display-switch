@@ -17,38 +17,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef KEYMONITORTHREAD_H
-#define KEYMONITORTHREAD_H
+#include <QCoreApplication>
 
-#include <QThread>
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
+#include <QDBusConnection>
+#include <QDBusError>
 
+#include <QDebug>
 
-class KeyMonitorThread : public QThread
+#include "classrealize.h"
+
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
+    QCoreApplication app(argc, argv);
 
-public:
-    explicit KeyMonitorThread(QObject *parent = 0);
-    ~KeyMonitorThread();
+    app.setOrganizationName("Kylin Team");
+    app.setApplicationName("kds-comunication");
 
-public:
-    void run();
-    void callJobComplete();
 
-signals:
-    void keyPress(KeySym keysym, KeyCode keyCode);
-    void keyRelease(KeySym keysym, KeyCode keyCode);
-    void jobComplete();
+    QDBusConnection systemBus = QDBusConnection::systemBus();
+    if (!systemBus.registerService("org.ukui.kds")){
+        qCritical() << "QDbus register service failed reason:" << systemBus.lastError();
+        exit(1);
+    }
 
-protected:
-    static void callback(XPointer trash, XRecordInterceptData* data);
-    void handleRecordEvent(XRecordInterceptData *);
+    if (!systemBus.registerObject("/", new ClassRealize(), QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals)){
+        qCritical() << "QDbus register object failed reason:" << systemBus.lastError();
+        exit(2);
+    }
 
-private:
-    Display * display;
-
-};
-
-#endif // KEYMONITORTHREAD_H
+    return app.exec();
+}
