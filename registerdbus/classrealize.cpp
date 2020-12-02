@@ -47,3 +47,15 @@ void ClassRealize::helloWorldWithSignal(){
 void ClassRealize::emitShowTipsSignal(int index){
     emit signalShowTips(index);
 }
+
+void ClassRealize::emitNextOption(){
+    emit signalNextOption();
+}
+
+void ClassRealize::emitLastOption(){
+    emit signalLastOption();
+}
+
+void ClassRealize::emitCloseApp(){
+    emit signalCloseApp();
+}

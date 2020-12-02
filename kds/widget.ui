@@ -89,7 +89,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="mainBtn">
+    <widget class="ExpendButton" name="mainBtn">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -114,7 +114,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="cloneBtn">
+    <widget class="ExpendButton" name="cloneBtn">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -139,7 +139,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="extendBtn">
+    <widget class="ExpendButton" name="extendBtn">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -164,7 +164,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="viceBtn">
+    <widget class="ExpendButton" name="viceBtn">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -223,6 +223,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ExpendButton</class>
+   <extends>QPushButton</extends>
+   <header>expendbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

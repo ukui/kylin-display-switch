@@ -21,9 +21,11 @@
 #include "ui_widget.h"
 
 #include <QDesktopWidget>
-#include <QLabel>
 #include <QDebug>
 #include <QTimer>
+#include <QDBusConnection>
+
+#include "expendbutton.h"
 
 enum {
     MAINSCREEN,
@@ -47,6 +49,59 @@ Widget::Widget(QWidget *parent) :
     QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
     move((rect.width() - this->width())/2, (rect.height() - this->height()) / 2);
 
+    initData();
+
+    setupComponent();
+    setupConnect();
+
+    initCurrentStatus();
+
+    QDBusConnection::systemBus().connect(QString(), \
+                                         QString(), \
+                                         "org.ukui.kds.interface", \
+                                         "signalNextOption", \
+                                         this, SLOT(nextSelectedOption()));
+
+    QDBusConnection::systemBus().connect(QString(), \
+                                         QString(), \
+                                         "org.ukui.kds.interface", \
+                                         "signalLastOption", \
+                                         this, SLOT(lastSelectedOption()));
+
+    QDBusConnection::systemBus().connect(QString(), \
+                                         QString(), \
+                                         "org.ukui.kds.interface", \
+                                         "signalCloseApp", \
+                                         this, SLOT(closeApp()));
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+
+    if (primaryConfig){
+        g_object_unref(primaryConfig);
+        primaryConfig = NULL;
+    }
+
+    if (cloneConfig){
+        g_object_unref(cloneConfig);
+        cloneConfig = NULL;
+    }
+
+    if (extendConfig){
+        g_object_unref(extendConfig);
+        extendConfig = NULL;
+    }
+
+    if (viceConfig){
+        g_object_unref(viceConfig);
+        viceConfig = NULL;
+    }
+}
+
+void Widget::initData(){
     btnsGroup = new QButtonGroup;
 
     //Monitor init
@@ -55,15 +110,12 @@ Widget::Widget(QWidget *parent) :
 
     primaryName = NULL;
 
-    setupComponent();
-    setupConnect();
+    primaryConfig = makePrimarySetup();
+    cloneConfig = makeCloneSetup();
+    extendConfig = makeXineramaSetup();
+    viceConfig = makeOtherSetup();
 
-    initCurrentStatus();
-}
 
-Widget::~Widget()
-{
-    delete ui;
 }
 
 void Widget::setupComponent(){
@@ -73,77 +125,48 @@ void Widget::setupComponent(){
     btnsGroup->addButton(ui->extendBtn, EXTENDSCREEN);
     btnsGroup->addButton(ui->viceBtn, VICESCREEN);
 
-
     for (QAbstractButton * button : btnsGroup->buttons()){
-        QPushButton * btn = dynamic_cast<QPushButton *>(button);
-        btn->setFocusPolicy(Qt::NoFocus);
-        btn->setProperty("pSelected", false);
-
-        QHBoxLayout * generalHorLayout = new QHBoxLayout(btn);
-        generalHorLayout->setSpacing(0);
-        generalHorLayout->setContentsMargins(44, 0, 20, 0);
-
-        QLabel * logoLabel = new QLabel(btn);
-        logoLabel->setFixedSize(QSize(60, 60));
-        QLabel * textLabel = new QLabel(btn);
-        textLabel->setStyleSheet("QLabel{color: #FFFFFF; font-size: 18px;}");
-        QSizePolicy textSizePolicy = textLabel->sizePolicy();
-        textSizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);
-        textSizePolicy.setVerticalPolicy(QSizePolicy::Fixed);
-        textLabel->setSizePolicy(textSizePolicy);
-
-        QLabel * selectedLabel = new QLabel(btn);
-        selectedLabel->setFixedSize(QSize(27, 18));
-        selectedLabel->setPixmap(QPixmap(":/img/selected.png"));
+        ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
 
         switch (btnsGroup->id(btn)) {
         case MAINSCREEN:
-            textLabel->setText(tr("Main Screen"));
-            logoLabel->setPixmap(QPixmap(":/img/main.png"));
-            btn->setProperty("pSelected", true);
+            btn->setSign(MAINSCREEN % 2);
+            btn->setBtnText(tr("Main Screen"));
+            btn->setBtnLogo(":/img/main.png");
             break;
         case CLONESCREEN:
-            textLabel->setText(tr("Clone Screen"));
-            logoLabel->setPixmap(QPixmap(":/img/clone.png"));
+            btn->setSign(CLONESCREEN % 2);
+            btn->setBtnText(tr("Clone Screen"));
+            btn->setBtnLogo(":/img/clone.png");
             break;
         case EXTENDSCREEN:
-            textLabel->setText(tr("Extend Screen"));
-            logoLabel->setPixmap(QPixmap(":/img/extend.png"));
+            btn->setSign(EXTENDSCREEN % 2);
+            btn->setBtnText(tr("Extend Screen"));
+            btn->setBtnLogo(":/img/extend.png");
             break;
         case VICESCREEN:
-            textLabel->setText(tr("Vice Screen"));
-            logoLabel->setPixmap(QPixmap(":/img/vice.png"));
+            btn->setSign(VICESCREEN % 2);
+            btn->setBtnText(tr("Vice Screen"));
+            btn->setBtnLogo(":/img/vice.png");
             break;
         default:
             break;
         }
 
-        generalHorLayout->addWidget(logoLabel, Qt::AlignVCenter);
-        generalHorLayout->addStretch(1);
-        generalHorLayout->addWidget(textLabel, Qt::AlignVCenter);
-        generalHorLayout->addStretch(4);
-        generalHorLayout->addWidget(selectedLabel, Qt::AlignVCenter);
-
-        btn->setLayout(generalHorLayout);
+        qDebug() << "current btn checked:" << btn->isChecked();
     }
 
 
     /// QSS
     ui->titleFrame->setStyleSheet("QFrame#titleFrame{background: #A6000000; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}");
-//    ui->viceFrame->setStyleSheet("QFrame#viceFrame{background: #A6000000; border: none;}");
-    ui->mainBtn->setStyleSheet("QPushButton#mainBtn{background: #99000000; border: none;}"
-                               "QPushButton#mainBtn:hover{background: #000000; border: none;}"
-                               "QPushButton#mainBtn[pSelected=true]{background: #FFFFFF; border: none}"
-                               "QPushButton#mainBtn[pSelected=false]{background: #99000000; border: none;}");
-    ui->cloneBtn->setStyleSheet("QPushButton#cloneBtn{background: #A6000000; border: none;}"
-                                "QPushButton#cloneBtn:hover{background: #000000; border: none;}"
-                                "QPushButton#cloneBtn[pSelected=true]{background: #FFFFFF; border: none}");
-    ui->extendBtn->setStyleSheet("QPushButton#extendBtn{background: #99000000; border: none;}"
-                                 "QPushButton#extendBtn:hover{background: #000000; border: none;}"
-                                 "QPushButton#extendBtn[pSelected=true]{background: #FFFFFF; border: none}");
-    ui->viceBtn->setStyleSheet("QPushButton#viceBtn{background: #A6000000; border: none;}"
-                               "QPushButton#viceBtn:hover{background: #000000; border: none;}"
-                               "QPushButton#viceBtn[pSelected=true]{background: #FFFFFF; border: none}");
+//    ui->mainBtn->setStyleSheet("QPushButton#mainBtn{background: #99000000; border: none;}"
+//                               "QPushButton#mainBtn:hover{background: #000000; border: none;}");
+//    ui->cloneBtn->setStyleSheet("QPushButton#cloneBtn{background: #A6000000; border: none;}"
+//                                "QPushButton#cloneBtn:hover{background: #000000; border: none;}");
+//    ui->extendBtn->setStyleSheet("QPushButton#extendBtn{background: #99000000; border: none;}"
+//                                 "QPushButton#extendBtn:hover{background: #000000; border: none;}");
+//    ui->viceBtn->setStyleSheet("QPushButton#viceBtn{background: #A6000000; border: none;}"
+//                               "QPushButton#viceBtn:hover{background: #000000; border: none;}");
     ui->phoneFrame->setStyleSheet("QFrame#phoneFrame{background: #A6000000; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}");
 
 
@@ -158,19 +181,22 @@ void Widget::setupConnect(){
 
         MateRRConfig * current;
 
-        qDebug() << "id:" << id;
         switch (id) {
         case MAINSCREEN:
             current = makePrimarySetup();
+            setCurrentStatus(MAINSCREEN);
             break;
         case CLONESCREEN:
             current = makeCloneSetup();
+            setCurrentStatus(CLONESCREEN);
             break;
         case EXTENDSCREEN:
             current = makeXineramaSetup();
+            setCurrentStatus(EXTENDSCREEN);
             break;
         case VICESCREEN:
             current = makeOtherSetup();
+            setCurrentStatus(VICESCREEN);
             break;
         default:
             break;
@@ -195,29 +221,27 @@ void Widget::setupConnect(){
 
             qDebug() << "success: " << success;
         }
+
+
     });
 }
 
 
 void Widget::initCurrentStatus(){
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRRConfig * primary = makePrimarySetup();
-    MateRRConfig * clone = makeCloneSetup();
-    MateRRConfig * extend = makeXineramaSetup();
-    MateRRConfig * other = makeOtherSetup();
 
     int status;
 
-    if (mate_rr_config_equal(current, primary)){
+    if (mate_rr_config_equal(current, primaryConfig)){
         qDebug() << "init status:" << MAINSCREEN;
         status = MAINSCREEN;
-    } else if (mate_rr_config_equal(current, clone)){
+    } else if (mate_rr_config_equal(current, cloneConfig)){
         qDebug() << "init status:" << CLONESCREEN;
         status = CLONESCREEN;
-    } else if (mate_rr_config_equal(current, extend)){
+    } else if (mate_rr_config_equal(current, extendConfig)){
         qDebug() << "init status:" << EXTENDSCREEN;
         status = EXTENDSCREEN;
-    } else if (mate_rr_config_equal(current, other)){
+    } else if (mate_rr_config_equal(current, viceConfig)){
         qDebug() << "init status:" << VICESCREEN;
         status = VICESCREEN;
     } else {
@@ -228,7 +252,62 @@ void Widget::initCurrentStatus(){
     g_object_unref(current);
     current = NULL;
 
+    setCurrentStatus(status);
 
+}
+
+void Widget::setCurrentStatus(int id){
+    //set all no checked
+    for (QAbstractButton * button : btnsGroup->buttons()){
+        ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
+
+        btn->setBtnChecked(false);
+
+        if (id == btnsGroup->id(button)){
+            btn->setBtnChecked(true);
+            btn->setChecked(true);
+        }
+    }
+
+    // status == -1
+    if (id == -1){
+        ExpendButton * btn1 = dynamic_cast<ExpendButton *>(btnsGroup->button(MAINSCREEN));
+        btn1->setBtnChecked(true);
+        btn1->setChecked(true);
+    }
+
+}
+
+void Widget::nextSelectedOption(){
+    int current = btnsGroup->checkedId();
+    int next;
+
+    /* no button checked */
+    if (current == -1)
+        ;
+
+    next = current == VICESCREEN ? MAINSCREEN : current + 1;
+
+    ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(next));
+    btn->setChecked(true);
+}
+
+void Widget::lastSelectedOption(){
+    int current = btnsGroup->checkedId();
+    int last;
+
+    /* no button checked */
+    if (current == -1)
+        current = VICESCREEN + 1;
+
+    last = current == MAINSCREEN ? VICESCREEN : current - 1;
+
+    ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(last));
+    btn->setChecked(true);
+}
+
+void Widget::closeApp(){
+    close();
 }
 
 MateRRConfig * Widget::makeCloneSetup() {

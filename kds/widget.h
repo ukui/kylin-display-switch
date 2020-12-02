@@ -48,6 +48,7 @@ public:
     ~Widget();
 
 public:
+    void initData();
     void setupComponent();
     void setupConnect();
 
@@ -58,6 +59,8 @@ public:
 
     void initCurrentStatus();
 
+    void setCurrentStatus(int id);
+
 private:
     Ui::Widget *ui;
     QButtonGroup * btnsGroup;
@@ -65,6 +68,12 @@ private:
 private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
+    MateRRConfig * primaryConfig;
+    MateRRConfig * cloneConfig;
+    MateRRConfig * extendConfig;
+    MateRRConfig * viceConfig;
+
+    char * primaryName;
 
 private:
     bool _getCloneSize(int * width, int * height);
@@ -75,7 +84,11 @@ private:
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
     bool _configIsAllOff(MateRRConfig * config);
 
-    char * primaryName;
+private slots:
+    void nextSelectedOption();
+    void lastSelectedOption();
+    void closeApp();
+
 };
 
 #endif // WIDGET_H

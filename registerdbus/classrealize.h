@@ -36,6 +36,9 @@ public:
 signals:
     Q_SCRIPTABLE void debug0(QString);
     Q_SCRIPTABLE void signalShowTips(int index);
+    Q_SCRIPTABLE void signalNextOption();
+    Q_SCRIPTABLE void signalLastOption();
+    Q_SCRIPTABLE void signalCloseApp();
 
 public slots:
     Q_SCRIPTABLE void exitService();
@@ -43,6 +46,9 @@ public slots:
     Q_SCRIPTABLE void helloWorldWithSignal();
 
     Q_SCRIPTABLE void emitShowTipsSignal(int index);
+    Q_SCRIPTABLE void emitNextOption();
+    Q_SCRIPTABLE void emitLastOption();
+    Q_SCRIPTABLE void emitCloseApp();
 
 };
 
