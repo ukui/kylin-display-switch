@@ -1,0 +1,2 @@
+version=4
+https://github.com/ukui/kylin-display-switch/releases .*/kylin-display-switch_(\d\S+)\.orig\.tar\.gz

@@ -1,0 +1,120 @@
+kylin-display-switch (3.0.1+1203) v101; urgency=medium
+
+  * recode used by qt
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
+kylin-display-switch (2.0.13-1+1125) v101; urgency=medium
+
+  * hide "control phone"
+
+ -- hebing <hebing@kylinos.cn>  Sat, 21 Nov 2020 16:52:27 +0800
+
+kylin-display-switch (2.0.12-1) unstable; urgency=medium
+
+  * Fix lintian error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 29 Oct 2020 20:12:24 +0800
+
+kylin-display-switch (2.0.11-1) unstable; urgency=medium
+
+  [hebing]
+    * osd revision
+
+ -- hebing <hebing@kylinos.cn>  Wed, 23 Sep 2020 17:08:19 +0800
+
+kylin-display-switch (2.0.10-1) unstable; urgency=medium
+
+  [hebing]
+    * desktop add NoDisplay=true
+
+ -- hebing <hebing@kylinos.cn>  Thu, 17 Sep 2020 16:24:49 +0800
+
+kylin-display-switch (2.0.9-1) unstable; urgency=medium
+
+  [hebing]
+    * support 4k
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.8-1) unstable; urgency=medium
+
+  [hebing]
+    * enable/disable key press tip
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.7-1) unstable; urgency=medium
+
+  [hebing]
+    * add feature, the switch window will esc when pressed any key or click any where that outof window
+    * add feature, pressed win + p the selected will continue change when the switch window is shown
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.6-1) unstable; urgency=medium
+
+  [hebing]
+    * add function of touchpad on/off, bluetooth on/off, wlan on/off
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.4-1) unstable; urgency=medium
+
+  [hebing]
+    * add dbus module
+    * add evdev monitor but not enable because lintian
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.3-1) unstable; urgency=medium
+
+  * support qt 5.6.
+
+ -- shine <shenghuang@ubuntukylin.com>  Mon, 25 May 2020 11:00:46 +0800
+
+kylin-display-switch (2.0.2-1) unstable; urgency=medium
+
+  * fix bug: active display switch > donot confirm any mode > active lock tip > then cannot active display switch again.
+  * replace lock_key pic.
+
+ -- shine <shenghuang@ubuntukylin.com>  Wed, 22 Apr 2020 10:40:43 +0800
+
+kylin-display-switch (2.0.1-1) unstable; urgency=medium
+
+  * use high definition pic.
+  * fix components position.
+
+ -- shine <shenghuang@ubuntukylin.com>  Sat, 18 Apr 2020 14:59:41 +0800
+
+kylin-display-switch (2.0.0-1) unstable; urgency=medium
+
+  * New upstream version release:
+    - UKUI3.0 version.
+    - support keyboard and mouse click to swtich mode.
+
+ -- shine <shenghuang@ubuntukylin.com>  Fri, 17 Apr 2020 12:07:14 +0800
+
+kylin-display-switch (1.0.4-1) unstable; urgency=medium
+
+  * New upstream bugfix release:
+    - Fix the crash when switch user.
+  * debian:
+    - Use debhelper-compat notation.
+    - Bump standards-version to 4.5.0.
+    - Set Rules-Requires-Root to no.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 07 Apr 2020 14:21:34 +0800
+
+kylin-display-switch (1.0.3-1) unstable; urgency=medium
+
+  * Fix the wrong permission of file 'instance.lock' again.
+  * Fix the crash when press numlock.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 28 Sep 2018 15:05:40 +0800
+
+kylin-display-switch (1.0.2-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903688)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 13 Jul 2018 11:37:06 +0800
