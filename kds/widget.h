@@ -84,10 +84,18 @@ private:
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
     bool _configIsAllOff(MateRRConfig * config);
 
+public slots:
+    void msgReceiveAnotherOne(const QString &msg);
+
 private slots:
     void nextSelectedOption();
     void lastSelectedOption();
+    void confirmCurrentOption();
+    void receiveButtonClick(int x, int y);
     void closeApp();
+
+Q_SIGNALS:
+    void tellBtnClicked(int id);
 
 };
 

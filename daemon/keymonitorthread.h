@@ -25,6 +25,17 @@
 #include <X11/extensions/record.h>
 
 
+// Virtual button codes that are not defined by X11.
+#define Button1			1
+#define Button2			2
+#define Button3			3
+#define WheelUp			4
+#define WheelDown		5
+#define WheelLeft		6
+#define WheelRight		7
+#define XButton1		8
+#define XButton2		9
+
 class KeyMonitorThread : public QThread
 {
     Q_OBJECT
@@ -40,9 +51,12 @@ public:
 signals:
     void keyPress(KeySym keysym, KeyCode keyCode);
     void keyRelease(KeySym keysym, KeyCode keyCode);
+    void buttonPress(int x, int y);
+
     void jobComplete();
 
 protected:
+    bool filterWheelEvent(int detail);
     static void callback(XPointer trash, XRecordInterceptData* data);
     void handleRecordEvent(XRecordInterceptData *);
 

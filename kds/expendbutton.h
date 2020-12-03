@@ -21,7 +21,6 @@ public:
     void setBtnChecked(bool checked);
     void setBtnSelected(bool selected);
 
-
 private:
     QLabel * logoLabel;
     QLabel * textLabel;

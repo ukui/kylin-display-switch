@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui dbus
+QT       += core gui dbus network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,9 @@ TEMPLATE = app
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+
+
+include (../shared/qtsingleapplication/qtsingleapplication.pri)
 
 
 CONFIG += link_pkgconfig
@@ -31,9 +34,12 @@ PKGCONFIG += mate-desktop-2.0 \
 
 target.source += $$TARGET
 target.path = /usr/bin
+gsetting.source += ../data/org.ukui.kds.gschema.xml
+gsetting.path = /usr/share/glib-2.0/schemas
 
 INSTALLS +=  \
             target \
+            gsetting \
 
 SOURCES += \
         main.cpp \

@@ -1,5 +1,7 @@
 #include "expendbutton.h"
 
+#include <QDebug>
+
 
 ExpendButton::ExpendButton(QWidget *parent) :
     QPushButton(parent)

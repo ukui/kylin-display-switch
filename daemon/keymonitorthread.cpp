@@ -94,15 +94,14 @@ void KeyMonitorThread::handleRecordEvent(XRecordInterceptData* data)
         KeyCode keyCode = XKeysymToKeycode(display, keySym);
 
         switch (event->u.u.type) {
-//        case ButtonPress:
-//            if (filterWheelEvent(event->u.u.detail)) {
-//                isPress = true;
-//                emit buttonPress(
-//                    event->u.keyButtonPointer.rootX,
-//                    event->u.keyButtonPointer.rootY);
-//            }
+        case ButtonPress:
+            if (filterWheelEvent(event->u.u.detail)) {
+                emit buttonPress(
+                            event->u.keyButtonPointer.rootX,
+                            event->u.keyButtonPointer.rootY);
+            }
 
-//            break;
+            break;
 //        case MotionNotify:
 //            if (isPress) {
 //                emit buttonDrag(
@@ -122,12 +121,12 @@ void KeyMonitorThread::handleRecordEvent(XRecordInterceptData* data)
 //            break;
         case KeyPress:
 //            emit keyPress(((unsigned char*) data->data)[1]);
-            keyPress(keySym, keyCode);
+            emit keyPress(keySym, keyCode);
 
             break;
         case KeyRelease:
 //            emit keyRelease(((unsigned char*) data->data)[1]);
-            keyRelease(keySym, keyCode);
+            emit keyRelease(keySym, keyCode);
 
             break;
         default:
@@ -138,6 +137,12 @@ void KeyMonitorThread::handleRecordEvent(XRecordInterceptData* data)
     fflush(stdout);
     XRecordFreeData(data);
 }
+
+bool KeyMonitorThread::filterWheelEvent(int detail)
+{
+    return detail != WheelUp && detail != WheelDown && detail != WheelLeft && detail != WheelRight;
+}
+
 
 
 void KeyMonitorThread::callJobComplete(){

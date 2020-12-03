@@ -39,6 +39,8 @@ signals:
     Q_SCRIPTABLE void signalNextOption();
     Q_SCRIPTABLE void signalLastOption();
     Q_SCRIPTABLE void signalCloseApp();
+    Q_SCRIPTABLE void signalMakeClicked();
+    Q_SCRIPTABLE void signalButtonClicked(int x, int y);
 
 public slots:
     Q_SCRIPTABLE void exitService();
@@ -49,6 +51,8 @@ public slots:
     Q_SCRIPTABLE void emitNextOption();
     Q_SCRIPTABLE void emitLastOption();
     Q_SCRIPTABLE void emitCloseApp();
+    Q_SCRIPTABLE void emitMakeClicked();
+    Q_SCRIPTABLE void emitButtonClicked(int x, int y);
 
 };
 

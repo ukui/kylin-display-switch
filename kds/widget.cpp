@@ -40,7 +40,7 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setAttribute(Qt::WA_TranslucentBackground, true);
 
@@ -73,6 +73,19 @@ Widget::Widget(QWidget *parent) :
                                          "org.ukui.kds.interface", \
                                          "signalCloseApp", \
                                          this, SLOT(closeApp()));
+
+    QDBusConnection::systemBus().connect(QString(), \
+                                         QString(), \
+                                         "org.ukui.kds.interface", \
+                                         "signalMakeClicked", \
+                                         this, SLOT(confirmCurrentOption()));
+
+
+    QDBusConnection::systemBus().connect(QString(), \
+                                         QString(), \
+                                         "org.ukui.kds.interface", \
+                                         "signalButtonClicked", \
+                                         this, SLOT(receiveButtonClick(int,int)));
 
 }
 
@@ -114,7 +127,6 @@ void Widget::initData(){
     cloneConfig = makeCloneSetup();
     extendConfig = makeXineramaSetup();
     viceConfig = makeOtherSetup();
-
 
 }
 
@@ -207,6 +219,14 @@ void Widget::setupConnect(){
             gboolean success;
             GError * error;
 
+            error = NULL;
+            if (!current || !mate_rr_config_applicable(current, kScreen, &error)){
+                if (error)
+                    g_error_free (error);
+                return;
+            }
+
+
             mate_rr_screen_get_timestamps(kScreen, NULL, &serverTimestamp);
 //            if (timestamp < serverTimestamp)
 //                timestamp = serverTimestamp;
@@ -220,10 +240,13 @@ void Widget::setupConnect(){
             }
 
             qDebug() << "success: " << success;
+
+            close();
         }
 
 
     });
+
 }
 
 
@@ -272,7 +295,7 @@ void Widget::setCurrentStatus(int id){
     // status == -1
     if (id == -1){
         ExpendButton * btn1 = dynamic_cast<ExpendButton *>(btnsGroup->button(MAINSCREEN));
-        btn1->setBtnChecked(true);
+//        btn1->setBtnChecked(true);
         btn1->setChecked(true);
     }
 
@@ -304,6 +327,17 @@ void Widget::lastSelectedOption(){
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(last));
     btn->setChecked(true);
+}
+
+void Widget::confirmCurrentOption(){
+    int current = btnsGroup->checkedId();
+    qDebug() << "current checked" << current;
+
+    if (current == -1)
+        return;
+
+    ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(current));
+    btn->click();
 }
 
 void Widget::closeApp(){
@@ -610,4 +644,17 @@ int Widget::_turnonGetRightmostOffset(MateRROutputInfo *info, int x){
     }
 
     return x;
+}
+
+void Widget::msgReceiveAnotherOne(const QString &msg){
+    qDebug() << "another one " << msg;
+    nextSelectedOption();
+}
+
+void Widget::receiveButtonClick(int x, int y){
+    qDebug() << "receive button press " << x << y;
+    if (!this->geometry().contains(x, y)){
+        close();
+    }
+
 }

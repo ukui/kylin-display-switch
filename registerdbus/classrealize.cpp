@@ -59,3 +59,11 @@ void ClassRealize::emitLastOption(){
 void ClassRealize::emitCloseApp(){
     emit signalCloseApp();
 }
+
+void ClassRealize::emitMakeClicked(){
+    emit signalMakeClicked();
+}
+
+void ClassRealize::emitButtonClicked(int x, int y){
+    emit signalButtonClicked(x, y);
+}

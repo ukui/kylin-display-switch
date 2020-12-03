@@ -59,6 +59,9 @@ private:
     bool numlockStatus;
 
     QGSettings * settings;
+
+    bool stInstalled;
+
 };
 
 #endif // KMDAEMON_H
