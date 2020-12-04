@@ -20,12 +20,22 @@
 #include "widget.h"
 #include <QApplication>
 
+#include "qtsingleapplication.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QString id = QString("kds" + QLatin1String(getenv("DISPLAY")));
+
+    QtSingleApplication app(id, argc, argv);
+    if (app.isRunning()){
+        app.sendMessage("hello world!");
+        return 0; /* EXIT_SUCCESS */
+    }
+
     Widget w;
+//    QObject::connect(&app, &QtSingleApplication::messageReceived, &w, &Widget::msgReceiveAnotherOne);
     w.show();
     w.hide();
 
-    return a.exec();
+    return app.exec();
 }

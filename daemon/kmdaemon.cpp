@@ -62,10 +62,10 @@ KMDaemon::KMDaemon()
     connect(kmt, &KeyMonitorThread::keyPress, this, [=](KeySym mks, KeyCode mkc){
         qDebug() << "key press:" << mkc - 8;
 
-        if (!iface->isValid()){
-            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
-            return;
-        }
+//        if (!iface->isValid()){
+//            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
+//            return;
+//        }
 
         if (mks == XK_Super_L){
             modifyKeyPressed = true;
@@ -74,6 +74,9 @@ KMDaemon::KMDaemon()
                 qDebug() << "win + p" << "pressed";
 
                 QProcess process;
+                QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+                env.insert("DISPLAY", ":0");
+                process.setProcessEnvironment(env);
                 process.startDetached("/usr/bin/kds");
 
             } else {
@@ -155,6 +158,7 @@ KMDaemon::~KMDaemon()
 }
 
 void KMDaemon::begin(){
+    qDebug("thread begin!");
 
     kmt->moveToThread(thrd);
 

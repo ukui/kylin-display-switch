@@ -23,6 +23,8 @@
 #include <QDesktopWidget>
 #include <QDBusConnection>
 
+#include <QProcess>
+
 #include <QDebug>
 
 #define POSBOTTOM 5
