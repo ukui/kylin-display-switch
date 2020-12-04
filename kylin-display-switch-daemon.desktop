@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Kylin Display Switch Daemon
+Name[zh_CN]=麒麟显示切换守护进程
+Comment=Kylin Display Switch Daemon
+Comment[zh_CN]=麒麟显示切换守护进程
+Exec=/usr/bin/kmdaemon
+StartupNotify=false
+Terminal=false
+Type=Application
+NoDisplay=true

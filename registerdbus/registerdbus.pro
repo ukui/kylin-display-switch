@@ -15,9 +15,9 @@ DESTDIR = .
 
 target.source += $$TARGET
 target.path = /usr/bin
-service.source += conf/org.ukui.kds.service
+service.files += conf/org.ukui.kds.service
 service.path = /usr/share/dbus-1/system-services/
-conffile.source += conf/org.ukui.kds.conf
+conffile.files += conf/org.ukui.kds.conf
 conffile.path = /etc/dbus-1/system.d/
 
 
