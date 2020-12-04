@@ -24,11 +24,11 @@
 
 int main(int argc, char *argv[])
 {
-    QString id = QString("kds" + QLatin1String(getenv("DISPLAY")));
+    QString id = QString("mkt" + QLatin1String(getenv("DISPLAY")));
 
     QtSingleApplication app(id, argc, argv);
     if (app.isRunning()){
-        app.sendMessage("hello world!");
+//        app.sendMessage("hello world!");
         return 0; /* EXIT_SUCCESS */
     }
 

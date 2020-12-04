@@ -21,6 +21,8 @@
 #include <QApplication>
 #include "qtsingleapplication.h"
 
+#include <QTranslator>
+
 #include <QDebug>
 
 int main(int argc, char *argv[])
@@ -33,6 +35,10 @@ int main(int argc, char *argv[])
         app.sendMessage("hello world!");
         return 0; /* EXIT_SUCCESS */
     }
+
+    QTranslator qtTranslator;
+    qtTranslator.load(":/zh_CN");
+    app.installTranslator(&qtTranslator);
 
     Widget w;
 //    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
