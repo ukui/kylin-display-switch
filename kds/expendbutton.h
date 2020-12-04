@@ -19,7 +19,7 @@ public:
     void setBtnLogo(QString logo);
     void setBtnText(QString text);
     void setBtnChecked(bool checked);
-    void setBtnSelected(bool selected);
+    bool getBtnChecked();
 
 private:
     QLabel * logoLabel;

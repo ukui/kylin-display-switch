@@ -77,3 +77,7 @@ void ExpendButton::setBtnChecked(bool checked){
         statusLabel->hide();
     }
 }
+
+bool ExpendButton::getBtnChecked(){
+    return statusLabel->isVisible();
+}

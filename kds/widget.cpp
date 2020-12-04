@@ -191,23 +191,34 @@ void Widget::setupConnect(){
 
     connect(btnsGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [=](int id){
 
-        MateRRConfig * current;
+
+        /* 获取旧选项 */
+        for (QAbstractButton * button : btnsGroup->buttons()){
+            ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
+            qDebug() << "old index: " << btn->getBtnChecked();
+            int index = btnsGroup->id(button);
+            if (index == id && btn->getBtnChecked()){
+                    goto closeapp;
+            }
+        }
+
+        MateRRConfig * settingConfig;
 
         switch (id) {
         case MAINSCREEN:
-            current = makePrimarySetup();
+            settingConfig = makePrimarySetup();
             setCurrentStatus(MAINSCREEN);
             break;
         case CLONESCREEN:
-            current = makeCloneSetup();
+            settingConfig = makeCloneSetup();
             setCurrentStatus(CLONESCREEN);
             break;
         case EXTENDSCREEN:
-            current = makeXineramaSetup();
+            settingConfig = makeXineramaSetup();
             setCurrentStatus(EXTENDSCREEN);
             break;
         case VICESCREEN:
-            current = makeOtherSetup();
+            settingConfig = makeOtherSetup();
             setCurrentStatus(VICESCREEN);
             break;
         default:
@@ -220,12 +231,11 @@ void Widget::setupConnect(){
             GError * error;
 
             error = NULL;
-            if (!current || !mate_rr_config_applicable(current, kScreen, &error)){
+            if (!settingConfig || !mate_rr_config_applicable(settingConfig, kScreen, &error)){
                 if (error)
                     g_error_free (error);
                 return;
             }
-
 
             mate_rr_screen_get_timestamps(kScreen, NULL, &serverTimestamp);
 //            if (timestamp < serverTimestamp)
@@ -233,14 +243,13 @@ void Widget::setupConnect(){
 
             error = NULL;
 
-            success = mate_rr_config_apply_with_time(current, kScreen, serverTimestamp, &error);
+            success = mate_rr_config_apply_with_time(settingConfig, kScreen, serverTimestamp, &error);
             if (!success) {
                 qDebug() << "Could not switch to the following configuration: " << error->message;
                 g_error_free (error);
             }
 
-            qDebug() << "success: " << success;
-
+closeapp:
             close();
         }
 
@@ -298,7 +307,6 @@ void Widget::setCurrentStatus(int id){
 //        btn1->setBtnChecked(true);
         btn1->setChecked(true);
     }
-
 }
 
 void Widget::nextSelectedOption(){
@@ -306,8 +314,8 @@ void Widget::nextSelectedOption(){
     int next;
 
     /* no button checked */
-    if (current == -1)
-        ;
+//    if (current == -1)
+//        ;
 
     next = current == VICESCREEN ? MAINSCREEN : current + 1;
 
