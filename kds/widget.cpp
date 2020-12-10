@@ -54,6 +54,8 @@ Widget::Widget(QWidget *parent) :
     setupComponent();
     setupConnect();
 
+//    setupHide();
+
     initCurrentStatus();
 
     QDBusConnection::systemBus().connect(QString(), \
@@ -116,6 +118,8 @@ Widget::~Widget()
 
 void Widget::initData(){
     btnsGroup = new QButtonGroup;
+
+    gtk_init(NULL, NULL);
 
     //Monitor init
     kScreen = mate_rr_screen_new (gdk_screen_get_default (), NULL);
@@ -256,6 +260,14 @@ closeapp:
 
     });
 
+}
+
+void Widget::setupHide(){
+
+    //平板
+    ui->extendBtn->hide();
+    ui->viceBtn->hide();
+    resize(this->width(), this->height() - 160);
 }
 
 

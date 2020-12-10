@@ -32,6 +32,8 @@ extern "C" {
 #include <libmate-desktop/mate-rr.h>
 #include <libmate-desktop/mate-rr-config.h>
 #include <libmate-desktop/mate-rr-labeler.h>
+
+#include <gtk/gtk.h>
 }
 
 
@@ -51,6 +53,7 @@ public:
     void initData();
     void setupComponent();
     void setupConnect();
+    void setupHide();
 
     MateRRConfig * makeCloneSetup();
     MateRRConfig * makePrimarySetup();
