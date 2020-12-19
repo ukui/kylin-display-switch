@@ -34,16 +34,19 @@ PKGCONFIG += mate-desktop-2.0 \
 
 target.source += $$TARGET
 target.path = /usr/bin
-gsetting.files += ../data/org.ukui.kds.gschema.xml
+gsetting.files += ../conf/org.ukui.kds.gschema.xml
 gsetting.path = /usr/share/glib-2.0/schemas
 desktop.files += ../kylin-display-switch-daemon.desktop
 desktop.files += ../kylin-display-switch-mkt.desktop
 desktop.path = /etc/xdg/autostart/
+service.files += ../conf/kylin-display-switch.service
+service.path = /usr/lib/systemd/system/
 
 INSTALLS +=  \
             target \
             gsetting \
             desktop \
+            service \
 
 SOURCES += \
         main.cpp \

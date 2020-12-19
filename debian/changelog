@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.3) v101; urgency=medium
+
+  * 增加evdev event 监听进程
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
 kylin-display-switch (3.0.2) v100; urgency=medium
 
   * 解决BUG#27821，kds程序在V10.1下启动段错误，V10下正常

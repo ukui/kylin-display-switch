@@ -1,0 +1,9 @@
+[Unit]
+Description=The daemon of kylin display switch
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/emdaemon
+
+[Install]
+WantedBy=graphical.target
