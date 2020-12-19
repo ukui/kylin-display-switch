@@ -27,7 +27,7 @@
 
 #include <QDebug>
 
-#define POSBOTTOM 5
+#define POSBOTTOM 50
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -41,8 +41,8 @@ Widget::Widget(QWidget *parent) :
 
 
     QDesktopWidget* m = QApplication::desktop();
-//    QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
-    QRect rect = m->availableGeometry();
+    QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
+//    QRect rect = m->availableGeometry();
     move(rect.width() * 3 /4, rect.height() - POSBOTTOM - this->height());
 
     setupComponent();

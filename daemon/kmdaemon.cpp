@@ -60,7 +60,7 @@ KMDaemon::KMDaemon()
 
     //KeyCode 比 正常键值大 8，原因未知
     connect(kmt, &KeyMonitorThread::keyPress, this, [=](KeySym mks, KeyCode mkc){
-        qDebug() << "key press:" << mkc - 8;
+//        qDebug() << "key press:" << mkc - 8;
 
 //        if (!iface->isValid()){
 //            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
@@ -71,7 +71,7 @@ KMDaemon::KMDaemon()
             modifyKeyPressed = true;
         } else if (mks == XK_p){
             if (modifyKeyPressed){
-                qDebug() << "win + p" << "pressed";
+//                qDebug() << "win + p" << "pressed";
 
                 QProcess process;
                 QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -84,7 +84,7 @@ KMDaemon::KMDaemon()
             }
 
         } else if (mks == XK_KP_Enter || mks == XK_Return){
-            qDebug() << "enter is pressed!";
+//            qDebug() << "enter is pressed!";
             iface->call("emitMakeClicked");
 
         } else if (mks == XK_Up || mks == XK_KP_Up) {
@@ -124,7 +124,7 @@ KMDaemon::KMDaemon()
     }, Qt::QueuedConnection);
 
     connect(kmt, &KeyMonitorThread::keyRelease, this, [=](KeySym mks, KeyCode mkc){
-        qDebug() << "key release:" << mkc - 8;
+//        qDebug() << "key release:" << mkc - 8;
         if (mks == XK_Super_L){
             modifyKeyPressed = false;
         }
@@ -132,7 +132,7 @@ KMDaemon::KMDaemon()
 
 
     connect(kmt, &KeyMonitorThread::buttonPress, this, [=] (int x, int y) {
-        qDebug() << "button press" << x << y;
+//        qDebug() << "button press" << x << y;
         iface->call("emitButtonClicked", x, y);
     },
     Qt::QueuedConnection);
@@ -175,9 +175,9 @@ bool KMDaemon::getCurrentCapslockStatus(){
     QString output = QString(ba.data()).simplified();
 
     QString flag = "Caps Lock:";
-    qDebug() << "outputis : " << output;
+//    qDebug() << "outputis : " << output;
     QString status = output.mid(output.indexOf(flag) + 11, 3).simplified();
-    qDebug() << "status is : " << status;
+//    qDebug() << "status is : " << status;
 
     return status == "on" ? true : false;
 }
@@ -192,9 +192,9 @@ bool KMDaemon::getCurrentNumlockStatus(){
     QString output = QString(ba.data()).simplified();
 
     QString flag = "Num Lock:";
-    qDebug() << "outputis : " << output;
+//    qDebug() << "outputis : " << output;
     QString status = output.mid(output.indexOf(flag) + 10, 3).simplified();
-    qDebug() << "status is : " << status;
+//    qDebug() << "status is : " << status;
 
     return status == "on" ? true : false;
 }

@@ -169,7 +169,7 @@ void Widget::setupComponent(){
             break;
         }
 
-        qDebug() << "current btn checked:" << btn->isChecked();
+//        qDebug() << "current btn checked:" << btn->isChecked();
     }
 
 
@@ -199,7 +199,7 @@ void Widget::setupConnect(){
         /* 获取旧选项 */
         for (QAbstractButton * button : btnsGroup->buttons()){
             ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
-            qDebug() << "old index: " << btn->getBtnChecked();
+//            qDebug() << "old index: " << btn->getBtnChecked();
             int index = btnsGroup->id(button);
             if (index == id && btn->getBtnChecked()){
                     goto closeapp;
@@ -238,7 +238,7 @@ void Widget::setupConnect(){
             if (!settingConfig || !mate_rr_config_applicable(settingConfig, kScreen, &error)){
                 if (error)
                     g_error_free (error);
-                return;
+                goto closeapp;
             }
 
             mate_rr_screen_get_timestamps(kScreen, NULL, &serverTimestamp);
@@ -277,19 +277,19 @@ void Widget::initCurrentStatus(){
     int status;
 
     if (mate_rr_config_equal(current, primaryConfig)){
-        qDebug() << "init status:" << MAINSCREEN;
+//        qDebug() << "init status:" << MAINSCREEN;
         status = MAINSCREEN;
     } else if (mate_rr_config_equal(current, cloneConfig)){
-        qDebug() << "init status:" << CLONESCREEN;
+//        qDebug() << "init status:" << CLONESCREEN;
         status = CLONESCREEN;
     } else if (mate_rr_config_equal(current, extendConfig)){
-        qDebug() << "init status:" << EXTENDSCREEN;
+//        qDebug() << "init status:" << EXTENDSCREEN;
         status = EXTENDSCREEN;
     } else if (mate_rr_config_equal(current, viceConfig)){
-        qDebug() << "init status:" << VICESCREEN;
+//        qDebug() << "init status:" << VICESCREEN;
         status = VICESCREEN;
     } else {
-        qDebug() << "init status:" << -1;
+//        qDebug() << "init status:" << -1;
         status = -1;
     }
 
@@ -351,7 +351,7 @@ void Widget::lastSelectedOption(){
 
 void Widget::confirmCurrentOption(){
     int current = btnsGroup->checkedId();
-    qDebug() << "current checked" << current;
+//    qDebug() << "current checked" << current;
 
     if (current == -1)
         return;
@@ -667,12 +667,12 @@ int Widget::_turnonGetRightmostOffset(MateRROutputInfo *info, int x){
 }
 
 void Widget::msgReceiveAnotherOne(const QString &msg){
-    qDebug() << "another one " << msg;
+//    qDebug() << "another one " << msg;
     nextSelectedOption();
 }
 
 void Widget::receiveButtonClick(int x, int y){
-    qDebug() << "receive button press " << x << y;
+//    qDebug() << "receive button press " << x << y;
     if (!this->geometry().contains(x, y)){
         close();
     }
