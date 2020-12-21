@@ -63,6 +63,7 @@ public:
     void initCurrentStatus();
 
     void setCurrentStatus(int id);
+    void setCurrentPrimaryOutputTip();
 
 private:
     Ui::Widget *ui;

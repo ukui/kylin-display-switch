@@ -136,6 +136,8 @@ void Widget::initData(){
 
 void Widget::setupComponent(){
 
+    setCurrentPrimaryOutputTip();
+
     btnsGroup->addButton(ui->mainBtn, MAINSCREEN);
     btnsGroup->addButton(ui->cloneBtn, CLONESCREEN);
     btnsGroup->addButton(ui->extendBtn, EXTENDSCREEN);
@@ -189,6 +191,9 @@ void Widget::setupComponent(){
     ui->splitFrame->setStyleSheet("QFrame#splitFrame{background: #99000000; border: none;}");
 
     ui->titleLabel->setStyleSheet("QLabel{color: #FFFFFF; font-size: 24px;}");
+    ui->outputPrimaryTip->setStyleSheet("QLabel{color: #60FFFFFF; font-size: 18px;}");
+    ui->outputName->setStyleSheet("QLabel{color: #60FFFFFF; font-size: 18px;}");
+    ui->outputDisplayName->setStyleSheet("QLabel{color: #60FFFFFF; font-size: 18px;}");
 }
 
 void Widget::setupConnect(){
@@ -252,6 +257,8 @@ void Widget::setupConnect(){
                 qDebug() << "Could not switch to the following configuration: " << error->message;
                 g_error_free (error);
             }
+
+//            setCurrentPrimaryOutputTip();
 
 closeapp:
             close();
@@ -319,6 +326,34 @@ void Widget::setCurrentStatus(int id){
 //        btn1->setBtnChecked(true);
         btn1->setChecked(true);
     }
+}
+
+void Widget::setCurrentPrimaryOutputTip(){
+
+    char * pName;
+    char * pDisplayName;
+
+    MateRRConfig * config = mate_rr_config_new_current(kScreen, NULL);
+
+    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
+
+    for (int i = 0; outputs[i] != NULL; i++){
+        MateRROutputInfo * info = outputs[i];
+
+        if (mate_rr_output_info_get_primary(info)){
+
+            pName = mate_rr_output_info_get_name(info);
+            pDisplayName = mate_rr_output_info_get_display_name(info);
+
+            ui->outputName->setText(QString(pName));
+            ui->outputDisplayName->setText(QString(pDisplayName));
+            return;
+        }
+
+    }
+
+    ui->outputName->setText(QString(""));
+    ui->outputDisplayName->setText(QString(""));
 }
 
 void Widget::nextSelectedOption(){

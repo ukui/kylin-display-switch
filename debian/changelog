@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.5) v101; urgency=medium
+
+  * kds界面增加当前主屏的显示
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
 kylin-display-switch (3.0.4) v101; urgency=medium
 
   * 注释debug语句
