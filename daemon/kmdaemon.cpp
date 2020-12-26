@@ -85,7 +85,7 @@ KMDaemon::KMDaemon()
                 QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
                 env.insert("DISPLAY", ":0");
                 process.setProcessEnvironment(env);
-                process.startDetached("/usr/bin/kds");
+                process.startDetached("/usr/bin/kydisplayswitch");
 
             } else {
                 iface->call("emitCloseApp");
