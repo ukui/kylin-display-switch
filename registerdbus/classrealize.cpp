@@ -67,3 +67,7 @@ void ClassRealize::emitMakeClicked(){
 void ClassRealize::emitButtonClicked(int x, int y){
     emit signalButtonClicked(x, y);
 }
+
+void ClassRealize::emitMediaKeyTrans(int code){
+    emit signalMediaKeyTrans(code);
+}

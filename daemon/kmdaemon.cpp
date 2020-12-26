@@ -22,12 +22,20 @@
 #include <X11/keysym.h>
 #include <QProcess>
 
+#include <X11/extensions/XInput.h>
+#include <X11/Xatom.h>
+
 #define UKCCOSD_SCHEMA "org.ukui.control-center.osd"
 #define KYCCOSD_SCHEMA "org.kylin.control-center.osd"
 #define KDSOSD_SCHEMA "org.ukui.kds.osd"
 
+#define UK_TOUCHPAD_SCHEMA "org.ukui.peripherals-touchpad"
+#define KY_TOUCHPAD_SCHEMA "org.mate.peripherals-touchpad"
+
 #define SHOW_TIP_KEY "show-lock-tip"
 #define RUNNING_KEY "running"
+#define TP_ENABLE_KEY "touchpad-enabled"
+#define MP_ENABLE_KEY "microphone"
 
 KMDaemon::KMDaemon()
 {
@@ -67,7 +75,7 @@ KMDaemon::KMDaemon()
 //            return;
 //        }
 
-        if (mks == XK_Super_L){
+        if (mks == XK_Super_L || mks== XK_Super_R){
             modifyKeyPressed = true;
         } else if (mks == XK_p){
             if (modifyKeyPressed){
@@ -125,7 +133,7 @@ KMDaemon::KMDaemon()
 
     connect(kmt, &KeyMonitorThread::keyRelease, this, [=](KeySym mks, KeyCode mkc){
 //        qDebug() << "key release:" << mkc - 8;
-        if (mks == XK_Super_L){
+        if (mks == XK_Super_L || mks== XK_Super_R){
             modifyKeyPressed = false;
         }
     }, Qt::QueuedConnection);
@@ -145,6 +153,9 @@ KMDaemon::KMDaemon()
     connect(thrd, &QThread::started, kmt, &KeyMonitorThread::run);
 
     connect(thrd, &QThread::finished, kmt, &KeyMonitorThread::deleteLater);
+
+    //绑定特殊
+    QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalMediaKeyTrans", this, SLOT(mediaKeyManager(int)));
 
 }
 
@@ -197,4 +208,132 @@ bool KMDaemon::getCurrentNumlockStatus(){
 //    qDebug() << "status is : " << status;
 
     return status == "on" ? true : false;
+}
+
+void KMDaemon::mediaKeyManager(int code){
+
+    qDebug() << "kmdaemon receive: " << code;
+    switch (code) {
+    case 530:
+        touchpadToggle();
+        break;
+    case 531:
+        touchpadToggle2(true);
+        break;
+    case 532:
+        touchpadToggle2(false);
+    case 248:
+        microphoneToggle();
+        break;
+    default:
+        break;
+    }
+}
+
+void KMDaemon::touchpadToggle(){
+    XDeviceInfo *deviceinfos;
+    int n_devices;
+    int realformat;
+    unsigned long nitems, bytes_after;
+    unsigned char *data;
+
+    Display * display = XOpenDisplay(0);
+
+    deviceinfos = XListInputDevices (display, &n_devices);
+
+    if (deviceinfos == NULL)
+        return;
+
+    for (int i = 0; i < n_devices; i++){
+        XDevice * device;
+        Atom realtype, prop;
+        XDeviceInfo deviceinfo = deviceinfos[i];
+
+        if (deviceinfo.type != XInternAtom (display, XI_MOUSE, False)){
+            continue;
+        }
+
+        prop = XInternAtom (display, "Device Enabled", False);
+
+        if (!prop)
+            continue;
+
+        device = XOpenDevice (display, deviceinfo.id);
+
+        if (!device)
+            continue;
+
+        if (XGetDeviceProperty (display, device, prop, 0, 1, False,
+                                XA_INTEGER, &realtype, &realformat, &nitems,
+                                &bytes_after, &data) == Success) {
+
+            if (QString(deviceinfo.name).contains("USB Optical Mouse"))
+                continue;
+            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
+            if (nitems == 1){
+//                data[0] = (data[0] == 0) ? 1 : 0;
+
+                if (data[0] == 1){
+                    QString cmd = QString("xinput disable %1").arg(QString::number((int)deviceinfo.id));
+                    qDebug() << "run" << cmd;
+                    system(cmd.toLatin1().data());
+                    iface->call("emitShowTipsSignal", 5);
+                } else {
+                    QString cmd = QString("xinput enable %1").arg(QString::number((int)deviceinfo.id));
+                    qDebug() << "run" << cmd;
+                    system(cmd.toLatin1().data());
+                    iface->call("emitShowTipsSignal", 4);
+                }
+
+//                XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
+            }
+
+            XFree(data);
+        }
+
+        XCloseDevice (display, device);
+    }
+
+    if (deviceinfos != NULL)
+        XFreeDeviceList (deviceinfos);
+}
+
+void KMDaemon::touchpadToggle2(bool enable){
+    const QByteArray id(UK_TOUCHPAD_SCHEMA);
+    const QByteArray idd(KY_TOUCHPAD_SCHEMA);
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * st = new QGSettings(id);
+        st->set(TP_ENABLE_KEY, enable);
+        if (enable){
+            iface->call("emitShowTipsSignal", 4);
+        } else {
+            iface->call("emitShowTipsSignal", 5);
+        }
+        delete st;
+    } else if (QGSettings::isSchemaInstalled(idd)){
+        QGSettings * st = new QGSettings(idd);
+        st->set(TP_ENABLE_KEY, enable);
+        if (enable){
+            iface->call("emitShowTipsSignal", 4);
+        } else {
+            iface->call("emitShowTipsSignal", 5);
+        }
+        delete st;
+    }
+}
+
+void KMDaemon::microphoneToggle(){
+    const QByteArray id(KDSOSD_SCHEMA);
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * st = new QGSettings(id);
+        bool current = st->get(MP_ENABLE_KEY).toBool();
+
+        st->set(MP_ENABLE_KEY, !current);
+
+        if (current){
+            iface->call("emitShowTipsSignal", 4);
+        } else {
+            iface->call("emitShowTipsSignal", 4);
+        }
+    }
 }

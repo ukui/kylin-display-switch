@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.6) v101; urgency=medium
+
+  * 增加触摸板开关，调用X11接口
+  * 增肌右Super+p的支持
+  * 增加麦克风的响应
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
 kylin-display-switch (3.0.5) v101; urgency=medium
 
   * kds界面增加当前主屏的显示

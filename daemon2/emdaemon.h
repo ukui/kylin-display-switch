@@ -37,7 +37,7 @@ public:
     ~EMDaemon();
 
 public:
-    void begin();
+    void touchpadToggle();
 
 private:
 //    QThread * thrd;

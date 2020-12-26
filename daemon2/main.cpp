@@ -73,7 +73,6 @@ int main(int argc, char *argv[])
 //    qInstallMessageHandler(outputMessage);
 
     EMDaemon daemon;
-//    daemon.begin();
 
     return a.exec();
 }

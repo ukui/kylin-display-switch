@@ -5,5 +5,10 @@
             <summary>show keyboard tip</summary>
             <description>show keyboard tip or not. eg. Caps Lock. Num Lock</description>
         </key>
+        <key type="b" name="microphone">
+            <default>true</default>
+            <summary>microphone enable or not</summary>
+            <description>current microphone enable or not</description>
+        </key>
     </schema>
 </schemalist>

@@ -41,6 +41,7 @@ signals:
     Q_SCRIPTABLE void signalCloseApp();
     Q_SCRIPTABLE void signalMakeClicked();
     Q_SCRIPTABLE void signalButtonClicked(int x, int y);
+    Q_SCRIPTABLE void signalMediaKeyTrans(int code);
 
 public slots:
     Q_SCRIPTABLE void exitService();
@@ -53,6 +54,7 @@ public slots:
     Q_SCRIPTABLE void emitCloseApp();
     Q_SCRIPTABLE void emitMakeClicked();
     Q_SCRIPTABLE void emitButtonClicked(int x, int y);
+    Q_SCRIPTABLE void emitMediaKeyTrans(int code);
 
 };
 

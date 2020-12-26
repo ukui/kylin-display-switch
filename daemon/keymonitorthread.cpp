@@ -87,10 +87,8 @@ void KeyMonitorThread::callback(XPointer ptr, XRecordInterceptData* data)
 
 void KeyMonitorThread::handleRecordEvent(XRecordInterceptData* data)
 {
-    qDebug("handleRecordEvent");
     if (data->category == XRecordFromServer) {
         xEvent * event = (xEvent *)data->data;
-        qDebug("category is XRecordFromServer");
 
         KeySym keySym = XKeycodeToKeysym(display, event->u.u.detail, 0);
         KeyCode keyCode = XKeysymToKeycode(display, keySym);

@@ -129,22 +129,24 @@ nexttime:
     while (1) {
         if (read(fd, &ie, sizeof(ie))){
             if (ie.type == 1){
-                qDebug("key event code: %d", ie.code);
-                if (ie.code == 40){
+                qDebug("key event code: %d; value: %d", ie.code, ie.value);
                     if (ie.value == 1)
                         pressTime = QTime::currentTime();
                     if (ie.value == 0)
                         releaseTime = QTime::currentTime();
                     if (ie.value == 2)
                         longPressTime = QTime::currentTime();
+                    qDebug("presstime: %s", pressTime.toString("hh:mm").toLatin1().data());
+                    qDebug("releaseTime: %s", releaseTime.toString("hh:mm").toLatin1().data());
 
-                    if (pressTime.isValid() && releaseTime.isValid()){
+                    if (pressTime.secsTo(QTime(0, 0, 0, 0)) != 0 && releaseTime.secsTo(QTime(0, 0, 0, 0)) != 0){
                         emit eventMeet(ie.code);
+                        qDebug("emit %d", ie.code);
                         pressTime = QTime(0, 0, 0, 0);
                         releaseTime = QTime(0, 0, 0, 0);
+                        longPressTime = QTime(0, 0, 0, 0);
                     }
 
-                }
             }
         }
     }

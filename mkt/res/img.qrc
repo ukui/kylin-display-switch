@@ -4,5 +4,7 @@
         <file>img/capslockOn.png</file>
         <file>img/numlockOff.png</file>
         <file>img/numlockOn.png</file>
+        <file>img/touchpadOn.png</file>
+        <file>img/touchpadOff.png</file>
     </qresource>
 </RCC>

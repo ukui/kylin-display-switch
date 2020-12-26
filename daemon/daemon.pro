@@ -11,7 +11,7 @@ TARGET = kmdaemon
 
 TEMPLATE = app
 
-LIBS += -lX11 -lXtst -lgsettings-qt
+LIBS += -lX11 -lXi -lXtst -lgsettings-qt
 
 
 target.source += $$TARGET

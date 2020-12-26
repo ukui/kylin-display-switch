@@ -68,6 +68,8 @@ void Widget::setupComponent(){
     ui->capsOffLabel->setStyleSheet("border-image:url(:/img/capslockOff.png); border: none; border-radius: 6px;");
     ui->numOnLabel->setStyleSheet("border-image:url(:/img/numlockOn.png); border: none; border-radius: 6px;");
     ui->numOffLabel->setStyleSheet("border-image:url(:/img/numlockOff.png); border: none; border-radius: 6px;");
+    ui->touchpadOnLabel->setStyleSheet("border-image:url(:/img/touchpadOn.png); border: none; border-radius: 6px");
+    ui->touchpadOffLabel->setStyleSheet("border-image:url(:/img/touchpadOff.png); border: none; border-radius: 6pxp");
 }
 
 void Widget::showTipsOnDesktop(int index){

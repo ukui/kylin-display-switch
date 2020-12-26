@@ -31,11 +31,11 @@ EMDaemon::EMDaemon()
                                QDBusConnection::systemBus());
 
     QMap<QString, QString> keyWord1;
-    keyWord1.insert("N: Name", "USB Keyboard");
-    keyWord1.insert("P: Phys", "input0");
+    keyWord1.insert("N: Name", "2 keyboard");
+//    keyWord1.insert("P: Phys", "input0");
 
     QList<QMap<QString, QString>> filters;
-//    filters.append(keyWord1);
+    filters.append(keyWord1);
 //    filters.append(keyWord2);
 
 
@@ -46,6 +46,8 @@ EMDaemon::EMDaemon()
         emts.append(emt);
 
         connect(emt, &EventMonitorThread::eventMeet, this, [=](int code){
+
+            iface->call("emitMediaKeyTrans", code);
 
         }, Qt::QueuedConnection);
 
@@ -75,7 +77,7 @@ EMDaemon::~EMDaemon(){
     delete iface;
 }
 
-void EMDaemon::begin(){
+void EMDaemon:: touchpadToggle(){
     XDeviceInfo *deviceinfos;
     int n_devices;
     int realformat;
@@ -93,28 +95,32 @@ void EMDaemon::begin(){
         XDevice * device;
         Atom realtype, prop;
         XDeviceInfo deviceinfo = deviceinfos[i];
-//        qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
 
         if (deviceinfo.type != XInternAtom (display, XI_MOUSE, False)){
             continue;
         }
 
-        prop = XInternAtom (display, "libinput Horizonal Scroll Enabled", False);
+        prop = XInternAtom (display, "Device Enabled", False);
 
         if (!prop)
             continue;
-//        qDebug() << "prop is ok";
 
         device = XOpenDevice (display, deviceinfo.id);
 
         if (!device)
             continue;
-//        qDebug() << "device is ok";
 
-        if ((XGetDeviceProperty (display, device, prop, 0, 1, False,
+        if (XGetDeviceProperty (display, device, prop, 0, 1, False,
                                 XA_INTEGER, &realtype, &realformat, &nitems,
-                                &bytes_after, &data) == Success) && (realtype != None)) {
+                                &bytes_after, &data) == Success) {
+            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
+            if (nitems == 1){
+                data[0] = (data[0] == 0) ? 1 : 0;
 
+                XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
+            }
+
+            XFree(data);
         }
 
         XCloseDevice (display, device);

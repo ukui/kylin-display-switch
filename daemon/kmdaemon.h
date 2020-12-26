@@ -46,6 +46,10 @@ public:
     bool getCurrentCapslockStatus();
     bool getCurrentNumlockStatus();
 
+    void touchpadToggle();
+    void touchpadToggle2(bool enable);
+    void microphoneToggle();
+
 private:
     QThread * thrd;
     KeyMonitorThread * kmt;
@@ -61,6 +65,9 @@ private:
     QGSettings * settings;
 
     bool stInstalled;
+
+public slots:
+    void mediaKeyManager(int code);
 
 };
 
