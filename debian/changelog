@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.7) v101; urgency=medium
+
+  * 增加摄像头功能
+  * 增加功能和键值的映射
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
 kylin-display-switch (3.0.6) v101; urgency=medium
 
   * 增加触摸板开关，调用X11接口

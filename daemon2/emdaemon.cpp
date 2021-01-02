@@ -113,7 +113,7 @@ void EMDaemon:: touchpadToggle(){
         if (XGetDeviceProperty (display, device, prop, 0, 1, False,
                                 XA_INTEGER, &realtype, &realformat, &nitems,
                                 &bytes_after, &data) == Success) {
-            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
+//            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
             if (nitems == 1){
                 data[0] = (data[0] == 0) ? 1 : 0;
 

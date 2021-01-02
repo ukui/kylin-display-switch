@@ -25,6 +25,9 @@
 
 #include <QProcess>
 
+#include <QVBoxLayout>
+#include <QLabel>
+
 #include <QDebug>
 
 #define POSBOTTOM 50
@@ -45,6 +48,8 @@ Widget::Widget(QWidget *parent) :
 //    QRect rect = m->availableGeometry();
     move(rect.width() * 3 /4, rect.height() - POSBOTTOM - this->height());
 
+    pMappingTable = new MappingTable;
+
     setupComponent();
 
     pTimer = new QTimer(this);
@@ -61,15 +66,32 @@ Widget::Widget(QWidget *parent) :
 Widget::~Widget()
 {
     delete ui;
+
+    delete pMappingTable;
 }
 
 void Widget::setupComponent(){
-    ui->capsOnLabel->setStyleSheet("border-image:url(:/img/capslockOn.png); border: none; border-radius: 6px;");
-    ui->capsOffLabel->setStyleSheet("border-image:url(:/img/capslockOff.png); border: none; border-radius: 6px;");
-    ui->numOnLabel->setStyleSheet("border-image:url(:/img/numlockOn.png); border: none; border-radius: 6px;");
-    ui->numOffLabel->setStyleSheet("border-image:url(:/img/numlockOff.png); border: none; border-radius: 6px;");
-    ui->touchpadOnLabel->setStyleSheet("border-image:url(:/img/touchpadOn.png); border: none; border-radius: 6px");
-    ui->touchpadOffLabel->setStyleSheet("border-image:url(:/img/touchpadOff.png); border: none; border-radius: 6pxp");
+
+    for (int i = 0; i < MappingTable::HandleKeys; i++){
+        QString funWord = pMappingTable->keyCodeToString(i);
+        QString logoStr = QString(":/img/%1.png").arg(funWord);
+
+        QFrame * baseFrame = new QFrame;
+        QVBoxLayout * mainVerLayout = new QVBoxLayout(baseFrame);
+        mainVerLayout->setSpacing(0);
+        mainVerLayout->setMargin(0);
+
+        QLabel * logoLabel = new QLabel(baseFrame);
+        logoLabel->setScaledContents(true);
+        logoLabel->setPixmap(QPixmap(logoStr));
+
+
+        mainVerLayout->addWidget(logoLabel);
+
+        baseFrame->setLayout(mainVerLayout);
+
+        ui->stackedWidget->addWidget(baseFrame);
+    }
 }
 
 void Widget::showTipsOnDesktop(int index){

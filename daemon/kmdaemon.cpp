@@ -107,9 +107,9 @@ KMDaemon::KMDaemon()
             }
 
             if (capslockStatus){
-                iface->call("emitShowTipsSignal", 1);
+                iface->call("emitShowTipsSignal", MappingTable::CapslockOff);
             } else {
-                iface->call("emitShowTipsSignal", 0);
+                iface->call("emitShowTipsSignal", MappingTable::CapslockOn);
             }
 
             capslockStatus = !capslockStatus;
@@ -119,9 +119,9 @@ KMDaemon::KMDaemon()
             }
 
             if (numlockStatus){
-                iface->call("emitShowTipsSignal", 3);
+                iface->call("emitShowTipsSignal", MappingTable::NumlockOff);
             } else {
-                iface->call("emitShowTipsSignal", 2);
+                iface->call("emitShowTipsSignal", MappingTable::NumlockOn);
             }
 
             numlockStatus = !numlockStatus;
@@ -169,7 +169,7 @@ KMDaemon::~KMDaemon()
 }
 
 void KMDaemon::begin(){
-    qDebug("thread begin!");
+//    qDebug("thread begin!");
 
     kmt->moveToThread(thrd);
 
@@ -214,17 +214,19 @@ void KMDaemon::mediaKeyManager(int code){
 
     qDebug() << "kmdaemon receive: " << code;
     switch (code) {
-    case 530:
+    case TOUCHPADKEY:
         touchpadToggle();
         break;
-    case 531:
+    case TOUCHPADONKEY:
         touchpadToggle2(true);
         break;
-    case 532:
+    case TOUCHPADOFFKEY:
         touchpadToggle2(false);
-    case 248:
+    case MICROPHONEKEY:
         microphoneToggle();
         break;
+    case CAMERAKEY:
+        cameraToggle();
     default:
         break;
     }
@@ -277,12 +279,12 @@ void KMDaemon::touchpadToggle(){
                     QString cmd = QString("xinput disable %1").arg(QString::number((int)deviceinfo.id));
                     qDebug() << "run" << cmd;
                     system(cmd.toLatin1().data());
-                    iface->call("emitShowTipsSignal", 5);
+                    iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
                 } else {
                     QString cmd = QString("xinput enable %1").arg(QString::number((int)deviceinfo.id));
                     qDebug() << "run" << cmd;
                     system(cmd.toLatin1().data());
-                    iface->call("emitShowTipsSignal", 4);
+                    iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
                 }
 
 //                XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
@@ -305,18 +307,18 @@ void KMDaemon::touchpadToggle2(bool enable){
         QGSettings * st = new QGSettings(id);
         st->set(TP_ENABLE_KEY, enable);
         if (enable){
-            iface->call("emitShowTipsSignal", 4);
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else {
-            iface->call("emitShowTipsSignal", 5);
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
         }
         delete st;
     } else if (QGSettings::isSchemaInstalled(idd)){
         QGSettings * st = new QGSettings(idd);
         st->set(TP_ENABLE_KEY, enable);
         if (enable){
-            iface->call("emitShowTipsSignal", 4);
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else {
-            iface->call("emitShowTipsSignal", 5);
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
         }
         delete st;
     }
@@ -331,9 +333,35 @@ void KMDaemon::microphoneToggle(){
         st->set(MP_ENABLE_KEY, !current);
 
         if (current){
-            iface->call("emitShowTipsSignal", 4);
+            iface->call("emitShowTipsSignal", MappingTable::MicrophoneOff);
         } else {
-            iface->call("emitShowTipsSignal", 4);
+            iface->call("emitShowTipsSignal", MappingTable::MicrophoneOn);
         }
+    }
+}
+
+void KMDaemon::cameraToggle(){
+    QDBusReply<QString> reply = iface->call("getCameraBusinfo");
+    if (reply.isValid()){
+        QString businfo = reply.value();
+        QDBusReply<QString> reply2 = iface->call("toggleCameraDevice", businfo);
+
+        if (reply2.isValid()){
+            QString result = reply2.value();
+
+            if (result.contains("binded")){
+                iface->call("emitShowTipsSignal", MappingTable::CameraOn);
+            } else if (result.contains("unbinded")){
+                iface->call("emitShowTipsSignal", MappingTable::CameraOff);
+            } else {
+                qWarning("%s", result.toLatin1().data());
+            }
+
+        } else {
+            qWarning("Toggle Camera device Failed!");
+        }
+
+    } else {
+        qWarning("Get Camera Businfo Failed!");
     }
 }

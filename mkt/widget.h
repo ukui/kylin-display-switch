@@ -23,6 +23,8 @@
 #include <QWidget>
 #include <QTimer>
 
+#include "mappingtable.h"
+
 namespace Ui {
 class Widget;
 }
@@ -43,6 +45,8 @@ private:
 
 private:
     QTimer * pTimer;
+
+    MappingTable * pMappingTable;
 
 public slots:
     void showTipsOnDesktop(int index);

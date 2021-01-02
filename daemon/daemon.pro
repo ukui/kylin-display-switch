@@ -13,6 +13,8 @@ TEMPLATE = app
 
 LIBS += -lX11 -lXi -lXtst -lgsettings-qt
 
+include (../utils/utils.pri)
+
 
 target.source += $$TARGET
 target.path = /usr/bin

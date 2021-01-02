@@ -21,6 +21,9 @@
 #define CLASSREALIZE_H
 
 #include <QObject>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
 
 class ClassRealize : public QObject
 {
@@ -55,6 +58,9 @@ public slots:
     Q_SCRIPTABLE void emitMakeClicked();
     Q_SCRIPTABLE void emitButtonClicked(int x, int y);
     Q_SCRIPTABLE void emitMediaKeyTrans(int code);
+
+    Q_SCRIPTABLE QString getCameraBusinfo();
+    Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
 
 };
 

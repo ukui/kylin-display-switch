@@ -49,7 +49,7 @@ void EventMonitorThread::run(){
 
     QString threadText = QStringLiteral("@0x%1").arg(quintptr(QThread::currentThreadId()), 16, 16, QLatin1Char('0'));
 
-    qDebug("thread %s begin!", threadText.toLatin1().data());
+//    qDebug("thread %s begin!", threadText.toLatin1().data());
 
 
 //    QMap<QString, QString>::iterator it0 = _keyword.begin();
@@ -87,19 +87,19 @@ void EventMonitorThread::run(){
                     }
                 }
 
-                qDebug("debug0: %s", line.toLatin1().data());
-                foreach (bool flag, flags) {
-                    qDebug("debug1: %d", flag);
-                    if (!flag)
-                        goto nexttime;
-                }
-
                 if (line.startsWith("H: Handlers=")){
                     QString options = line.split("=").at(1);
                     for (QString option : options.split(" ", QString::SkipEmptyParts)){
                         if (option.startsWith("event")){
                             eventFile = "/dev/input/" + option;
                         }
+                    }
+                }
+
+                foreach (bool flag, flags) {
+                    if (!flag){
+//                        goto nexttime;
+                        eventFile = "";
                     }
                 }
             }
@@ -129,19 +129,18 @@ nexttime:
     while (1) {
         if (read(fd, &ie, sizeof(ie))){
             if (ie.type == 1){
-                qDebug("key event code: %d; value: %d", ie.code, ie.value);
                     if (ie.value == 1)
                         pressTime = QTime::currentTime();
                     if (ie.value == 0)
                         releaseTime = QTime::currentTime();
                     if (ie.value == 2)
                         longPressTime = QTime::currentTime();
-                    qDebug("presstime: %s", pressTime.toString("hh:mm").toLatin1().data());
-                    qDebug("releaseTime: %s", releaseTime.toString("hh:mm").toLatin1().data());
+//                    qDebug("presstime: %s", pressTime.toString("hh:mm").toLatin1().data());
+//                    qDebug("releaseTime: %s", releaseTime.toString("hh:mm").toLatin1().data());
 
                     if (pressTime.secsTo(QTime(0, 0, 0, 0)) != 0 && releaseTime.secsTo(QTime(0, 0, 0, 0)) != 0){
                         emit eventMeet(ie.code);
-                        qDebug("emit %d", ie.code);
+//                        qDebug("emit %d", ie.code);
                         pressTime = QTime(0, 0, 0, 0);
                         releaseTime = QTime(0, 0, 0, 0);
                         longPressTime = QTime(0, 0, 0, 0);

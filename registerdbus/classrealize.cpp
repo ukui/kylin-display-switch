@@ -71,3 +71,87 @@ void ClassRealize::emitButtonClicked(int x, int y){
 void ClassRealize::emitMediaKeyTrans(int code){
     emit signalMediaKeyTrans(code);
 }
+
+QString ClassRealize::getCameraBusinfo(){
+
+    QString path = QString("/sys/bus/usb/devices/");
+    QDir dir(path);
+    if (!dir.exists()){
+        return QString();
+    }
+    dir.setFilter(QDir::Dirs);
+    dir.setSorting(QDir::Name);
+    QFileInfoList fileinfoList = dir.entryInfoList();
+
+    for(QFileInfo fileinfo : fileinfoList){
+        if (fileinfo.baseName() == "." || fileinfo.baseName() == ".."){
+            continue;
+        }
+
+        if (fileinfo.baseName().contains(":")){
+            continue;
+        }
+
+        if (fileinfo.baseName().startsWith("usb")){
+            continue;
+        }
+//        qDebug() << "" << fileinfo.fileName() << fileinfo.absoluteFilePath();
+        QDir subdir(fileinfo.absoluteFilePath());
+        subdir.setFilter(QDir::Files);
+        QFileInfoList fileinfoList2 = subdir.entryInfoList();
+        for (QFileInfo fileinfo2 : fileinfoList2){
+            if (fileinfo2.baseName() == "product"){
+                QFile pfile(fileinfo2.absoluteFilePath());
+                if (!pfile.open(QIODevice::ReadOnly | QIODevice::Text))
+                    return QString();
+                QTextStream pstream(&pfile);
+                QString output = pstream.readAll();
+//                qDebug() << "output: " << output;
+                if (output.contains("camera", Qt::CaseInsensitive)){
+                    return fileinfo.baseName();
+                }
+
+            }
+        }
+
+    }
+
+    return QString();
+}
+
+QString ClassRealize::toggleCameraDevice(QString businfo){
+    bool isExists = false;
+
+    QString path = QString("/sys/bus/usb/drivers/usb/");
+    QDir dir(path);
+    if (!dir.exists()){
+        return QString("USB Drivers Dir Not Exists!");
+    }
+    dir.setFilter(QDir::Dirs);
+    dir.setSorting(QDir::Name);
+    QFileInfoList fileinfoList = dir.entryInfoList();
+
+    for(QFileInfo fileinfo : fileinfoList){
+        if (fileinfo.baseName() == "." || fileinfo.baseName() == ".."){
+            continue;
+        }
+
+        if (fileinfo.baseName().contains(":")){
+            continue;
+        }
+
+        if (fileinfo.baseName() == businfo){
+            isExists = true;
+        }
+    }
+
+    if (isExists){
+        QString cmd = QString("echo '%1' > %2/unbind").arg(businfo).arg(path);
+        system(cmd.toLatin1().data());
+        return QString("Camera Device unbinded!");
+    } else {
+        QString cmd = QString("echo '%1' > %2/bind").arg(businfo).arg(path);
+        system(cmd.toLatin1().data());
+        return QString("Camera Device binded!");
+    }
+}

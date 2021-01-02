@@ -24,10 +24,12 @@
 #include <QThread>
 #include <QDBusConnection>
 #include <QDBusInterface>
+#include <QDBusReply>
 #include <QGSettings/QGSettings>
 
 #include <QDebug>
 
+#include "mappingtable.h"
 #include "keymonitorthread.h"
 
 class KMDaemon : public QObject
@@ -49,6 +51,7 @@ public:
     void touchpadToggle();
     void touchpadToggle2(bool enable);
     void microphoneToggle();
+    void cameraToggle();
 
 private:
     QThread * thrd;

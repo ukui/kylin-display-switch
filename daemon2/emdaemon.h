@@ -24,6 +24,7 @@
 #include <QThread>
 #include <QDBusConnection>
 #include <QDBusInterface>
+
 #include <QDebug>
 
 #include "eventmonitorthread.h"
