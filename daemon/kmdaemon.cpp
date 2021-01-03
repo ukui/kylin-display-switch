@@ -20,10 +20,12 @@
 #include "kmdaemon.h"
 
 #include <X11/keysym.h>
+#include <QFileInfo>
 #include <QProcess>
 
 #include <X11/extensions/XInput.h>
 #include <X11/Xatom.h>
+#include <X11/XKBlib.h>
 
 #define UKCCOSD_SCHEMA "org.ukui.control-center.osd"
 #define KYCCOSD_SCHEMA "org.kylin.control-center.osd"
@@ -32,10 +34,23 @@
 #define UK_TOUCHPAD_SCHEMA "org.ukui.peripherals-touchpad"
 #define KY_TOUCHPAD_SCHEMA "org.mate.peripherals-touchpad"
 
+#define UK_POWERMANAGER_SCHEMA "org.ukui.power-manager"
+#define KY_POWERMANAGER_SCHEMA "org.mate.power-manager"
+
 #define SHOW_TIP_KEY "show-lock-tip"
 #define RUNNING_KEY "running"
 #define TP_ENABLE_KEY "touchpad-enabled"
 #define MP_ENABLE_KEY "microphone"
+
+#define BRIGHTNESS_KEY "brightness-ac"
+
+#define SCREENOPENVALUE 99
+#define SCREENCLOSEVALUE 0
+
+Display * display;
+
+static Atom CapsLock;
+static Atom NumLock;
 
 KMDaemon::KMDaemon()
 {
@@ -48,6 +63,11 @@ KMDaemon::KMDaemon()
 
     modifyKeyPressed = false;
     stInstalled = true;
+
+    //X data init
+    display = XOpenDisplay(0);
+    CapsLock = XInternAtom(display, "Caps Lock", False);
+    NumLock = XInternAtom(display, "Num Lock", False);
 
     capslockStatus = getCurrentCapslockStatus();
     numlockStatus = getCurrentNumlockStatus();
@@ -68,6 +88,7 @@ KMDaemon::KMDaemon()
 
     //KeyCode 比 正常键值大 8，原因未知
     connect(kmt, &KeyMonitorThread::keyPress, this, [=](KeySym mks, KeyCode mkc){
+        Q_UNUSED(mkc)
 //        qDebug() << "key press:" << mkc - 8;
 
 //        if (!iface->isValid()){
@@ -79,8 +100,7 @@ KMDaemon::KMDaemon()
             modifyKeyPressed = true;
         } else if (mks == XK_p){
             if (modifyKeyPressed){
-//                qDebug() << "win + p" << "pressed";
-
+                qDebug("Win + P Pressed!\n");
                 QProcess process;
                 QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
                 env.insert("DISPLAY", ":0");
@@ -92,7 +112,6 @@ KMDaemon::KMDaemon()
             }
 
         } else if (mks == XK_KP_Enter || mks == XK_Return){
-//            qDebug() << "enter is pressed!";
             iface->call("emitMakeClicked");
 
         } else if (mks == XK_Up || mks == XK_KP_Up) {
@@ -103,28 +122,33 @@ KMDaemon::KMDaemon()
 
         } else if (mks == XK_Caps_Lock){
             if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
+                qWarning("MediaKey Tip is Closed\n");
                 return;
-            }
-
-            if (capslockStatus){
-                iface->call("emitShowTipsSignal", MappingTable::CapslockOff);
-            } else {
-                iface->call("emitShowTipsSignal", MappingTable::CapslockOn);
             }
 
             capslockStatus = !capslockStatus;
+
+            if (capslockStatus){
+                iface->call("emitShowTipsSignal", MappingTable::CapslockOn);
+            } else {
+                iface->call("emitShowTipsSignal", MappingTable::CapslockOff);
+            }
+
         } else if (mks == XK_Num_Lock){
             if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
+                qWarning("MediaKey Tip is Closed\n");
                 return;
             }
 
+            numlockStatus = !numlockStatus;
+
             if (numlockStatus){
-                iface->call("emitShowTipsSignal", MappingTable::NumlockOff);
-            } else {
                 iface->call("emitShowTipsSignal", MappingTable::NumlockOn);
+            } else {
+                iface->call("emitShowTipsSignal", MappingTable::NumlockOff);
             }
 
-            numlockStatus = !numlockStatus;
+
         }else {
             iface->call("emitCloseApp");
         }
@@ -132,6 +156,7 @@ KMDaemon::KMDaemon()
     }, Qt::QueuedConnection);
 
     connect(kmt, &KeyMonitorThread::keyRelease, this, [=](KeySym mks, KeyCode mkc){
+        Q_UNUSED(mkc)
 //        qDebug() << "key release:" << mkc - 8;
         if (mks == XK_Super_L || mks== XK_Super_R){
             modifyKeyPressed = false;
@@ -140,7 +165,6 @@ KMDaemon::KMDaemon()
 
 
     connect(kmt, &KeyMonitorThread::buttonPress, this, [=] (int x, int y) {
-//        qDebug() << "button press" << x << y;
         iface->call("emitButtonClicked", x, y);
     },
     Qt::QueuedConnection);
@@ -169,7 +193,6 @@ KMDaemon::~KMDaemon()
 }
 
 void KMDaemon::begin(){
-//    qDebug("thread begin!");
 
     kmt->moveToThread(thrd);
 
@@ -177,56 +200,58 @@ void KMDaemon::begin(){
 }
 
 bool KMDaemon::getCurrentCapslockStatus(){
-    QString cmd = "xset q";
-    QProcess process;
-    process.start(cmd);
-    process.waitForFinished();
 
-    QByteArray ba = process.readAllStandardOutput();
-    QString output = QString(ba.data()).simplified();
+    Bool state;
 
-    QString flag = "Caps Lock:";
-//    qDebug() << "outputis : " << output;
-    QString status = output.mid(output.indexOf(flag) + 11, 3).simplified();
-//    qDebug() << "status is : " << status;
+    XkbGetNamedIndicator(display, CapsLock, NULL, &state, NULL, NULL);
 
-    return status == "on" ? true : false;
+    return state;
 }
 
 bool KMDaemon::getCurrentNumlockStatus(){
-    QString cmd = "xset q";
-    QProcess process;
-    process.start(cmd);
-    process.waitForFinished();
 
-    QByteArray ba = process.readAllStandardOutput();
-    QString output = QString(ba.data()).simplified();
+    Bool state;
 
-    QString flag = "Num Lock:";
-//    qDebug() << "outputis : " << output;
-    QString status = output.mid(output.indexOf(flag) + 10, 3).simplified();
-//    qDebug() << "status is : " << status;
+    XkbGetNamedIndicator(display, NumLock, NULL, &state, NULL, NULL);
 
-    return status == "on" ? true : false;
+    return state;
 }
 
 void KMDaemon::mediaKeyManager(int code){
 
-    qDebug() << "kmdaemon receive: " << code;
     switch (code) {
     case TOUCHPADKEY:
+        qDebug("Key Received %d!\n", TOUCHPADKEY);
         touchpadToggle();
         break;
     case TOUCHPADONKEY:
+        qDebug("Key Received %d!\n", TOUCHPADONKEY);
         touchpadToggle2(true);
         break;
     case TOUCHPADOFFKEY:
+        qDebug("Key Received %d!\n", TOUCHPADOFFKEY);
         touchpadToggle2(false);
+        break;
     case MICROPHONEKEY:
+        qDebug("Key Received %d!\n", MICROPHONEKEY);
         microphoneToggle();
         break;
     case CAMERAKEY:
+        qDebug("Key Received %d!\n", CAMERAKEY);
         cameraToggle();
+        break;
+    case FLIGHTKEY:
+        qDebug("Key Received %d!\n", FLIGHTKEY);
+        flightToggle();
+        break;
+    case SCREENKEY:
+        qDebug("Key Received %d!\n", SCREENKEY);
+        screenToggle();
+        break;
+    case SCREENLOCKKEY:
+        qDebug("Key Received %d!\n", SCREENLOCKKEY);
+        screenLock();
+        break;
     default:
         break;
     }
@@ -239,12 +264,12 @@ void KMDaemon::touchpadToggle(){
     unsigned long nitems, bytes_after;
     unsigned char *data;
 
-    Display * display = XOpenDisplay(0);
-
     deviceinfos = XListInputDevices (display, &n_devices);
 
-    if (deviceinfos == NULL)
+    if (deviceinfos == NULL){
+        qCritical("XListInputDevices is NULL!\n");
         return;
+    }
 
     for (int i = 0; i < n_devices; i++){
         XDevice * device;
@@ -271,18 +296,19 @@ void KMDaemon::touchpadToggle(){
 
             if (QString(deviceinfo.name).contains("USB Optical Mouse"))
                 continue;
-            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
+
+            qDebug("Get Input name:%s; id: %d!\n", deviceinfo.name, (int)deviceinfo.id);
             if (nitems == 1){
 //                data[0] = (data[0] == 0) ? 1 : 0;
 
                 if (data[0] == 1){
                     QString cmd = QString("xinput disable %1").arg(QString::number((int)deviceinfo.id));
-                    qDebug() << "run" << cmd;
+                    qDebug("Disable Input Device %s\n", deviceinfo.name);
                     system(cmd.toLatin1().data());
                     iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
                 } else {
                     QString cmd = QString("xinput enable %1").arg(QString::number((int)deviceinfo.id));
-                    qDebug() << "run" << cmd;
+                    qDebug("Enable Input Device %s\n", deviceinfo.name);
                     system(cmd.toLatin1().data());
                     iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
                 }
@@ -307,8 +333,10 @@ void KMDaemon::touchpadToggle2(bool enable){
         QGSettings * st = new QGSettings(id);
         st->set(TP_ENABLE_KEY, enable);
         if (enable){
+            qDebug("Enable Touchpad By UK GSettings!\n");
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else {
+            qDebug("Disable Touchpad By UK GSettings!\n");
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
         }
         delete st;
@@ -316,11 +344,15 @@ void KMDaemon::touchpadToggle2(bool enable){
         QGSettings * st = new QGSettings(idd);
         st->set(TP_ENABLE_KEY, enable);
         if (enable){
+            qDebug("Enable Touchpad By KY GSettings!\n");
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else {
+            qDebug("Disable Touchpad By KY GSettings!\n");
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
         }
         delete st;
+    } else {
+       qWarning("Touchpad GSettings is not install!");
     }
 }
 
@@ -333,8 +365,10 @@ void KMDaemon::microphoneToggle(){
         st->set(MP_ENABLE_KEY, !current);
 
         if (current){
+            qDebug("Disable Microphone!\n");
             iface->call("emitShowTipsSignal", MappingTable::MicrophoneOff);
         } else {
+            qDebug("Enable Microphone!\n");
             iface->call("emitShowTipsSignal", MappingTable::MicrophoneOn);
         }
     }
@@ -349,9 +383,11 @@ void KMDaemon::cameraToggle(){
         if (reply2.isValid()){
             QString result = reply2.value();
 
-            if (result.contains("binded")){
+            if (result == QString("binded")){
+                qDebug("Enable Camera Device!\n");
                 iface->call("emitShowTipsSignal", MappingTable::CameraOn);
-            } else if (result.contains("unbinded")){
+            } else if (result == QString("unbinded")){
+                qDebug("Disable Camera Device!\n");
                 iface->call("emitShowTipsSignal", MappingTable::CameraOff);
             } else {
                 qWarning("%s", result.toLatin1().data());
@@ -363,5 +399,85 @@ void KMDaemon::cameraToggle(){
 
     } else {
         qWarning("Get Camera Businfo Failed!");
+    }
+}
+
+void KMDaemon::flightToggle(){
+
+    QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (current == -1){
+            qWarning("Error Occur When Get Current FlightMode");
+            return;
+        }
+
+        QDBusReply<QString> reply2 = iface->call("toggleFlightMode", !current);
+        if (reply.isValid()){
+            QString result = reply2.value();
+            if (result == QString("blocked")){
+                qDebug("Enable Flight Mode!\n");
+                iface->call("emitShowTipsSignal", MappingTable::FlightOn);
+            } else if (result == QString("unblocked")){
+                qDebug("Disable Flight Mode!\n");
+                iface->call("emitShowTipsSignal", MappingTable::FlightOff);
+            } else {
+                qWarning("%s", result.toLatin1().data());
+            }
+        } else {
+            qWarning("Toggle Flight Mode Failed!");
+        }
+
+
+    } else {
+        qWarning("Get Current FlightMode Failed!");
+    }
+}
+
+void KMDaemon::screenLock(){
+    QFileInfo lock1("/usr/bin/mate-screensaver-command");
+    QFileInfo lock2("/usr/bin/ukui-screensaver-command");
+    QString cmd;
+    if (lock1.isExecutable()){
+        cmd = QString("mate-screensaver-command --lock");
+    } else if (lock2.isExecutable()){
+        cmd = QString("ukui-screensaver-command -l");
+    } else {
+        cmd = QString("");
+    }
+
+    if (!cmd.isEmpty())
+        system(cmd.toLatin1().data());
+}
+
+void KMDaemon::screenToggle(){
+    const QByteArray id(UK_POWERMANAGER_SCHEMA);
+    const QByteArray idd(KY_POWERMANAGER_SCHEMA);
+
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * st1 = new QGSettings(id);
+        int value = st1->get(BRIGHTNESS_KEY).toInt();
+
+        if (value == SCREENCLOSEVALUE){
+            st1->set(BRIGHTNESS_KEY, SCREENOPENVALUE);
+        } else {
+            st1->set(BRIGHTNESS_KEY, SCREENCLOSEVALUE);
+        }
+
+        delete st1;
+    } else if (QGSettings::isSchemaInstalled(idd)){
+        QGSettings * st1 = new QGSettings(idd);
+        int value = st1->get(BRIGHTNESS_KEY).toInt();
+
+        if (value == SCREENCLOSEVALUE){
+            st1->set(BRIGHTNESS_KEY, SCREENOPENVALUE);
+        } else {
+            st1->set(BRIGHTNESS_KEY, SCREENCLOSEVALUE);
+        }
+
+        delete st1;
+    } else {
+        qWarning("Touchpad GSettings is not install!");
     }
 }

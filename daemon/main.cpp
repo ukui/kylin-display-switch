@@ -28,6 +28,7 @@
 
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg){
+    Q_UNUSED(context)
     //加锁
     static QMutex mutex;
     mutex.lock();
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-//    qInstallMessageHandler(outputMessage);
+    qInstallMessageHandler(outputMessage);
 
     KMDaemon daemon;
     daemon.begin();

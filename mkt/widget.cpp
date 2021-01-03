@@ -43,10 +43,10 @@ Widget::Widget(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground, true);
 
 
-    QDesktopWidget* m = QApplication::desktop();
-    QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
+    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
+
 //    QRect rect = m->availableGeometry();
-    move(rect.width() * 3 /4, rect.height() - POSBOTTOM - this->height());
+    move(screenRect.width() * 3 /4, screenRect.height() - POSBOTTOM - this->height());
 
     pMappingTable = new MappingTable;
 

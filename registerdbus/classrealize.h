@@ -61,6 +61,8 @@ public slots:
 
     Q_SCRIPTABLE QString getCameraBusinfo();
     Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
+    Q_SCRIPTABLE int getCurrentFlightMode();
+    Q_SCRIPTABLE QString toggleFlightMode(bool enable);
 
 };
 

@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.8) v101; urgency=medium
+
+  * 增加飞行模式
+  * 增加一键锁屏
+  * 增加一键关屏
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
 kylin-display-switch (3.0.7) v101; urgency=medium
 
   * 增加摄像头功能

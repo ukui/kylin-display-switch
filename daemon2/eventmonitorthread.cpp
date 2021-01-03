@@ -103,15 +103,16 @@ void EventMonitorThread::run(){
                     }
                 }
             }
-nexttime:
+//nexttime:
             if (!eventFile.isEmpty())
                 break;
         }
         readFile->close();
     }
 
-    qDebug("Dev EventX is %s", eventFile.toLatin1().data());
+    qDebug("Dev EventX is %s\n", eventFile.toLatin1().data());
     if (eventFile.isEmpty()){
+        qWarning("Dev EventX is Empty!\n");
         return;
     }
 
@@ -140,7 +141,6 @@ nexttime:
 
                     if (pressTime.secsTo(QTime(0, 0, 0, 0)) != 0 && releaseTime.secsTo(QTime(0, 0, 0, 0)) != 0){
                         emit eventMeet(ie.code);
-//                        qDebug("emit %d", ie.code);
                         pressTime = QTime(0, 0, 0, 0);
                         releaseTime = QTime(0, 0, 0, 0);
                         longPressTime = QTime(0, 0, 0, 0);

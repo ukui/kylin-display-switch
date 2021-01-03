@@ -52,6 +52,9 @@ public:
     void touchpadToggle2(bool enable);
     void microphoneToggle();
     void cameraToggle();
+    void flightToggle();
+    void screenLock();
+    void screenToggle();
 
 private:
     QThread * thrd;

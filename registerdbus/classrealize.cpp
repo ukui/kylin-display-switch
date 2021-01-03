@@ -23,6 +23,30 @@
 
 #include "classrealize.h"
 
+extern "C" {
+
+#include <linux/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#define RFKILL_EVENT_SIZE_V1	8
+
+struct rfkill_event {
+    __u32 idx;
+    __u8  type;
+    __u8  op;
+    __u8  soft, hard;
+};
+
+enum rfkill_operation {
+    RFKILL_OP_ADD = 0,
+    RFKILL_OP_DEL,
+    RFKILL_OP_CHANGE,
+    RFKILL_OP_CHANGE_ALL,
+};
+
+}
+
 ClassRealize::ClassRealize()
 {
 
@@ -148,10 +172,93 @@ QString ClassRealize::toggleCameraDevice(QString businfo){
     if (isExists){
         QString cmd = QString("echo '%1' > %2/unbind").arg(businfo).arg(path);
         system(cmd.toLatin1().data());
-        return QString("Camera Device unbinded!");
+        return QString("unbinded");
     } else {
         QString cmd = QString("echo '%1' > %2/bind").arg(businfo).arg(path);
         system(cmd.toLatin1().data());
-        return QString("Camera Device binded!");
+        return QString("binded");
     }
+}
+
+int ClassRealize::getCurrentFlightMode(){
+
+    struct rfkill_event event;
+    ssize_t len;
+    int fd;
+
+    int fm = 1;
+
+    fd = open("/dev/rfkill", O_RDONLY);
+    if (fd < 0) {
+        perror("Can't open RFKILL control device");
+        return -1;
+    }
+
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
+        perror("Can't set RFKILL control device to non-blocking");
+        close(fd);
+        return -1;
+    }
+
+    while (1) {
+        len = read(fd, &event, sizeof(event));
+        if (len < 0) {
+            if (errno == EAGAIN)
+                break;
+            perror("Reading of RFKILL events failed");
+            break;
+        }
+
+        if (len != RFKILL_EVENT_SIZE_V1) {
+            fprintf(stderr, "Wrong size of RFKILL event\n");
+            continue;
+        }
+
+//        printf("%u: %u\n", event.idx, event.soft);
+
+        if (!event.soft)
+            fm = 0;
+
+    }
+
+    close(fd);
+    return fm;
+}
+
+QString ClassRealize::toggleFlightMode(bool enable){
+
+    struct rfkill_event event;
+    int fd;
+    ssize_t len;
+
+    __u8 block;
+
+    fd = open("/dev/rfkill", O_RDWR);
+    if (fd < 0) {
+        return QString("Can't open RFKILL control device");
+    }
+
+    if (enable){
+        block = 1;
+    } else {
+        block = 0;
+    }
+
+    memset(&event, 0, sizeof(event));
+
+    event.op= RFKILL_OP_CHANGE_ALL;
+
+    /* RFKILL_TYPE_ALL = 0 */
+    event.type = 0;
+
+    event.soft = block;
+
+    len = write(fd, &event, sizeof(event));
+
+    if (len < 0){
+        return QString("Failed to change RFKILL state");
+    }
+
+    close(fd);
+    return block ? QString("blocked") : QString("unblocked");
 }

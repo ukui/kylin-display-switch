@@ -26,7 +26,7 @@ KeyMonitorThread::KeyMonitorThread(QObject *parent) :
 {
     display = XOpenDisplay(0);
     if (display == 0) {
-        fprintf(stderr, "unable to open display\n");
+        qCritical("unable to open display\n");
         return;
     }
 
@@ -48,7 +48,7 @@ void KeyMonitorThread::run(){
     XRecordClientSpec clients = XRecordAllClients;
     XRecordRange* range = XRecordAllocRange();
     if (range == 0) {
-        fprintf(stderr, "unable to allocate XRecordRange\n");
+        qCritical("unable to allocate XRecordRange\n");
         return;
     }
 
@@ -60,7 +60,7 @@ void KeyMonitorThread::run(){
     // And create the XRECORD context.
     XRecordContext context = XRecordCreateContext(display, 0, &clients, 1, &range, 1);
     if (context == 0) {
-        fprintf(stderr, "XRecordCreateContext failed\n");
+        qCritical("XRecordCreateContext failed\n");
         return;
     }
     XFree(range);
@@ -69,12 +69,12 @@ void KeyMonitorThread::run(){
 
     Display* display_datalink = XOpenDisplay(0);
     if (display_datalink == 0) {
-        fprintf(stderr, "unable to open second display\n");
+        qCritical("unable to open second display\n");
         return;
     }
 
     if (!XRecordEnableContext(display_datalink, context,  callback, (XPointer) this)) {
-        fprintf(stderr, "XRecordEnableContext() failed\n");
+        qCritical("XRecordEnableContext() failed\n");
         return;
     }
 
