@@ -21,12 +21,34 @@
 #include <QApplication>
 #include "qtsingleapplication.h"
 
+#include <X11/Xlib.h>
+
 #include <QTranslator>
 
-#include <QDebug>
+int getCurrentScreenWidth(){
+    Display * pDis = XOpenDisplay(0);
+    if (NULL == pDis){
+        return 0;
+    }
+
+    Screen * pScreen = DefaultScreenOfDisplay(pDis);
+    if (NULL == pScreen){
+        return 0;
+    }
+
+    int width = pScreen->width;
+    XCloseDisplay(pDis);
+
+    return width;
+}
+
 
 int main(int argc, char *argv[])
 {
+    if (getCurrentScreenWidth() > 2560){
+        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    }
 
     QString id = QString("kds" + QLatin1String(getenv("DISPLAY")));
 

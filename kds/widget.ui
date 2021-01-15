@@ -123,7 +123,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>PrimaryOutput:</string>
+             <string>FirstOutput:</string>
             </property>
            </widget>
           </item>

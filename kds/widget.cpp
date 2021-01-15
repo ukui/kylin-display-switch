@@ -20,10 +20,11 @@
 #include "widget.h"
 #include "ui_widget.h"
 
-#include <QDesktopWidget>
 #include <QDebug>
-#include <QTimer>
+#include <QScreen>
 #include <QDBusConnection>
+
+#include <kwindowsystem.h>
 
 #include "expendbutton.h"
 
@@ -44,10 +45,12 @@ Widget::Widget(QWidget *parent) :
 
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    QDesktopWidget* m = QApplication::desktop();
-//    QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
-    QRect rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
-    move((rect.width() - this->width())/2, (rect.height() - this->height()) / 2);
+    /* 不在任务栏显示图标 */
+    KWindowSystem::setState(winId(), NET::SkipTaskbar | NET::SkipPager);
+
+    QScreen * pScreen = QGuiApplication::screens().at(0);
+    QPoint point = pScreen->geometry().center();
+    move(point.x() - width()/2, point.y() - height()/2);
 
     initData();
 
@@ -94,26 +97,6 @@ Widget::Widget(QWidget *parent) :
 Widget::~Widget()
 {
     delete ui;
-
-    if (primaryConfig){
-        g_object_unref(primaryConfig);
-        primaryConfig = NULL;
-    }
-
-    if (cloneConfig){
-        g_object_unref(cloneConfig);
-        cloneConfig = NULL;
-    }
-
-    if (extendConfig){
-        g_object_unref(extendConfig);
-        extendConfig = NULL;
-    }
-
-    if (viceConfig){
-        g_object_unref(viceConfig);
-        viceConfig = NULL;
-    }
 }
 
 void Widget::initData(){
@@ -127,16 +110,11 @@ void Widget::initData(){
 
     primaryName = NULL;
 
-    primaryConfig = makePrimarySetup();
-    cloneConfig = makeCloneSetup();
-    extendConfig = makeXineramaSetup();
-    viceConfig = makeOtherSetup();
-
 }
 
 void Widget::setupComponent(){
 
-    setCurrentPrimaryOutputTip();
+    setCurrentFirstOutputTip();
 
     btnsGroup->addButton(ui->mainBtn, MAINSCREEN);
     btnsGroup->addButton(ui->cloneBtn, CLONESCREEN);
@@ -149,7 +127,7 @@ void Widget::setupComponent(){
         switch (btnsGroup->id(btn)) {
         case MAINSCREEN:
             btn->setSign(MAINSCREEN % 2);
-            btn->setBtnText(tr("Main Screen"));
+            btn->setBtnText(tr("First Screen"));
             btn->setBtnLogo(":/img/main.png");
             break;
         case CLONESCREEN:
@@ -258,8 +236,6 @@ void Widget::setupConnect(){
                 g_error_free (error);
             }
 
-//            setCurrentPrimaryOutputTip();
-
 closeapp:
             close();
         }
@@ -283,22 +259,46 @@ void Widget::initCurrentStatus(){
 
     int status;
 
-    if (mate_rr_config_equal(current, primaryConfig)){
-//        qDebug() << "init status:" << MAINSCREEN;
-        status = MAINSCREEN;
-    } else if (mate_rr_config_equal(current, cloneConfig)){
-//        qDebug() << "init status:" << CLONESCREEN;
+    if (mate_rr_config_get_clone(current)){
         status = CLONESCREEN;
-    } else if (mate_rr_config_equal(current, extendConfig)){
-//        qDebug() << "init status:" << EXTENDSCREEN;
-        status = EXTENDSCREEN;
-    } else if (mate_rr_config_equal(current, viceConfig)){
-//        qDebug() << "init status:" << VICESCREEN;
-        status = VICESCREEN;
     } else {
-//        qDebug() << "init status:" << -1;
-        status = -1;
+
+        bool hasclosed = false;
+
+        char * firstName = _findFirstOutput(current);
+
+        MateRROutputInfo ** outputs = mate_rr_config_get_outputs(current);
+
+        for (int i = 0; outputs[i] != NULL; i++){
+            MateRROutputInfo * info = outputs[i];
+
+            if (mate_rr_output_info_is_connected(info)){
+
+                char * pName = mate_rr_output_info_get_name(info);
+
+                if (!mate_rr_output_info_is_active(info)){
+                    hasclosed = true;
+
+                    if (strcmp(firstName, pName) == 0){
+                        status = VICESCREEN;
+
+                        goto jumppoint1;
+                    }
+
+                } else {
+
+                }
+            }
+        }
+
+        if (hasclosed){
+            status = MAINSCREEN;
+        } else {
+            status = EXTENDSCREEN;
+        }
     }
+
+jumppoint1:
 
     g_object_unref(current);
     current = NULL;
@@ -328,32 +328,34 @@ void Widget::setCurrentStatus(int id){
     }
 }
 
-void Widget::setCurrentPrimaryOutputTip(){
+void Widget::setCurrentFirstOutputTip(){
 
     char * pName;
     char * pDisplayName;
+
+    char * firstName;
 
     MateRRConfig * config = mate_rr_config_new_current(kScreen, NULL);
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
 
+    firstName = _findFirstOutput(config);
+
     for (int i = 0; outputs[i] != NULL; i++){
         MateRROutputInfo * info = outputs[i];
 
-        if (mate_rr_output_info_get_primary(info)){
+        if (mate_rr_output_info_is_connected(info)){
 
             pName = mate_rr_output_info_get_name(info);
             pDisplayName = mate_rr_output_info_get_display_name(info);
 
-            ui->outputName->setText(QString(pName));
-            ui->outputDisplayName->setText(QString(pDisplayName));
-            return;
+            if (strcmp(firstName, pName) == 0){
+                ui->outputName->setText(QString(pName));
+                ui->outputDisplayName->setText(QString(pDisplayName));
+            }
         }
 
     }
-
-    ui->outputName->setText(QString(""));
-    ui->outputDisplayName->setText(QString(""));
 }
 
 void Widget::nextSelectedOption(){
@@ -455,18 +457,23 @@ MateRRConfig * Widget::makeCloneSetup() {
 
 MateRRConfig * Widget::makePrimarySetup(){
 
-    /* Turn on the laptop, disable everything else */
+    char * firstName;
+
+    /* Turn on the first screen, disable everything else */
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs(current);
 
     mate_rr_config_set_clone(current, FALSE);
 
-    //found primary output
-    _findPrimaryOutput(current);
+    /* found first output */
+    firstName = _findFirstOutput(current);
 
     for (int i = 0; outputs[i] != NULL; i++){
         MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_get_primary(info)){
+
+        char * pName = mate_rr_output_info_get_name(info);
+
+        if (strcmp(firstName, pName) == 0){
             if (!_turnonOutput(info, 0, 0)){
                 break;
             }
@@ -485,6 +492,8 @@ MateRRConfig * Widget::makePrimarySetup(){
 
 MateRRConfig * Widget::makeOtherSetup(){
 
+    char * firstName;
+
     /* Turn off primary output, and make all external monitors clone from (0, 0) */
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (current);
@@ -492,12 +501,15 @@ MateRRConfig * Widget::makeOtherSetup(){
     mate_rr_config_set_clone(current, FALSE);
 
     //found primary output
-    _findPrimaryOutput(current);
+//    _findPrimaryOutput(current);
+    firstName = _findFirstOutput(current);
 
     for (int i = 0; outputs[i] != NULL; i++){
         MateRROutputInfo * info = outputs[i];
 
-        if (mate_rr_output_info_get_primary(info)){
+        char * pName = mate_rr_output_info_get_name(info);
+
+        if (strcmp(firstName, pName) == 0){
             mate_rr_output_info_set_active(info, FALSE);
         } else {
             if (mate_rr_output_info_is_connected(info)){
@@ -626,6 +638,34 @@ bool Widget::_findPrimaryOutput(MateRRConfig *config){
     mate_rr_config_ensure_primary(config);
 
     return true;
+}
+
+char *Widget::_findFirstOutput(MateRRConfig *config){
+
+    int firstid = 99999;
+    char * firstname;
+
+    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
+
+    for (int i = 0; outputs[i] != NULL; i++){
+        MateRROutputInfo * info = outputs[i];
+
+        if (mate_rr_output_info_is_connected(info)){
+            int currentid;
+
+            MateRROutput * output = mate_rr_screen_get_output_by_name(kScreen, mate_rr_output_info_get_name(info));
+
+            currentid = mate_rr_output_get_id(output);
+
+            if (firstid > currentid){
+                firstid = currentid;
+                firstname = mate_rr_output_info_get_name(info);
+            }
+        }
+
+    }
+
+    return firstname;
 }
 
 bool Widget::_turnonOutput(MateRROutputInfo *info, int x, int y){

@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.9) v101; urgency=medium
+
+  * 逻辑重新设计，基准由主屏(可变属性)改为屏幕序号(固定属性)
+  * KDS界面不在任务栏显示图标
+
+ -- hebing <hebing@kylinos.cn>  Fri, 15 Jan 2021 20:18:21 +0800
+
 kylin-display-switch (3.0.8) v101; urgency=medium
 
   * 增加飞行模式

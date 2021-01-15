@@ -63,7 +63,7 @@ public:
     void initCurrentStatus();
 
     void setCurrentStatus(int id);
-    void setCurrentPrimaryOutputTip();
+    void setCurrentFirstOutputTip();
 
 private:
     Ui::Widget *ui;
@@ -72,10 +72,6 @@ private:
 private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
-    MateRRConfig * primaryConfig;
-    MateRRConfig * cloneConfig;
-    MateRRConfig * extendConfig;
-    MateRRConfig * viceConfig;
 
     char * primaryName;
 
@@ -87,6 +83,8 @@ private:
     MateRRMode * _findBestMode(MateRROutput * output);
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
     bool _configIsAllOff(MateRRConfig * config);
+
+    char * _findFirstOutput(MateRRConfig * config);
 
 public slots:
     void msgReceiveAnotherOne(const QString &msg);

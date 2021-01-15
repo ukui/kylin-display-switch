@@ -22,6 +22,10 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QSystemTrayIcon>
+#include <QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusReply>
 
 #include "mappingtable.h"
 
@@ -39,14 +43,25 @@ public:
 
 public:
     void setupComponent();
+    void setMKTgeometry();
 
 private:
     Ui::Widget *ui;
 
 private:
+    void createTrayIcon();
+
+    QSystemTrayIcon *trayIcon;
+
+private:
     QTimer * pTimer;
 
     MappingTable * pMappingTable;
+
+    QDBusInterface * iface;
+
+private:
+    void flightToggleClick();
 
 public slots:
     void showTipsOnDesktop(int index);

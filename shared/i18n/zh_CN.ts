@@ -15,28 +15,28 @@
     </message>
     <message>
         <location filename="../../kds/widget.ui" line="126"/>
-        <source>PrimaryOutput:</source>
-        <translation>当前主屏：</translation>
+        <source>FirstOutput:</source>
+        <translation>第一屏幕：</translation>
     </message>
     <message>
-        <location filename="../../kds/widget.cpp" line="152"/>
-        <source>Main Screen</source>
-        <translation>仅主屏幕</translation>
+        <location filename="../../kds/widget.cpp" line="133"/>
+        <source>First Screen</source>
+        <translation>第一屏</translation>
     </message>
     <message>
-        <location filename="../../kds/widget.cpp" line="157"/>
+        <location filename="../../kds/widget.cpp" line="138"/>
         <source>Clone Screen</source>
         <translation>镜像屏</translation>
     </message>
     <message>
-        <location filename="../../kds/widget.cpp" line="162"/>
+        <location filename="../../kds/widget.cpp" line="143"/>
         <source>Extend Screen</source>
         <translation>扩展屏</translation>
     </message>
     <message>
-        <location filename="../../kds/widget.cpp" line="167"/>
+        <location filename="../../kds/widget.cpp" line="148"/>
         <source>Vice Screen</source>
-        <translation>仅副屏幕</translation>
+        <translation>其他屏</translation>
     </message>
 </context>
 </TS>

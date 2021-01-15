@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui dbus network
+QT       += core gui dbus network KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,6 +19,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 include (../shared/qtsingleapplication/qtsingleapplication.pri)
+
+LIBS += -lX11
 
 
 CONFIG += link_pkgconfig

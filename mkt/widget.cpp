@@ -21,8 +21,7 @@
 #include "ui_widget.h"
 
 #include <QDesktopWidget>
-#include <QDBusConnection>
-
+#include <QScreen>
 #include <QProcess>
 
 #include <QVBoxLayout>
@@ -43,14 +42,16 @@ Widget::Widget(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground, true);
 
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
-
-//    QRect rect = m->availableGeometry();
-    move(screenRect.width() * 3 /4, screenRect.height() - POSBOTTOM - this->height());
-
     pMappingTable = new MappingTable;
 
+    iface = new QDBusInterface("org.ukui.kds", \
+                               "/", \
+                               "org.ukui.kds.interface", \
+                               QDBusConnection::systemBus());
+
     setupComponent();
+
+    createTrayIcon();
 
     pTimer = new QTimer(this);
     pTimer->setInterval(2500);
@@ -59,6 +60,17 @@ Widget::Widget(QWidget *parent) :
         pTimer->stop();
         this->hide();
     });
+
+    connect(QApplication::desktop(), &QDesktopWidget::resized, this, [=]{
+        setMKTgeometry();
+    });
+    connect(QApplication::desktop(), &QDesktopWidget::screenCountChanged, this, [=]{
+        setMKTgeometry();
+    });
+    connect(QApplication::desktop(), &QDesktopWidget::primaryScreenChanged, this, [=]{
+        setMKTgeometry();
+    });
+
 
     QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalShowTips", this, SLOT(showTipsOnDesktop(int)));
 }
@@ -70,7 +82,15 @@ Widget::~Widget()
     delete pMappingTable;
 }
 
+void Widget::setMKTgeometry(){
+    QScreen * pScreen = QGuiApplication::screens().at(0);
+    QRect rect = pScreen->geometry();
+    move(rect.right() - (rect.width() * 1 / 4), (rect.bottom() + 1) - POSBOTTOM - height());
+}
+
 void Widget::setupComponent(){
+
+    setMKTgeometry();
 
     for (int i = 0; i < MappingTable::HandleKeys; i++){
         QString funWord = pMappingTable->keyCodeToString(i);
@@ -94,9 +114,62 @@ void Widget::setupComponent(){
     }
 }
 
+void Widget::createTrayIcon(){
+    trayIcon = new QSystemTrayIcon;
+    trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+    trayIcon->setVisible(true);
+
+    connect(trayIcon, &QSystemTrayIcon::activated, this, [=](QSystemTrayIcon::ActivationReason reason){
+        switch (reason) {
+        case QSystemTrayIcon::Trigger:
+            flightToggleClick();
+            break;
+        case QSystemTrayIcon::DoubleClick:
+            break;
+        case QSystemTrayIcon::MiddleClick:
+            break;
+        default:
+            ;
+        }
+    });
+}
+
 void Widget::showTipsOnDesktop(int index){
     this->hide();
     ui->stackedWidget->setCurrentIndex(index);
     this->show();
     pTimer->start();
+}
+
+void Widget::flightToggleClick(){
+
+    QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (current == -1){
+//            qWarning("Error Occur When Get Current FlightMode");
+            return;
+        }
+
+        QDBusReply<QString> reply2 = iface->call("toggleFlightMode", !current);
+        if (reply.isValid()){
+            QString result = reply2.value();
+            if (result == QString("blocked")){
+//                qDebug("Enable Flight Mode!\n");
+                trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+            } else if (result == QString("unblocked")){
+//                qDebug("Disable Flight Mode!\n");
+                trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
+            } else {
+//                qWarning("%s", result.toLatin1().data());
+            }
+        } else {
+//            qWarning("Toggle Flight Mode Failed!");
+        }
+
+
+    } else {
+//        qWarning("Get Current FlightMode Failed!");
+    }
 }
