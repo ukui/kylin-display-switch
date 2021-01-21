@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.10) v101; urgency=medium
+
+  * 增加蓝牙，Wlan开启/关闭的dbus接口
+  * 托盘图标切换飞行模式后增加状态提示图标
+  * 不再响应Win+p，由settings-daemon响应
+
+ -- hebing <hebing@kylinos.cn>  Thu, 21 Jan 2021 19:40:21 +0800
+
 kylin-display-switch (3.0.9) v101; urgency=medium
 
   * 逻辑重新设计，基准由主屏(可变属性)改为屏幕序号(固定属性)

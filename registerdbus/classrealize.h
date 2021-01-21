@@ -63,6 +63,10 @@ public slots:
     Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
     Q_SCRIPTABLE int getCurrentFlightMode();
     Q_SCRIPTABLE QString toggleFlightMode(bool enable);
+    Q_SCRIPTABLE int getCurrentWlanMode();
+    Q_SCRIPTABLE QString toggleWlanMode(bool enable);
+    Q_SCRIPTABLE int getCurrentBluetoothMode();
+    Q_SCRIPTABLE QString toggleBluetoothMode(bool enable);
 
 };
 

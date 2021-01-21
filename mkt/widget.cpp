@@ -116,7 +116,20 @@ void Widget::setupComponent(){
 
 void Widget::createTrayIcon(){
     trayIcon = new QSystemTrayIcon;
-    trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+
+    QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (!current){
+            trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
+        } else {
+            trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+        }
+    } else {
+        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+    }
+
     trayIcon->setVisible(true);
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, [=](QSystemTrayIcon::ActivationReason reason){
@@ -158,9 +171,11 @@ void Widget::flightToggleClick(){
             if (result == QString("blocked")){
 //                qDebug("Enable Flight Mode!\n");
                 trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+                showTipsOnDesktop(MappingTable::FlightOn);
             } else if (result == QString("unblocked")){
 //                qDebug("Disable Flight Mode!\n");
                 trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
+                showTipsOnDesktop(MappingTable::FlightOff);
             } else {
 //                qWarning("%s", result.toLatin1().data());
             }

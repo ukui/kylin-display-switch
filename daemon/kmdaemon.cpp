@@ -100,12 +100,12 @@ KMDaemon::KMDaemon()
             modifyKeyPressed = true;
         } else if (mks == XK_p){
             if (modifyKeyPressed){
-                qDebug("Win + P Pressed!\n");
-                QProcess process;
-                QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-                env.insert("DISPLAY", ":0");
-                process.setProcessEnvironment(env);
-                process.startDetached("/usr/bin/kydisplayswitch");
+//                qDebug("Win + P Pressed!\n");
+//                QProcess process;
+//                QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+//                env.insert("DISPLAY", ":0");
+//                process.setProcessEnvironment(env);
+//                process.startDetached("/usr/bin/kydisplayswitch");
 
             } else {
                 iface->call("emitCloseApp");
