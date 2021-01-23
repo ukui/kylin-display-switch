@@ -47,3 +47,6 @@ FORMS += \
 
 RESOURCES += \
     res/img.qrc
+
+TRANSLATIONS +=  \
+                res/zh_CN.ts \

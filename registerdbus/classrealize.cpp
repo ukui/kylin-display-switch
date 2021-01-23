@@ -197,17 +197,18 @@ int ClassRealize::getCurrentWlanMode(){
     struct rfkill_event event;
     ssize_t len;
     int fd;
+    int bls = 0, unbls = 0;
 
-    int fm = 0;
+    QList<int> status;
 
     fd = open("/dev/rfkill", O_RDONLY);
     if (fd < 0) {
-        perror("Can't open RFKILL control device");
+        qCritical("Can't open RFKILL control device");
         return -1;
     }
 
     if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
-        perror("Can't set RFKILL control device to non-blocking");
+        qCritical("Can't set RFKILL control device to non-blocking");
         close(fd);
         return -1;
     }
@@ -217,12 +218,12 @@ int ClassRealize::getCurrentWlanMode(){
         if (len < 0) {
             if (errno == EAGAIN)
                 break;
-            perror("Reading of RFKILL events failed");
+            qWarning("Reading of RFKILL events failed");
             break;
         }
 
         if (len != RFKILL_EVENT_SIZE_V1) {
-            fprintf(stderr, "Wrong size of RFKILL event\n");
+            qWarning("Wrong size of RFKILL event\n");
             continue;
         }
 
@@ -230,15 +231,26 @@ int ClassRealize::getCurrentWlanMode(){
         if (event.type != RFKILL_TYPE_WLAN)
             continue;
 
-//        printf("FIX: %u - %u: %u\n", event.idx, event.type, event.soft);
-        /* WLAN block is no, so WIFI mode is On*/
-        if (!event.soft){
-            fm = 1;
-        }
+        status.append(event.soft ? 1 : 0);
     }
 
     close(fd);
-    return fm;
+
+    if (status.length() == 0){
+        return -1;
+    }
+
+    for (int s : status){
+        s ? bls++ : unbls++;
+    }
+
+    if (bls == status.length()){ //block
+        return 0;
+    } else if (unbls == status.length()){ //unblock
+        return 1;
+    } else { //not block & not unblock
+        return -1;
+    }
 }
 
 QString ClassRealize::toggleWlanMode(bool enable){
@@ -278,17 +290,18 @@ int ClassRealize::getCurrentBluetoothMode(){
     struct rfkill_event event;
     ssize_t len;
     int fd;
+    int bls = 0, unbls = 0;
 
-    int fm = 0;
+    QList<int> status;
 
     fd = open("/dev/rfkill", O_RDONLY);
     if (fd < 0) {
-        perror("Can't open RFKILL control device");
+        qCritical("Can't open RFKILL control device");
         return -1;
     }
 
     if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
-        perror("Can't set RFKILL control device to non-blocking");
+        qCritical("Can't set RFKILL control device to non-blocking");
         close(fd);
         return -1;
     }
@@ -298,12 +311,12 @@ int ClassRealize::getCurrentBluetoothMode(){
         if (len < 0) {
             if (errno == EAGAIN)
                 break;
-            perror("Reading of RFKILL events failed");
+            qWarning("Reading of RFKILL events failed");
             break;
         }
 
         if (len != RFKILL_EVENT_SIZE_V1) {
-            fprintf(stderr, "Wrong size of RFKILL event\n");
+            qWarning("Wrong size of RFKILL event\n");
             continue;
         }
 
@@ -311,15 +324,26 @@ int ClassRealize::getCurrentBluetoothMode(){
         if (event.type != RFKILL_TYPE_BLUETOOTH)
             continue;
 
-//        printf("FIX: %u - %u: %u\n", event.idx, event.type, event.soft);
-        /* BT block is no, so BT mode is On*/
-        if (!event.soft){
-            fm = 1;
-        }
+        status.append(event.soft ? 1 : 0);
     }
 
     close(fd);
-    return fm;
+
+    if (status.length() == 0){
+        return -1;
+    }
+
+    for (int s : status){
+        s ? bls++ : unbls++;
+    }
+
+    if (bls == status.length()){ //block
+        return 0;
+    } else if (unbls == status.length()){ //unblock
+        return 1;
+    } else { //not block & not unblock
+        return -1;
+    }
 }
 
 QString ClassRealize::toggleBluetoothMode(bool enable){
@@ -359,44 +383,59 @@ int ClassRealize::getCurrentFlightMode(){
     struct rfkill_event event;
     ssize_t len;
     int fd;
+    int bls = 0, unbls = 0;
 
-    int fm = 1;
+    QList<int> status;
 
     fd = open("/dev/rfkill", O_RDONLY);
     if (fd < 0) {
-        perror("Can't open RFKILL control device");
+        qCritical("Can't open RFKILL control device");
         return -1;
     }
 
     if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
-        perror("Can't set RFKILL control device to non-blocking");
+        qCritical("Can't set RFKILL control device to non-blocking");
         close(fd);
         return -1;
     }
 
     while (1) {
         len = read(fd, &event, sizeof(event));
+
         if (len < 0) {
             if (errno == EAGAIN)
                 break;
-            perror("Reading of RFKILL events failed");
+            qWarning("Reading of RFKILL events failed");
             break;
         }
 
         if (len != RFKILL_EVENT_SIZE_V1) {
-            fprintf(stderr, "Wrong size of RFKILL event\n");
+            qWarning("Wrong size of RFKILL event\n");
             continue;
         }
 
 //        printf("%u: %u\n", event.idx, event.soft);
-
-        if (!event.soft)
-            fm = 0;
+        status.append(event.soft ? 1 : 0);
 
     }
 
     close(fd);
-    return fm;
+
+    if (status.length() == 0){
+        return -1;
+    }
+
+    for (int s : status){
+        s ? bls++ : unbls++;
+    }
+
+    if (bls == status.length()){ //block
+        return 1;
+    } else if (unbls == status.length()){ //unblock
+        return 0;
+    } else { //not block & not unblock
+        return -1;
+    }
 }
 
 QString ClassRealize::toggleFlightMode(bool enable){

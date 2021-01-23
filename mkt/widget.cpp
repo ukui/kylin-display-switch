@@ -115,22 +115,27 @@ void Widget::setupComponent(){
 }
 
 void Widget::createTrayIcon(){
-    trayIcon = new QSystemTrayIcon;
 
     QDBusReply<int> reply = iface->call("getCurrentFlightMode");
-    if (reply.isValid()){
-        int current = reply.value();
+    /* 未获取到当前飞行模式状态 */
+    if (!reply.isValid())
+        return;
 
-        if (!current){
-            trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
-        } else {
-            trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
-        }
+    int current = reply.value();
+
+    /* 获取飞行模式出错 | 计算机没有无线设备 */
+    if (current == -1)
+        return;
+
+    trayIcon = new QSystemTrayIcon;
+    if (current){
+        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-symbolic"));
     } else {
-        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
     }
 
     trayIcon->setVisible(true);
+    trayIcon->setToolTip(tr("Airplane Mode"));
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, [=](QSystemTrayIcon::ActivationReason reason){
         switch (reason) {

@@ -263,7 +263,8 @@ void Widget::initCurrentStatus(){
         status = CLONESCREEN;
     } else {
 
-        bool hasclosed = false;
+        bool firstOutputActive = true;
+        QList<bool> actives;
 
         char * firstName = _findFirstOutput(current);
 
@@ -277,28 +278,42 @@ void Widget::initCurrentStatus(){
                 char * pName = mate_rr_output_info_get_name(info);
 
                 if (!mate_rr_output_info_is_active(info)){
-                    hasclosed = true;
+                    actives.append(false);
 
                     if (strcmp(firstName, pName) == 0){
-                        status = VICESCREEN;
-
-                        goto jumppoint1;
+                        firstOutputActive = false;
                     }
 
                 } else {
-
+                    actives.append(true);
                 }
             }
         }
 
-        if (hasclosed){
+        if (actives.length() < 2){
             status = MAINSCREEN;
-        } else {
-            status = EXTENDSCREEN;
+            goto jp1;
         }
+
+        int acs = 0, disacs = 0;
+
+        for (bool b : actives){
+            b ? acs++ : disacs++;
+        }
+
+        if (acs == actives.length()){
+            status = EXTENDSCREEN;
+        } else {
+            if (firstOutputActive)
+                status = MAINSCREEN;
+            else
+                status = VICESCREEN;
+        }
+
+
     }
 
-jumppoint1:
+jp1:
 
     g_object_unref(current);
     current = NULL;

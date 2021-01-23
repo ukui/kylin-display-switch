@@ -24,6 +24,8 @@
 
 #include "qtsingleapplication.h"
 
+#include <QTranslator>
+
 int getCurrentScreenWidth(){
     Display * pDis = XOpenDisplay(0);
     if (NULL == pDis){
@@ -56,6 +58,10 @@ int main(int argc, char *argv[])
 //        app.sendMessage("hello world!");
         return 0; /* EXIT_SUCCESS */
     }
+
+    QTranslator qtTranslator;
+    qtTranslator.load(":/zh_CN");
+    app.installTranslator(&qtTranslator);
 
     Widget w;
 //    QObject::connect(&app, &QtSingleApplication::messageReceived, &w, &Widget::msgReceiveAnotherOne);

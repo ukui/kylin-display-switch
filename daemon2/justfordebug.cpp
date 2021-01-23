@@ -48,7 +48,6 @@ void JustForDebug::generalFun(){
 }
 
 int JustForDebug::generalFun2(){
-
     return 0;
 }
 

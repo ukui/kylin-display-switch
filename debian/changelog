@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.11) v101; urgency=medium
+
+  * 优化飞行模式托盘图标逻辑;优化飞行模式、蓝牙、WiFi的当前状态获取
+
+ -- hebing <hebing@kylinos.cn>  Thu, 21 Jan 2021 19:40:21 +0800
+
 kylin-display-switch (3.0.10) v101; urgency=medium
 
   * 增加蓝牙，Wlan开启/关闭的dbus接口

@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
     EMDaemon daemon;
 
 #if 0
-    qDebug() << "";
     JustForDebug jfd;
     jfd.generalFun();
 
