@@ -129,9 +129,9 @@ void Widget::createTrayIcon(){
 
     trayIcon = new QSystemTrayIcon;
     if (current){
-        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-symbolic"));
+        trayIcon->setIcon(QIcon::fromTheme("airplane-mode-symbolic"));
     } else {
-        trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
+        trayIcon->setIcon(QIcon::fromTheme("airplane-mode-closed-symbolic"));
     }
 
     trayIcon->setVisible(true);
@@ -175,11 +175,11 @@ void Widget::flightToggleClick(){
             QString result = reply2.value();
             if (result == QString("blocked")){
 //                qDebug("Enable Flight Mode!\n");
-                trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-open"));
+                trayIcon->setIcon(QIcon::fromTheme("airplane-mode-symbolic"));
                 showTipsOnDesktop(MappingTable::FlightOn);
             } else if (result == QString("unblocked")){
 //                qDebug("Disable Flight Mode!\n");
-                trayIcon->setIcon(QIcon::fromTheme("ukui-airplane-mode-closed-symbolic"));
+                trayIcon->setIcon(QIcon::fromTheme("airplane-mode-closed-symbolic"));
                 showTipsOnDesktop(MappingTable::FlightOff);
             } else {
 //                qWarning("%s", result.toLatin1().data());

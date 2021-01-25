@@ -56,11 +56,16 @@ public:
     void screenLock();
     void screenToggle();
 
+    void keyboardLightInit();
+    void airplanModeKeyLightInit();
+    void disableCameraKeyLightInit();
+
 private:
     QThread * thrd;
     KeyMonitorThread * kmt;
 
     QDBusInterface * iface;
+    QDBusInterface * ifaceScreenSaver;
 
 private:
     bool modifyKeyPressed;

@@ -21,6 +21,8 @@
 #include <QCoreApplication>
 #include <QProcess>
 
+#include <QDebug>
+
 #include "classrealize.h"
 
 extern "C" {
@@ -121,15 +123,15 @@ QString ClassRealize::getCameraBusinfo(){
     QFileInfoList fileinfoList = dir.entryInfoList();
 
     for(QFileInfo fileinfo : fileinfoList){
-        if (fileinfo.baseName() == "." || fileinfo.baseName() == ".."){
+        if (fileinfo.fileName() == "." || fileinfo.fileName() == ".."){
             continue;
         }
 
-        if (fileinfo.baseName().contains(":")){
+        if (fileinfo.fileName().contains(":")){
             continue;
         }
 
-        if (fileinfo.baseName().startsWith("usb")){
+        if (fileinfo.fileName().startsWith("usb")){
             continue;
         }
 //        qDebug() << "" << fileinfo.fileName() << fileinfo.absoluteFilePath();
@@ -137,7 +139,7 @@ QString ClassRealize::getCameraBusinfo(){
         subdir.setFilter(QDir::Files);
         QFileInfoList fileinfoList2 = subdir.entryInfoList();
         for (QFileInfo fileinfo2 : fileinfoList2){
-            if (fileinfo2.baseName() == "product"){
+            if (fileinfo2.fileName() == "product"){
                 QFile pfile(fileinfo2.absoluteFilePath());
                 if (!pfile.open(QIODevice::ReadOnly | QIODevice::Text))
                     return QString();
@@ -145,7 +147,7 @@ QString ClassRealize::getCameraBusinfo(){
                 QString output = pstream.readAll();
 //                qDebug() << "output: " << output;
                 if (output.contains("camera", Qt::CaseInsensitive)){
-                    return fileinfo.baseName();
+                    return fileinfo.fileName();
                 }
 
             }
@@ -156,33 +158,51 @@ QString ClassRealize::getCameraBusinfo(){
     return QString();
 }
 
-QString ClassRealize::toggleCameraDevice(QString businfo){
-    bool isExists = false;
+int ClassRealize::getCameraDeviceEnable(){
+
+    QString businfo = getCameraBusinfo();
+    if (businfo.isEmpty())
+        return -1;
+
+    int isExists = 0;
 
     QString path = QString("/sys/bus/usb/drivers/usb/");
     QDir dir(path);
     if (!dir.exists()){
-        return QString("USB Drivers Dir Not Exists!");
+        return -1;
     }
     dir.setFilter(QDir::Dirs);
     dir.setSorting(QDir::Name);
     QFileInfoList fileinfoList = dir.entryInfoList();
 
     for(QFileInfo fileinfo : fileinfoList){
-        if (fileinfo.baseName() == "." || fileinfo.baseName() == ".."){
+        if (fileinfo.fileName() == "." || fileinfo.fileName() == ".."){
             continue;
         }
 
-        if (fileinfo.baseName().contains(":")){
+        if (fileinfo.fileName().contains(":")){
             continue;
         }
 
-        if (fileinfo.baseName() == businfo){
-            isExists = true;
+        if (fileinfo.fileName() == businfo){
+            isExists = 1;
         }
     }
 
-    if (isExists){
+    return isExists;
+}
+
+QString ClassRealize::toggleCameraDevice(QString businfo){
+
+    QString path = QString("/sys/bus/usb/drivers/usb/");
+
+    int status = getCameraDeviceEnable();
+
+    if (status == -1){
+        return QString("Camera Device Not Exists!");
+    }
+
+    if (status){
         QString cmd = QString("echo '%1' > %2/unbind").arg(businfo).arg(path);
         system(cmd.toLatin1().data());
         return QString("unbinded");
@@ -249,7 +269,7 @@ int ClassRealize::getCurrentWlanMode(){
     } else if (unbls == status.length()){ //unblock
         return 1;
     } else { //not block & not unblock
-        return -1;
+        return 0;
     }
 }
 
@@ -342,7 +362,7 @@ int ClassRealize::getCurrentBluetoothMode(){
     } else if (unbls == status.length()){ //unblock
         return 1;
     } else { //not block & not unblock
-        return -1;
+        return 0;
     }
 }
 
@@ -434,7 +454,7 @@ int ClassRealize::getCurrentFlightMode(){
     } else if (unbls == status.length()){ //unblock
         return 0;
     } else { //not block & not unblock
-        return -1;
+        return 1;
     }
 }
 
@@ -470,4 +490,36 @@ QString ClassRealize::toggleFlightMode(bool enable){
 
     close(fd);
     return block ? QString("blocked") : QString("unblocked");
+}
+
+int ClassRealize::setCameraKeyboardLight(bool lightup){
+    char * target = "/sys/class/leds/platform::cameramute/brightness";
+    if (access(target, F_OK) == -1){
+        return -1;
+    }
+
+    int value = lightup ? 1 : 0;
+
+    char cmd[256];
+    sprintf(cmd, "echo %d > %s", value, target);
+
+    system(cmd);
+
+    return 1;
+}
+
+int ClassRealize::setAirplaneModeKeyboardLight(bool lightup){
+    char * target = "/sys/class/leds/platform::wlanmute/brightness";
+    if (access(target, F_OK) == -1){
+        return -1;
+    }
+
+    int value = lightup ? 1 : 0;
+
+    char cmd[256];
+    sprintf(cmd, "echo %d > %s", value, target);
+
+    system(cmd);
+
+    return 1;
 }

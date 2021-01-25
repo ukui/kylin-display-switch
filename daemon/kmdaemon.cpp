@@ -61,6 +61,11 @@ KMDaemon::KMDaemon()
                                "org.ukui.kds.interface", \
                                QDBusConnection::systemBus());
 
+    ifaceScreenSaver = new QDBusInterface("org.ukui.ScreenSaver", \
+                                          "/", \
+                                          "org.ukui.ScreenSaver", \
+                                          QDBusConnection::sessionBus());
+
     modifyKeyPressed = false;
     stInstalled = true;
 
@@ -85,6 +90,8 @@ KMDaemon::KMDaemon()
     } else {
         stInstalled = false;
     }
+
+    keyboardLightInit();
 
     //KeyCode 比 正常键值大 8，原因未知
     connect(kmt, &KeyMonitorThread::keyPress, this, [=](KeySym mks, KeyCode mkc){
@@ -126,6 +133,16 @@ KMDaemon::KMDaemon()
                 return;
             }
 
+            if (ifaceScreenSaver->isValid()){
+                QDBusReply<bool>reply = ifaceScreenSaver->call("GetLockState");
+                if (reply.isValid()){
+                    if (reply.value()){
+                        qWarning("MediaKey Tip is Closed because ScreenLock\n");
+                        return;
+                    }
+                }
+            }
+
             capslockStatus = !capslockStatus;
 
             if (capslockStatus){
@@ -138,6 +155,16 @@ KMDaemon::KMDaemon()
             if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
                 qWarning("MediaKey Tip is Closed\n");
                 return;
+            }
+
+            if (ifaceScreenSaver->isValid()){
+                QDBusReply<bool>reply = ifaceScreenSaver->call("GetLockState");
+                if (reply.isValid()){
+                    if (reply.value()){
+                        qWarning("MediaKey Tip is Closed because ScreenLock\n");
+                        return;
+                    }
+                }
             }
 
             numlockStatus = !numlockStatus;
@@ -188,6 +215,8 @@ KMDaemon::~KMDaemon()
     kmt->callJobComplete();
     delete iface;
 
+    delete ifaceScreenSaver;
+
     if (stInstalled)
         delete settings;
 }
@@ -197,6 +226,52 @@ void KMDaemon::begin(){
     kmt->moveToThread(thrd);
 
     thrd->start();
+}
+
+void KMDaemon::keyboardLightInit(){
+
+    airplanModeKeyLightInit();
+
+    disableCameraKeyLightInit();
+
+}
+
+void KMDaemon::airplanModeKeyLightInit(){
+    QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+
+    if (!reply.isValid()){
+        return;
+    }
+
+    int current = reply.value();
+    if (current == -1){
+        return;
+    }
+    /* 设置飞行模式键盘灯 */
+    QDBusReply<int> reply2 = iface->call("setAirplaneModeKeyboardLight", current);
+    if (!reply2.isValid()){
+        //                qWarning("Set AirplaneMode Keyboardlight Failed");
+    }
+
+}
+
+void KMDaemon::disableCameraKeyLightInit(){
+    QDBusReply<int> cReply = iface->call("getCameraDeviceEnable");
+    if (!cReply.isValid()){
+        return;
+    }
+
+    int result = cReply.value();
+
+    if (result == -1){
+        return;
+    }
+    /* 设置禁用摄像头键盘灯 */
+    QDBusReply<int> cReply2 = iface->call("setCameraKeyboardLight", result ? false : true);
+    if (!cReply2.isValid()){
+        //                qWarning("Set Camera Keyboardlight Failed");
+    }
+
 }
 
 bool KMDaemon::getCurrentCapslockStatus(){
@@ -385,9 +460,11 @@ void KMDaemon::cameraToggle(){
 
             if (result == QString("binded")){
                 qDebug("Enable Camera Device!\n");
+                iface->call("setCameraKeyboardLight", false);
                 iface->call("emitShowTipsSignal", MappingTable::CameraOn);
             } else if (result == QString("unbinded")){
                 qDebug("Disable Camera Device!\n");
+                iface->call("setCameraKeyboardLight", true);
                 iface->call("emitShowTipsSignal", MappingTable::CameraOff);
             } else {
                 qWarning("%s", result.toLatin1().data());
@@ -414,13 +491,15 @@ void KMDaemon::flightToggle(){
         }
 
         QDBusReply<QString> reply2 = iface->call("toggleFlightMode", !current);
-        if (reply.isValid()){
+        if (reply2.isValid()){
             QString result = reply2.value();
             if (result == QString("blocked")){
                 qDebug("Enable Flight Mode!\n");
+                iface->call("setAirplaneModeKeyboardLight", true);
                 iface->call("emitShowTipsSignal", MappingTable::FlightOn);
             } else if (result == QString("unblocked")){
                 qDebug("Disable Flight Mode!\n");
+                iface->call("setAirplaneModeKeyboardLight", false);
                 iface->call("emitShowTipsSignal", MappingTable::FlightOff);
             } else {
                 qWarning("%s", result.toLatin1().data());

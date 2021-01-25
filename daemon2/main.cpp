@@ -24,7 +24,6 @@
 #include <QTextStream>
 
 #include "emdaemon.h"
-#include "justfordebug.h"
 
 
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg){
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "QString:" << jfd.generalFun3(true);
 
-    qDebug() << "int:" << jfd.generalFun2();
+    qDebug() << "int:" << jfd.generalFun2(true);
 
 #endif
 

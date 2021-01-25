@@ -60,9 +60,12 @@ public slots:
     Q_SCRIPTABLE void emitMediaKeyTrans(int code);
 
     Q_SCRIPTABLE QString getCameraBusinfo();
+    Q_SCRIPTABLE int getCameraDeviceEnable();
     Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
+    Q_SCRIPTABLE int setCameraKeyboardLight(bool lightup);
     Q_SCRIPTABLE int getCurrentFlightMode();
     Q_SCRIPTABLE QString toggleFlightMode(bool enable);
+    Q_SCRIPTABLE int setAirplaneModeKeyboardLight(bool lightup);
     Q_SCRIPTABLE int getCurrentWlanMode();
     Q_SCRIPTABLE QString toggleWlanMode(bool enable);
     Q_SCRIPTABLE int getCurrentBluetoothMode();
