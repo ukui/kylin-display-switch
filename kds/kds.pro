@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui dbus network KWindowSystem
+QT       += core gui dbus network KWindowSystem KScreen
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -51,15 +51,18 @@ INSTALLS +=  \
             service \
 
 SOURCES += \
+    kdswidget.cpp \
         main.cpp \
         widget.cpp \
     expendbutton.cpp
 
 HEADERS += \
+    kdswidget.h \
         widget.h \
     expendbutton.h
 
 FORMS += \
+        kdswidget.ui \
         widget.ui
 
 RESOURCES += \

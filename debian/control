@@ -15,6 +15,7 @@ Build-Depends: debhelper (>= 9),
                libgsettings-qt-dev,
                libmate-desktop-dev,
                libkf5windowsystem-dev,
+               libkf5screen-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://github.com/ukui/kylin-display-switch

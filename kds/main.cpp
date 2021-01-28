@@ -18,6 +18,7 @@
  *
  */
 #include "widget.h"
+#include "kdswidget.h"
 #include <QApplication>
 #include "qtsingleapplication.h"
 
@@ -62,10 +63,19 @@ int main(int argc, char *argv[])
     qtTranslator.load(":/zh_CN");
     app.installTranslator(&qtTranslator);
 
+#if 0
     Widget w;
 //    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
     QObject::connect(&app, &QtSingleApplication::messageReceived, &w, &Widget::msgReceiveAnotherOne);
     w.show();
+#endif
+
+#if 1
+    KDSWidget kdsw;
+//    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
+    QObject::connect(&app, &QtSingleApplication::messageReceived, &kdsw, &KDSWidget::msgReceiveAnotherOne);
+    kdsw.show();
+#endif
 
     return app.exec();
 

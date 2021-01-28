@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.12kylin1~hw2) v101; urgency=medium
+
+  * kds增加KScreen接口实现，并且屏蔽其他屏模式
+
+ -- hebing <hebing@kylinos.cn>  Wed, 27 Jan 2021 15:29:32 +0800
+
 kylin-display-switch (3.0.12kylin1) v101; urgency=medium
 
   * 接管飞行模式、禁用摄像头的键盘灯
