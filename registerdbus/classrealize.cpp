@@ -161,8 +161,21 @@ QString ClassRealize::getCameraBusinfo(){
 int ClassRealize::getCameraDeviceEnable(){
 
     QString businfo = getCameraBusinfo();
-    if (businfo.isEmpty())
-        return -1;
+    if (businfo.isEmpty()){
+        char * cmd = "lsusb -t | grep 'Driver=uvcvideo'";
+        char output[1024] = "\0";
+
+        FILE * stream;
+        if ((stream = popen(cmd, "r")) == NULL){
+            return -1;
+        }
+        if (fread(output, sizeof(char), 1024, stream) <= 0){
+            return 0;
+        } else {
+            return 1;
+        }
+
+    }
 
     int isExists = 0;
 

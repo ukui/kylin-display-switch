@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     }
 
 //    ClassRealize daemon;
-//    qDebug() << daemon.getCameraBusinfo();
+//    qDebug() << daemon.getCameraDeviceEnable();
 
     return app.exec();
 }

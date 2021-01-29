@@ -20,12 +20,14 @@
 #include "kmdaemon.h"
 
 #include <X11/keysym.h>
+#include <xkbcommon/xkbcommon-keysyms.h>
 #include <QFileInfo>
 #include <QProcess>
 
 #include <X11/extensions/XInput.h>
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
+
 
 #define UKCCOSD_SCHEMA "org.ukui.control-center.osd"
 #define KYCCOSD_SCHEMA "org.kylin.control-center.osd"
@@ -77,6 +79,19 @@ KMDaemon::KMDaemon()
     capslockStatus = getCurrentCapslockStatus();
     numlockStatus = getCurrentNumlockStatus();
 
+    QDBusReply<int> reply = iface->call("getCameraDeviceEnable");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (current == -1)
+            cameraEnableStatus = true;
+        else{
+            cameraEnableStatus = current ? true : false;
+        }
+
+    }
+
+
     const QByteArray id(UKCCOSD_SCHEMA);
     const QByteArray idd(KYCCOSD_SCHEMA);
     const QByteArray iid(KDSOSD_SCHEMA);
@@ -102,6 +117,36 @@ KMDaemon::KMDaemon()
 //            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
 //            return;
 //        }
+        if (mks == XKB_KEY_XF86TouchpadOn){
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
+        } else if (mks == XKB_KEY_XF86TouchpadOff){
+            iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
+        } else if (mks == XKB_KEY_XF86RFKill){
+            QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+            if (reply.isValid()){
+                int current = reply.value();
+
+                if (current != -1){
+                    if (current){
+                        iface->call("emitShowTipsSignal", MappingTable::FlightOn);
+                    } else {
+                        iface->call("emitShowTipsSignal", MappingTable::FlightOff);
+                    }
+                }
+
+            }
+        } else if (mks == XKB_KEY_XF86WebCam){
+
+            cameraEnableStatus = !cameraEnableStatus;
+
+            if (cameraEnableStatus)
+                iface->call("emitShowTipsSignal", MappingTable::CameraOn);
+            else
+                iface->call("emitShowTipsSignal", MappingTable::CameraOff);
+
+        } else if (mks == XKB_KEY_XF86AudioMicMute){
+//            qDebug() << "mic mute";
+        }
 
         if (mks == XK_Super_L || mks== XK_Super_R){
             modifyKeyPressed = true;
@@ -176,7 +221,7 @@ KMDaemon::KMDaemon()
             }
 
 
-        }else {
+        } else {
             iface->call("emitCloseApp");
         }
 

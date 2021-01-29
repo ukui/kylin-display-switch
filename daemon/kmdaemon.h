@@ -73,6 +73,8 @@ private:
     bool capslockStatus;
     bool numlockStatus;
 
+    bool cameraEnableStatus;
+
     QGSettings * settings;
 
     bool stInstalled;
