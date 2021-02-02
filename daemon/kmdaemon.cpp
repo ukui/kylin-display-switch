@@ -117,6 +117,10 @@ KMDaemon::KMDaemon()
 //            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
 //            return;
 //        }
+        if (mks == XKB_KEY_XF86Tools){
+            qDebug() << "i need";
+        }
+
         if (mks == XKB_KEY_XF86TouchpadOn){
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else if (mks == XKB_KEY_XF86TouchpadOff){
@@ -146,6 +150,8 @@ KMDaemon::KMDaemon()
 
         } else if (mks == XKB_KEY_XF86AudioMicMute){
 //            qDebug() << "mic mute";
+        } else if (mks == XKB_KEY_XF86WLAN){
+            wlanToggle();
         }
 
         if (mks == XK_Super_L || mks== XK_Super_R){
@@ -556,6 +562,37 @@ void KMDaemon::flightToggle(){
 
     } else {
         qWarning("Get Current FlightMode Failed!");
+    }
+}
+
+void KMDaemon::wlanToggle(){
+
+    QDBusReply<int> reply = iface->call("getCurrentWlanMode");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (current == -1){
+            qWarning("Error Occur When Get Current WlanMode");
+            return;
+        }
+
+        bool status = current ? true : false;
+
+        QDBusReply<QString> reply2 = iface->call("toggleWlanMode", !status);
+        if (reply2.isValid()){
+            QString result = reply2.value();
+            if (result == QString("blocked")){
+                qDebug("Disable Wlan Mode!\n");
+                iface->call("emitShowTipsSignal", MappingTable::WlanOff);
+            } else if (result == QString("unblocked")){
+                qDebug("Enable Wlan Mode!\n");
+                iface->call("emitShowTipsSignal", MappingTable::WlanOn);
+            } else {
+                qWarning("%s", result.toLatin1().data());
+            }
+        } else {
+            qWarning("Toggle Wlan Mode Failed!");
+        }
     }
 }
 

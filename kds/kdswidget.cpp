@@ -544,10 +544,10 @@ int KDSWidget::turnonAndGetRightmostOffset(const KScreen::OutputPtr &output, int
 //    width = output.data()->size().width();
     width = output.data()->preferredMode().data()->size().width();
 
-    qDebug() << output.data()->name() << "width is " << output.data()->size() << output.data()->preferredMode().data()->size();
-    Q_FOREACH (const KScreen::ModePtr &mode, output->modes()) {
-        qDebug() << "mode is: " << mode.data()->id() << mode.data()->size();
-    }
+//    qDebug() << output.data()->name() << "width is " << output.data()->size() << output.data()->preferredMode().data()->size();
+//    Q_FOREACH (const KScreen::ModePtr &mode, output->modes()) {
+//        qDebug() << "mode is: " << mode.data()->id() << mode.data()->size();
+//    }
 
     x += width;
 

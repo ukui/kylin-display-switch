@@ -13,5 +13,7 @@
         <file>img/FlightOff.png</file>
         <file>img/FlightOn.png</file>
         <file>zh_CN.qm</file>
+        <file>img/WlanOn.png</file>
+        <file>img/WlanOff.png</file>
     </qresource>
 </RCC>

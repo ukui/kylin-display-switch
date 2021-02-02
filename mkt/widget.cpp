@@ -27,8 +27,12 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include <QGSettings/QGSettings>
+
 #include <QDebug>
 
+#define PANEL_SCHEMA "org.ukui.panel.settings"
+#define PANEL_SIZE_KEY "panelsize"
 #define POSBOTTOM 50
 
 Widget::Widget(QWidget *parent) :
@@ -83,9 +87,24 @@ Widget::~Widget()
 }
 
 void Widget::setMKTgeometry(){
+    const QByteArray id(PANEL_SCHEMA);
+
+    int pSize = 0;
+
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * settings = new QGSettings(id);
+        pSize = settings->get(PANEL_SIZE_KEY).toInt();
+
+        delete settings;
+    }
+
     QScreen * pScreen = QGuiApplication::screens().at(0);
     QRect rect = pScreen->geometry();
-    move(rect.right() - (rect.width() * 1 / 4), (rect.bottom() + 1) - POSBOTTOM - height());
+    if (pSize){
+        move(rect.right() - (rect.width() * 1 / 4), (rect.bottom() + 1) - pSize - height());
+    } else {
+        move(rect.right() - (rect.width() * 1 / 4), (rect.bottom() + 1) - POSBOTTOM - height());
+    }
 }
 
 void Widget::setupComponent(){

@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.12kylin2~hw3) v101; urgency=medium
+
+  * 适配990笔记本的Wlan功能
+  * 通过获取任务栏高度决定mkt的高度
+
+ -- hebing <hebing@kylinos.cn>  Tue, 02 Feb 2021 09:11:20 +0800
+
 kylin-display-switch (3.0.12kylin2) v101; urgency=medium
 
   * 针对部分机型，功能由硬件实现，仅弹出提示图标

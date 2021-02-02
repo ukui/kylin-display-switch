@@ -41,6 +41,8 @@ public:
         CameraOff,
         FlightOn, // 10
         FlightOff,
+        WlanOn, // 12
+        WlanOff,
         HandleKeys,
     };
     Q_ENUM(MTIKey)

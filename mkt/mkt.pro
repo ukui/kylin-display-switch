@@ -21,7 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include (../shared/qtsingleapplication/qtsingleapplication.pri)
 include (../utils/utils.pri)
 
-LIBS += -lX11
+LIBS += -lX11 -lgsettings-qt
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.

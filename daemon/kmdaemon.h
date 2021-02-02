@@ -53,6 +53,7 @@ public:
     void microphoneToggle();
     void cameraToggle();
     void flightToggle();
+    void wlanToggle();
     void screenLock();
     void screenToggle();
 
