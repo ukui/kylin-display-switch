@@ -24,6 +24,7 @@ public:
 private:
     QLabel * logoLabel;
     QLabel * textLabel;
+    QLabel * spaceLabel;
     QLabel * statusLabel;
 
     int sign;

@@ -33,15 +33,18 @@ ExpendButton::ExpendButton(QWidget *parent) :
     textSizePolicy.setVerticalPolicy(QSizePolicy::Fixed);
     textLabel->setSizePolicy(textSizePolicy);
 
+    spaceLabel = new QLabel(this);
+    spaceLabel->setFixedSize(QSize(60, 30));
+
     statusLabel = new QLabel(this);
     statusLabel->setFixedSize(QSize(27, 18));
     statusLabel->setPixmap(QPixmap(":/img/selected.png"));
 
 
     generalHorLayout->addWidget(logoLabel, Qt::AlignVCenter);
-    generalHorLayout->addStretch(1);
+    generalHorLayout->addWidget(spaceLabel, Qt::AlignVCenter);
     generalHorLayout->addWidget(textLabel, Qt::AlignVCenter);
-    generalHorLayout->addStretch(4);
+    generalHorLayout->addStretch();
     generalHorLayout->addWidget(statusLabel, Qt::AlignVCenter);
 
     setLayout(generalHorLayout);

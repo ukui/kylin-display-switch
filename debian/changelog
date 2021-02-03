@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.12kylin3) v101; urgency=medium
+
+  * 飞行模式返回的非全no非全yes状态由1改为0
+  * 非勾选文字与勾选文字垂直对齐
+
+ -- hebing <hebing@kylinos.cn>  Wed, 03 Feb 2021 19:25:32 +0800
+
 kylin-display-switch (3.0.12kylin2~hw3) v101; urgency=medium
 
   * 适配990笔记本的Wlan功能

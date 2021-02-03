@@ -467,7 +467,7 @@ int ClassRealize::getCurrentFlightMode(){
     } else if (unbls == status.length()){ //unblock
         return 0;
     } else { //not block & not unblock
-        return 1;
+        return 0;
     }
 }
 
