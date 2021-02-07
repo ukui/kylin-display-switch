@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     }
 
     QTranslator qtTranslator;
-    qtTranslator.load(":/zh_CN");
+    qtTranslator.load(QString(":/%1").arg(QLocale::system().name()));
     app.installTranslator(&qtTranslator);
 
 #if 1

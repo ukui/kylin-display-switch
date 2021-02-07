@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.12kylin4) v101; urgency=medium
+
+  * 根据系统语言选择国际化文件
+
+ -- hebing <hebing@kylinos.cn>  Sun, 07 Feb 2021 16:24:41 +0800
+
 kylin-display-switch (3.0.12kylin3) v101; urgency=medium
 
   * 飞行模式返回的非全no非全yes状态由1改为0
