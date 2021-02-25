@@ -117,9 +117,6 @@ KMDaemon::KMDaemon()
 //            qCritical() << "Create Client Interface Failed When execute chage: " << QDBusConnection::systemBus().lastError();
 //            return;
 //        }
-        if (mks == XKB_KEY_XF86Tools){
-            qDebug() << "i need";
-        }
 
         if (mks == XKB_KEY_XF86TouchpadOn){
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
@@ -169,7 +166,10 @@ KMDaemon::KMDaemon()
                 iface->call("emitCloseApp");
             }
 
-        } else if (mks == XK_KP_Enter || mks == XK_Return){
+        } else if (mks == XKB_KEY_XF86Display){
+            /* Do Nothing, Just Not CloseApp*/
+
+        }else if (mks == XK_KP_Enter || mks == XK_Return){
             iface->call("emitMakeClicked");
 
         } else if (mks == XK_Up || mks == XK_KP_Up) {
