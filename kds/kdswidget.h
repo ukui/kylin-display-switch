@@ -23,6 +23,8 @@ public:
     explicit KDSWidget(QWidget *parent = nullptr);
     ~KDSWidget();
 
+    QPoint getWinPos();
+
     void setupComponent();
     void setupConnect();
 

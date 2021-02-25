@@ -3,6 +3,8 @@
 
 #include <QScreen>
 #include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <kwindowsystem.h>
 
 #include "expendbutton.h"
@@ -50,10 +52,6 @@ KDSWidget::KDSWidget(QWidget *parent) :
     /* 不在任务栏显示图标 */
     KWindowSystem::setState(winId(), NET::SkipTaskbar | NET::SkipPager);
 
-    QScreen * pScreen = QGuiApplication::screens().at(0);
-    QPoint point = pScreen->geometry().center();
-    move(point.x() - width()/2, point.y() - height()/2);
-
     btnsGroup = new QButtonGroup;
 
     QDBusConnection::systemBus().connect(QString(), \
@@ -93,6 +91,31 @@ KDSWidget::KDSWidget(QWidget *parent) :
 KDSWidget::~KDSWidget()
 {
     delete ui;
+}
+
+QPoint KDSWidget::getWinPos(){
+    QDBusInterface usdiface("org.ukui.SettingsDaemon",
+                            "/org/ukui/SettingsDaemon/wayland",
+                            "org.ukui.SettingsDaemon.wayland",
+                            QDBusConnection::sessionBus());
+
+    if (usdiface.isValid()){
+        QDBusReply<QString> reply = usdiface.call("priScreenName");
+        if (reply.isValid()){
+
+            const KScreen::ConfigPtr &config = this->currentConfig();
+
+            Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+                if (QString::compare(output.data()->name(), reply.value()) == 0){
+                    QRect rect = output.data()->geometry();
+                    return rect.center();
+                }
+            }
+        }
+    }
+
+    QScreen * pScreen = QGuiApplication::screens().at(0);
+    return pScreen->geometry().center();
 }
 
 void KDSWidget::setupComponent(){
@@ -278,6 +301,11 @@ void KDSWidget::setCurrentUIStatus(int id){
 void KDSWidget::setConfig(const KScreen::ConfigPtr &config) {
 
     mConfig = config;
+
+
+    //获取主屏位置
+    QPoint point = getWinPos();
+    move(point.x() - width()/2, point.y() - height()/2);
 
     setupComponent();
     setupConnect();

@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.12kylin4~hw4) v101; urgency=medium
+
+  * 适配wayland下的主屏
+  * lrelease kds.pro解决在990上的汉化问题
+
+ -- hebing <hebing@kylinos.cn>  Thu, 25 Feb 2021 10:02:30 +0800
+
 kylin-display-switch (3.0.12kylin4) v101; urgency=medium
 
   * 根据系统语言选择国际化文件
