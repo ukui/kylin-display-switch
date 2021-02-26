@@ -53,16 +53,15 @@ public:
     void initData();
     void setupComponent();
     void setupConnect();
-    void setupHide();
 
     MateRRConfig * makeCloneSetup();
     MateRRConfig * makePrimarySetup();
     MateRRConfig * makeOtherSetup();
     MateRRConfig * makeXineramaSetup();
 
-    void initCurrentStatus();
+    int getCurrentStatus();
 
-    void setCurrentStatus(int id);
+    void initCurrentStatus(int id);
     void setCurrentFirstOutputTip();
 
 private:

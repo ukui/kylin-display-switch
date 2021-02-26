@@ -28,12 +28,16 @@
 
 #include "expendbutton.h"
 
-enum {
-    MAINSCREEN,
-    CLONESCREEN,
-    EXTENDSCREEN,
-    VICESCREEN,
-};
+#define TITLEHEIGHT 90
+#define OPTIONSHEIGHT 70
+#define BOTTOMHEIGHT 60
+
+#define FIRSTSCREENID 0
+#define CLONESCREENID 1
+#define EXTENEDSCREENID 2
+#define OTHERSCREENID 3
+#define ALLMODESID 4
+
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -57,9 +61,7 @@ Widget::Widget(QWidget *parent) :
     setupComponent();
     setupConnect();
 
-//    setupHide();
-
-    initCurrentStatus();
+    initCurrentStatus(getCurrentStatus());
 
     QDBusConnection::systemBus().connect(QString(), \
                                          QString(), \
@@ -116,55 +118,59 @@ void Widget::setupComponent(){
 
     setCurrentFirstOutputTip();
 
-    btnsGroup->addButton(ui->mainBtn, MAINSCREEN);
-    btnsGroup->addButton(ui->cloneBtn, CLONESCREEN);
-    btnsGroup->addButton(ui->extendBtn, EXTENDSCREEN);
-    btnsGroup->addButton(ui->viceBtn, VICESCREEN);
+    for (int i = 0; i < ALLMODESID; i++){
+        ExpendButton * btn = new ExpendButton();
+        btn->setFixedHeight(70);
+        btnsGroup->addButton(btn, i);
 
-    for (QAbstractButton * button : btnsGroup->buttons()){
-        ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
-
-        switch (btnsGroup->id(btn)) {
-        case MAINSCREEN:
-            btn->setSign(MAINSCREEN % 2);
+        switch (i) {
+#ifdef FIRSTSCREENID
+        case FIRSTSCREENID:
+            btn->setSign(FIRSTSCREENID % 2);
             btn->setBtnText(tr("First Screen"));
             btn->setBtnLogo(":/img/main.png");
             break;
-        case CLONESCREEN:
-            btn->setSign(CLONESCREEN % 2);
+#endif
+
+#ifdef CLONESCREENID
+        case CLONESCREENID:
+            btn->setSign(CLONESCREENID % 2);
             btn->setBtnText(tr("Clone Screen"));
             btn->setBtnLogo(":/img/clone.png");
             break;
-        case EXTENDSCREEN:
-            btn->setSign(EXTENDSCREEN % 2);
+#endif
+
+#ifdef EXTENEDSCREENID
+        case EXTENEDSCREENID:
+            btn->setSign(EXTENEDSCREENID % 2);
             btn->setBtnText(tr("Extend Screen"));
             btn->setBtnLogo(":/img/extend.png");
             break;
-        case VICESCREEN:
-            btn->setSign(VICESCREEN % 2);
+#endif
+
+#ifdef OTHERSCREENID
+        case OTHERSCREENID:
+            btn->setSign(OTHERSCREENID % 2);
             btn->setBtnText(tr("Vice Screen"));
             btn->setBtnLogo(":/img/vice.png");
             break;
+#endif
         default:
             break;
         }
 
-//        qDebug() << "current btn checked:" << btn->isChecked();
+
+        ui->btnsVerLayout->addWidget(btn);
     }
+
+    int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
+    setFixedWidth(400);
+    setFixedHeight(h);
 
 
     /// QSS
     ui->titleFrame->setStyleSheet("QFrame#titleFrame{background: #A6000000; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}");
-//    ui->mainBtn->setStyleSheet("QPushButton#mainBtn{background: #99000000; border: none;}"
-//                               "QPushButton#mainBtn:hover{background: #000000; border: none;}");
-//    ui->cloneBtn->setStyleSheet("QPushButton#cloneBtn{background: #A6000000; border: none;}"
-//                                "QPushButton#cloneBtn:hover{background: #000000; border: none;}");
-//    ui->extendBtn->setStyleSheet("QPushButton#extendBtn{background: #99000000; border: none;}"
-//                                 "QPushButton#extendBtn:hover{background: #000000; border: none;}");
-//    ui->viceBtn->setStyleSheet("QPushButton#viceBtn{background: #A6000000; border: none;}"
-//                               "QPushButton#viceBtn:hover{background: #000000; border: none;}");
-    ui->phoneFrame->setStyleSheet("QFrame#phoneFrame{background: #A6000000; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}");
-
+    ui->bottomFrame->setStyleSheet("QFrame#bottomFrame{background: #A6000000; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}");
 
     ui->splitFrame->setStyleSheet("QFrame#splitFrame{background: #99000000; border: none;}");
 
@@ -192,27 +198,39 @@ void Widget::setupConnect(){
         MateRRConfig * settingConfig;
 
         switch (id) {
-        case MAINSCREEN:
+#ifdef FIRSTSCREENID
+        case FIRSTSCREENID:
             settingConfig = makePrimarySetup();
-            setCurrentStatus(MAINSCREEN);
+            initCurrentStatus(FIRSTSCREENID);
             break;
-        case CLONESCREEN:
+#endif
+
+#ifdef CLONESCREENID
+        case CLONESCREENID:
             settingConfig = makeCloneSetup();
-            setCurrentStatus(CLONESCREEN);
+            initCurrentStatus(CLONESCREENID);
             break;
-        case EXTENDSCREEN:
+#endif
+
+#ifdef EXTENEDSCREENID
+        case EXTENEDSCREENID:
             settingConfig = makeXineramaSetup();
-            setCurrentStatus(EXTENDSCREEN);
+            initCurrentStatus(EXTENEDSCREENID);
             break;
-        case VICESCREEN:
+#endif
+
+#ifdef OTHERSCREENID
+        case OTHERSCREENID:
             settingConfig = makeOtherSetup();
-            setCurrentStatus(VICESCREEN);
+            initCurrentStatus(OTHERSCREENID);
             break;
+#endif
+
         default:
             break;
         }
 
-        if (id >= MAINSCREEN && id <= VICESCREEN){
+        if (id >= 0 && id < ALLMODESID){
             guint32 timestamp, serverTimestamp;
             gboolean success;
             GError * error;
@@ -245,22 +263,18 @@ closeapp:
 
 }
 
-void Widget::setupHide(){
 
-    //平板
-    ui->extendBtn->hide();
-    ui->viceBtn->hide();
-    resize(this->width(), this->height() - 160);
-}
-
-
-void Widget::initCurrentStatus(){
+int Widget::getCurrentStatus(){
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
 
     int status;
 
     if (mate_rr_config_get_clone(current)){
-        status = CLONESCREEN;
+#ifdef CLONESCREENID
+        g_object_unref(current);
+        current = NULL;
+        return CLONESCREENID;
+#endif
     } else {
 
         bool firstOutputActive = true;
@@ -291,8 +305,11 @@ void Widget::initCurrentStatus(){
         }
 
         if (actives.length() < 2){
-            status = MAINSCREEN;
-            goto jp1;
+#ifdef FIRSTSCREENID
+            g_object_unref(current);
+            current = NULL;
+            return FIRSTSCREENID;
+#endif
         }
 
         int acs = 0, disacs = 0;
@@ -302,27 +319,33 @@ void Widget::initCurrentStatus(){
         }
 
         if (acs == actives.length()){
-            status = EXTENDSCREEN;
+#ifdef EXTENEDSCREENID
+            g_object_unref(current);
+            current = NULL;
+            return EXTENEDSCREENID;
+#endif
         } else {
-            if (firstOutputActive)
-                status = MAINSCREEN;
-            else
-                status = VICESCREEN;
+            if (firstOutputActive){
+#ifdef FIRSTSCREENID
+                g_object_unref(current);
+                current = NULL;
+                return FIRSTSCREENID;
+#endif
+            } else {
+#ifdef OTHERSCREENID
+                g_object_unref(current);
+                current = NULL;
+                return OTHERSCREENID;
+#endif
+            }
         }
 
 
     }
 
-jp1:
-
-    g_object_unref(current);
-    current = NULL;
-
-    setCurrentStatus(status);
-
 }
 
-void Widget::setCurrentStatus(int id){
+void Widget::initCurrentStatus(int id){
     //set all no checked
     for (QAbstractButton * button : btnsGroup->buttons()){
         ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
@@ -337,7 +360,7 @@ void Widget::setCurrentStatus(int id){
 
     // status == -1
     if (id == -1){
-        ExpendButton * btn1 = dynamic_cast<ExpendButton *>(btnsGroup->button(MAINSCREEN));
+        ExpendButton * btn1 = dynamic_cast<ExpendButton *>(btnsGroup->button(0));
 //        btn1->setBtnChecked(true);
         btn1->setChecked(true);
     }
@@ -381,7 +404,7 @@ void Widget::nextSelectedOption(){
 //    if (current == -1)
 //        ;
 
-    next = current == VICESCREEN ? MAINSCREEN : current + 1;
+    next = current == ALLMODESID - 1 ? 0 : current + 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(next));
     btn->setChecked(true);
@@ -393,9 +416,9 @@ void Widget::lastSelectedOption(){
 
     /* no button checked */
     if (current == -1)
-        current = VICESCREEN + 1;
+        current = ALLMODESID;
 
-    last = current == MAINSCREEN ? VICESCREEN : current - 1;
+    last = current == 0 ? ALLMODESID - 1 : current - 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(last));
     btn->setChecked(true);
