@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin6) v101; urgency=medium
+
+  * 更改大小写锁定及小键盘锁定的初始状态获取方式
+
+ -- hebing <hebing@kylinos.cn>  Tue, 02 Mar 2021 16:39:04 +0800
+
 kylin-display-switch (3.0.13kylin5) v101; urgency=medium
 
   * 代码优化，通过修改宏定义控制选项数量

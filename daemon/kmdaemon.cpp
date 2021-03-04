@@ -36,6 +36,8 @@
 #define UK_TOUCHPAD_SCHEMA "org.ukui.peripherals-touchpad"
 #define KY_TOUCHPAD_SCHEMA "org.mate.peripherals-touchpad"
 
+#define UK_KEYBOARD_SCHEMA "org.ukui.peripherals-keyboard"
+
 #define UK_POWERMANAGER_SCHEMA "org.ukui.power-manager"
 #define KY_POWERMANAGER_SCHEMA "org.mate.power-manager"
 
@@ -44,15 +46,15 @@
 #define TP_ENABLE_KEY "touchpad-enabled"
 #define MP_ENABLE_KEY "microphone"
 
+#define CAPSLOCK_STATUS_KEY "capslock-state"
+#define NUMLOCK_STATUS_KEY "numlock-state"
+
 #define BRIGHTNESS_KEY "brightness-ac"
 
 #define SCREENOPENVALUE 99
 #define SCREENCLOSEVALUE 0
 
 Display * display;
-
-static Atom CapsLock;
-static Atom NumLock;
 
 KMDaemon::KMDaemon()
 {
@@ -73,11 +75,23 @@ KMDaemon::KMDaemon()
 
     //X data init
     display = XOpenDisplay(0);
-    CapsLock = XInternAtom(display, "Caps Lock", False);
-    NumLock = XInternAtom(display, "Num Lock", False);
 
-    capslockStatus = getCurrentCapslockStatus();
-    numlockStatus = getCurrentNumlockStatus();
+
+    const QByteArray id2(UK_KEYBOARD_SCHEMA);
+    if (QGSettings::isSchemaInstalled(id2)){
+        QGSettings * kbGSettings = new QGSettings(id2);
+
+        capslockStatus = kbGSettings->get(CAPSLOCK_STATUS_KEY).toBool();
+        numlockStatus = kbGSettings->get(NUMLOCK_STATUS_KEY).toBool();
+
+        delete kbGSettings;
+    } else {
+        capslockStatus = false;
+        numlockStatus = false;
+    }
+
+//    capslockStatus = getCurrentCapslockStatus();
+//    numlockStatus = getCurrentNumlockStatus();
 
     QDBusReply<int> reply = iface->call("getCameraDeviceEnable");
     if (reply.isValid()){
@@ -325,18 +339,29 @@ void KMDaemon::disableCameraKeyLightInit(){
 
 }
 
+/*
+ * OBSOLETE
+ */
 bool KMDaemon::getCurrentCapslockStatus(){
 
     Bool state;
+
+
+    static Atom CapsLock = XInternAtom(display, "Caps Lock", False);
 
     XkbGetNamedIndicator(display, CapsLock, NULL, &state, NULL, NULL);
 
     return state;
 }
 
+/*
+ * OBSOLETE
+ */
 bool KMDaemon::getCurrentNumlockStatus(){
 
     Bool state;
+
+    static Atom NumLock = XInternAtom(display, "Num Lock", False);
 
     XkbGetNamedIndicator(display, NumLock, NULL, &state, NULL, NULL);
 
