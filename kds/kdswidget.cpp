@@ -93,7 +93,8 @@ KDSWidget::~KDSWidget()
     delete ui;
 }
 
-QPoint KDSWidget::getWinPos(){
+
+QString KDSWidget::getCurrentPrimaryScreenName(){
     QDBusInterface usdiface("org.ukui.SettingsDaemon",
                             "/org/ukui/SettingsDaemon/wayland",
                             "org.ukui.SettingsDaemon.wayland",
@@ -102,14 +103,23 @@ QPoint KDSWidget::getWinPos(){
     if (usdiface.isValid()){
         QDBusReply<QString> reply = usdiface.call("priScreenName");
         if (reply.isValid()){
+            return reply.value();
+        }
+    }
 
-            const KScreen::ConfigPtr &config = this->currentConfig();
+    return QString("");
+}
 
-            Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
-                if (QString::compare(output.data()->name(), reply.value()) == 0){
-                    QRect rect = output.data()->geometry();
-                    return rect.center();
-                }
+QPoint KDSWidget::getWinPos(){
+    QString pName = getCurrentPrimaryScreenName();
+    if (!pName.isEmpty()){
+
+        const KScreen::ConfigPtr &config = this->currentConfig();
+
+        Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+            if (QString::compare(output.data()->name(), pName) == 0){
+                QRect rect = output.data()->geometry();
+                return rect.center();
             }
         }
     }
@@ -423,6 +433,8 @@ void KDSWidget::setCloneModeSetup(){
 
     op->exec();
 
+    syncPrimaryScreenData(getCurrentPrimaryScreenName());
+
 }
 
 void KDSWidget::setExtendModeSetup(){
@@ -462,6 +474,9 @@ void KDSWidget::setExtendModeSetup(){
     auto *op = new KScreen::SetConfigOperation(config);
 
     op->exec();
+
+    //
+    syncPrimaryScreenData(getCurrentPrimaryScreenName());
 }
 
 void KDSWidget::setLeftExtendModeSetup(){
@@ -533,6 +548,8 @@ void KDSWidget::setFirstModeSetup(){
 
     auto * op = new KScreen::SetConfigOperation(config);
     op->exec();
+
+    syncPrimaryScreenData(firstName);
 }
 
 void KDSWidget::setOtherModeSetup(){
@@ -562,6 +579,8 @@ void KDSWidget::setOtherModeSetup(){
     auto * op = new KScreen::SetConfigOperation(config);
 
     op->exec();
+
+    syncPrimaryScreenData(getCurrentPrimaryScreenName());
 }
 
 int KDSWidget::turnonAndGetRightmostOffset(const KScreen::OutputPtr &output, int x){
@@ -697,5 +716,26 @@ void KDSWidget::receiveButtonClick(int x, int y){
 
 void KDSWidget::msgReceiveAnotherOne(const QString &msg){
 //    qDebug() << "another one " << msg;
-//    nextSelectedOption();
+    nextSelectedOption();
+}
+
+void KDSWidget::syncPrimaryScreenData(QString pName){
+    if (!pName.isEmpty()){
+
+        const KScreen::ConfigPtr &config = this->currentConfig();
+
+        Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+            if (QString::compare(output.data()->name(), pName) == 0){
+                QRect rect = output.data()->geometry();
+
+                QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                                       "/org/ukui/SettingsDaemon/wayland",
+                                                       "org.ukui.SettingsDaemon.wayland",
+                                                       "priScreenChanged");
+                message << rect.x()<< rect.y() << rect.width() << rect.height() << pName;
+                QDBusConnection::sessionBus().send(message);
+            }
+        }
+    }
+
 }

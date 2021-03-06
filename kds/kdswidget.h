@@ -24,6 +24,7 @@ public:
     ~KDSWidget();
 
     QPoint getWinPos();
+    QString getCurrentPrimaryScreenName();
 
     void setupComponent();
     void setupConnect();
@@ -32,6 +33,8 @@ public:
 
     void setCurrentUIStatus(int id);
     void setCurrentFirstOutputTip();
+
+    void syncPrimaryScreenData(QString pName);
 
 public:
     void setConfig(const KScreen::ConfigPtr &config);
