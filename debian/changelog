@@ -1,5 +1,11 @@
 kylin-display-switch (3.0.13kylin6~hw4) v101; urgency=medium
 
+  * 开启990KDS
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw4) v101; urgency=medium
+
   * 更改显示模式后调用usd接口更新主屏数据
   * 支持win+p切换选项
 
