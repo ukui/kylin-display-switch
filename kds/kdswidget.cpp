@@ -19,7 +19,7 @@ enum {
     CLONESCREEN,
     EXTENDSCREEN,
 //    LEXTENDSCREEN,
-//    OTHERSCREEN,
+    OTHERSCREEN,
     ALLMODES,
 };
 
@@ -110,6 +110,22 @@ QString KDSWidget::getCurrentPrimaryScreenName(){
     return QString("");
 }
 
+int KDSWidget::getCurrentScale(){
+    QDBusInterface usdiface("org.ukui.SettingsDaemon",
+                            "/org/ukui/SettingsDaemon/wayland",
+                            "org.ukui.SettingsDaemon.wayland",
+                            QDBusConnection::sessionBus());
+
+    if (usdiface.isValid()){
+        QDBusReply<int> reply = usdiface.call("scale");
+        if (reply.isValid()){
+            return reply.value();
+        }
+    }
+
+    return 1;
+}
+
 QPoint KDSWidget::getWinPos(){
     QString pName = getCurrentPrimaryScreenName();
     if (!pName.isEmpty()){
@@ -158,11 +174,11 @@ void KDSWidget::setupComponent(){
 //            btn->setBtnText(tr("Left Extend Screen"));
 //            btn->setBtnLogo(":/img/extend.png");
 //            break;
-//        case OTHERSCREEN:
-//            btn->setSign(OTHERSCREEN % 2);
-//            btn->setBtnText(tr("Vice Screen"));
-//            btn->setBtnLogo(":/img/vice.png");
-//            break;
+        case OTHERSCREEN:
+            btn->setSign(OTHERSCREEN % 2);
+            btn->setBtnText(tr("Vice Screen"));
+            btn->setBtnLogo(":/img/vice.png");
+            break;
         default:
             break;
         }
@@ -217,10 +233,10 @@ void KDSWidget::setupConnect(){
 //            setLeftExtendModeSetup();
 //            setCurrentUIStatus(LEXTENDSCREEN);
 //            break;
-//        case OTHERSCREEN:
-//            setOtherModeSetup();
-//            setCurrentUIStatus(OTHERSCREEN);
-//            break;
+        case OTHERSCREEN:
+            setOtherModeSetup();
+            setCurrentUIStatus(OTHERSCREEN);
+            break;
         default:
             break;
         }
@@ -252,11 +268,11 @@ int KDSWidget::getCurrentStatus(){
 //                return CLONESCREEN;
 //            }
 
-//            if (QString::compare(firstOutputName, output.data()->name()) == 0){
-//                if (!output.data()->isEnabled()){
-//                    return OTHERSCREEN;
-//                }
-//            }
+            if (QString::compare(firstOutputName, output.data()->name()) == 0){
+                if (!output.data()->isEnabled()){
+                    return OTHERSCREEN;
+                }
+            }
 
             if (!output.data()->isEnabled()){
                 return FIRSTSCREEN;
@@ -556,6 +572,8 @@ void KDSWidget::setOtherModeSetup(){
     const KScreen::ConfigPtr &config = this->currentConfig();
 
     QString firstName = findFirstOutput();
+    QString priName = getCurrentPrimaryScreenName();
+    QString otherName;
 
     Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
 
@@ -569,6 +587,13 @@ void KDSWidget::setOtherModeSetup(){
             turnonSpecifiedOutput(output, 0, 0);
         }
 
+        //获取非主屏的Name。TODO:多屏(>2)情况下呢？
+        if (QString::compare(output.data()->name(), priName) == 0){
+
+        } else {
+            otherName = output.data()->name();
+        }
+
     }
 
     if (!KScreen::Config::canBeApplied(config)) {
@@ -580,7 +605,7 @@ void KDSWidget::setOtherModeSetup(){
 
     op->exec();
 
-    syncPrimaryScreenData(getCurrentPrimaryScreenName());
+    syncPrimaryScreenData(otherName);
 }
 
 int KDSWidget::turnonAndGetRightmostOffset(const KScreen::OutputPtr &output, int x){
@@ -670,7 +695,7 @@ void KDSWidget::nextSelectedOption(){
 //    if (current == -1)
 //        ;
 
-    next = current == EXTENDSCREEN ? FIRSTSCREEN : current + 1;
+    next = current == ALLMODES - 1 ? 0 : current + 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(next));
     btn->setChecked(true);
@@ -682,9 +707,9 @@ void KDSWidget::lastSelectedOption(){
 
     /* no button checked */
     if (current == -1)
-        current = EXTENDSCREEN + 1;
+        current = ALLMODES;
 
-    last = current == FIRSTSCREEN ? EXTENDSCREEN : current - 1;
+    last = current == 0 ? ALLMODES - 1 : current - 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(last));
     btn->setChecked(true);
@@ -724,6 +749,8 @@ void KDSWidget::syncPrimaryScreenData(QString pName){
 
         const KScreen::ConfigPtr &config = this->currentConfig();
 
+        int scale = getCurrentScale();
+
         Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
             if (QString::compare(output.data()->name(), pName) == 0){
                 QRect rect = output.data()->geometry();
@@ -732,10 +759,9 @@ void KDSWidget::syncPrimaryScreenData(QString pName){
                                                        "/org/ukui/SettingsDaemon/wayland",
                                                        "org.ukui.SettingsDaemon.wayland",
                                                        "priScreenChanged");
-                message << rect.x()<< rect.y() << rect.width() << rect.height() << pName;
+                message << rect.x() / scale << rect.y() / scale << rect.width() / scale << rect.height() / scale << pName;
                 QDBusConnection::sessionBus().send(message);
             }
         }
     }
-
 }

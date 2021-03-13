@@ -25,6 +25,7 @@ public:
 
     QPoint getWinPos();
     QString getCurrentPrimaryScreenName();
+    int getCurrentScale();
 
     void setupComponent();
     void setupConnect();
