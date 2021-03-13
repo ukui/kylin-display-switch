@@ -82,7 +82,7 @@ KMDaemon::KMDaemon()
         QGSettings * kbGSettings = new QGSettings(id2);
 
         capslockStatus = kbGSettings->get(CAPSLOCK_STATUS_KEY).toBool();
-        numlockStatus = kbGSettings->get(NUMLOCK_STATUS_KEY).toBool();
+        numlockStatus = QString::compare(kbGSettings->get(NUMLOCK_STATUS_KEY).toString(), QString("on")) == 0;
 
         delete kbGSettings;
     } else {
