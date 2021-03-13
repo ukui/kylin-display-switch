@@ -14,22 +14,27 @@
         <translation>第一屏幕：</translation>
     </message>
     <message>
-        <location filename="../kdswidget.cpp" line="110"/>
+        <location filename="../kdswidget.cpp" line="143"/>
         <source>First Screen</source>
         <translation>第一屏</translation>
     </message>
     <message>
-        <location filename="../kdswidget.cpp" line="115"/>
+        <location filename="../kdswidget.cpp" line="148"/>
         <source>Clone Screen</source>
         <translation>镜像屏</translation>
     </message>
     <message>
-        <location filename="../kdswidget.cpp" line="120"/>
+        <location filename="../kdswidget.cpp" line="153"/>
         <source>Extend Screen</source>
         <translation>扩展屏</translation>
     </message>
     <message>
-        <location filename="../kdswidget.cpp" line="311"/>
+        <location filename="../kdswidget.cpp" line="163"/>
+        <source>Vice Screen</source>
+        <translation>其他屏</translation>
+    </message>
+    <message>
+        <location filename="../kdswidget.cpp" line="349"/>
         <source>N/A</source>
         <translation>N/A</translation>
     </message>
@@ -57,17 +62,17 @@
         <translation>第一屏</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="135"/>
+        <location filename="../widget.cpp" line="138"/>
         <source>Clone Screen</source>
         <translation>镜像屏</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="140"/>
+        <location filename="../widget.cpp" line="146"/>
         <source>Extend Screen</source>
         <translation>扩展屏</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="145"/>
+        <location filename="../widget.cpp" line="154"/>
         <source>Vice Screen</source>
         <translation>其他屏</translation>
     </message>
