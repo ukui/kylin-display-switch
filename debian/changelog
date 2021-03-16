@@ -1,3 +1,15 @@
+kylin-display-switch (3.0.13kylin7) v101; urgency=medium
+
+  * 990与V10SP1同源
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw7) v101; urgency=medium
+
+  * 更新主屏数据时同时考虑系统scale
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
 kylin-display-switch (3.0.13kylin6~hw6) v101; urgency=medium
 
   * 解决“其他屏”功能后，更新主屏数据（三屏情况待完善）
