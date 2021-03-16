@@ -356,7 +356,7 @@ void KDSWidget::setCurrentFirstOutputTip(){
 
         if (QString::compare(firstOutputName, output.data()->name()) == 0){
             ui->outputName->setText(opName);
-            ui->outputDisplayName->setText(opDisName);
+            ui->outputDisplayName->setText(""/*opDisName*/);
 
             return;
         }

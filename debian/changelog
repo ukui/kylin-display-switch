@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin8) v101; urgency=medium
+
+  * kds界面不再显示显示器名称，仅显示显示器接口
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
 kylin-display-switch (3.0.13kylin7) v101; urgency=medium
 
   * 990与V10SP1同源

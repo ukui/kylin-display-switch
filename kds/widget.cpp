@@ -389,7 +389,7 @@ void Widget::setCurrentFirstOutputTip(){
 
             if (strcmp(firstName, pName) == 0){
                 ui->outputName->setText(QString(pName));
-                ui->outputDisplayName->setText(QString(pDisplayName));
+                ui->outputDisplayName->setText(""/*QString(pDisplayName)*/);
             }
         }
 
