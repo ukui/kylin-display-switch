@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin9) v101; urgency=medium
+
+  * 设置“其他屏”后，代码获取其他屏的判断由主屏改为第一屏。
+
+ -- hebing <hebing@kylinos.cn>  Wed, 17 Mar 2021 16:37:26 +0800
+
 kylin-display-switch (3.0.13kylin8) v101; urgency=medium
 
   * kds界面不再显示显示器名称，仅显示显示器接口

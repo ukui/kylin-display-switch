@@ -572,7 +572,6 @@ void KDSWidget::setOtherModeSetup(){
     const KScreen::ConfigPtr &config = this->currentConfig();
 
     QString firstName = findFirstOutput();
-    QString priName = getCurrentPrimaryScreenName();
     QString otherName;
 
     Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
@@ -588,7 +587,7 @@ void KDSWidget::setOtherModeSetup(){
         }
 
         //获取非主屏的Name。TODO:多屏(>2)情况下呢？
-        if (QString::compare(output.data()->name(), priName) == 0){
+        if (QString::compare(output.data()->name(), firstName) == 0){
 
         } else {
             otherName = output.data()->name();
