@@ -169,12 +169,15 @@ int ClassRealize::getCameraDeviceEnable(){
         if ((stream = popen(cmd, "r")) == NULL){
             return -1;
         }
-        if (fread(output, sizeof(char), 1024, stream) <= 0){
-            return 0;
-        } else {
-            return 1;
-        }
 
+	int ret;
+        if (fread(output, sizeof(char), 1024, stream) <= 0){
+	    ret = 0;
+        } else {
+	    ret = 1;
+        }
+	fclose(stream);
+	return ret;
     }
 
     int isExists = 0;
