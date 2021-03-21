@@ -31,12 +31,17 @@ EMDaemon::EMDaemon()
                                QDBusConnection::systemBus());
 
     QMap<QString, QString> keyWord1;
+    QMap<QString, QString> keyWord2;
+    QMap<QString, QString> keyWord3;
     keyWord1.insert("N: Name", "2 keyboard");
 //    keyWord1.insert("P: Phys", "input0");
+    keyWord2.insert("N: Name", "Hotkey");
+    keyWord3.insert("N: Name", "SCI_EVT");
 
     QList<QMap<QString, QString>> filters;
     filters.append(keyWord1);
-//    filters.append(keyWord2);
+    filters.append(keyWord2);
+    filters.append(keyWord3);
 
 
     for (QMap<QString, QString> k : filters){

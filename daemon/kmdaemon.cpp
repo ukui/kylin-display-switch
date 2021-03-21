@@ -122,6 +122,8 @@ KMDaemon::KMDaemon()
 
     keyboardLightInit();
 
+    const QByteArray idtp(UK_TOUCHPAD_SCHEMA);
+
     //KeyCode 比 正常键值大 8，原因未知
     connect(kmt, &KeyMonitorThread::keyPress, this, [=](KeySym mks, KeyCode mkc){
         Q_UNUSED(mkc)
@@ -133,8 +135,20 @@ KMDaemon::KMDaemon()
 //        }
 
         if (mks == XKB_KEY_XF86TouchpadOn){
+            //更新gsettings
+            if (QGSettings::isSchemaInstalled(idtp)){
+                QGSettings * st = new QGSettings(idtp);
+                st->set(TP_ENABLE_KEY, true);
+                delete st;
+            }
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
         } else if (mks == XKB_KEY_XF86TouchpadOff){
+            //更新gsettings
+            if (QGSettings::isSchemaInstalled(idtp)){
+                QGSettings * st = new QGSettings(idtp);
+                st->set(TP_ENABLE_KEY, false);
+                delete st;
+            }
             iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
         } else if (mks == XKB_KEY_XF86RFKill){
             QDBusReply<int> reply = iface->call("getCurrentFlightMode");
@@ -427,7 +441,7 @@ void KMDaemon::touchpadToggle(){
         Atom realtype, prop;
         XDeviceInfo deviceinfo = deviceinfos[i];
 
-        if (deviceinfo.type != XInternAtom (display, XI_MOUSE, False)){
+        if (deviceinfo.type != XInternAtom (display, XI_TOUCHPAD, False)){
             continue;
         }
 
@@ -445,22 +459,40 @@ void KMDaemon::touchpadToggle(){
                                 XA_INTEGER, &realtype, &realformat, &nitems,
                                 &bytes_after, &data) == Success) {
 
-            if (QString(deviceinfo.name).contains("USB Optical Mouse"))
-                continue;
+//            if (QString(deviceinfo.name).contains("USB Optical Mouse"))
+//                continue;
 
             qDebug("Get Input name:%s; id: %d!\n", deviceinfo.name, (int)deviceinfo.id);
             if (nitems == 1){
 //                data[0] = (data[0] == 0) ? 1 : 0;
 
+                const QByteArray id(UK_TOUCHPAD_SCHEMA);
+
                 if (data[0] == 1){
                     QString cmd = QString("xinput disable %1").arg(QString::number((int)deviceinfo.id));
                     qDebug("Disable Input Device %s\n", deviceinfo.name);
                     system(cmd.toLatin1().data());
+
+                    //更新gsettings
+                    if (QGSettings::isSchemaInstalled(id)){
+                        QGSettings * st = new QGSettings(id);
+                        st->set(TP_ENABLE_KEY, false);
+                        delete st;
+                    }
+
                     iface->call("emitShowTipsSignal", MappingTable::TouchpadOff);
                 } else {
                     QString cmd = QString("xinput enable %1").arg(QString::number((int)deviceinfo.id));
                     qDebug("Enable Input Device %s\n", deviceinfo.name);
                     system(cmd.toLatin1().data());
+
+                    //更新gsettings
+                    if (QGSettings::isSchemaInstalled(id)){
+                        QGSettings * st = new QGSettings(id);
+                        st->set(TP_ENABLE_KEY, true);
+                        delete st;
+                    }
+
                     iface->call("emitShowTipsSignal", MappingTable::TouchpadOn);
                 }
 
