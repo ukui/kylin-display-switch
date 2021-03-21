@@ -75,15 +75,5 @@ int main(int argc, char *argv[])
 
     EMDaemon daemon;
 
-#if 0
-    JustForDebug jfd;
-    jfd.generalFun();
-
-    qDebug() << "QString:" << jfd.generalFun3(true);
-
-    qDebug() << "int:" << jfd.generalFun2(true);
-
-#endif
-
     return a.exec();
 }

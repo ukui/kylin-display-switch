@@ -28,6 +28,7 @@
 #include <QDebug>
 
 #include "eventmonitorthread.h"
+#include "rfkillmonitorthread.h"
 
 class EMDaemon : public QObject
 {
@@ -37,12 +38,12 @@ public:
     explicit EMDaemon();
     ~EMDaemon();
 
-public:
-    void touchpadToggle();
-
 private:
 //    QThread * thrd;
 //    EventMonitorThread * emt;
+
+    QThread * thrd2;
+    RfkillMonitorthread * rmt;
 
     QDBusInterface * iface;
 

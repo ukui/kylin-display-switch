@@ -17,55 +17,29 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef WIDGET_H
-#define WIDGET_H
+#ifndef RFKILLMONITORTHREAD_H
+#define RFKILLMONITORTHREAD_H
 
-#include <QWidget>
-#include <QTimer>
-#include <QSystemTrayIcon>
-#include <QDBusInterface>
-#include <QDBusConnection>
-#include <QDBusReply>
+#include <QObject>
 
-#include "mappingtable.h"
-
-namespace Ui {
-class Widget;
-}
-
-class Widget : public QWidget
+class RfkillMonitorthread : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Widget(QWidget *parent = 0);
-    ~Widget();
+    RfkillMonitorthread();
+    ~RfkillMonitorthread();
+
 
 public:
-    void setupComponent();
-    void setMKTgeometry();
+    void run();
 
-private:
-    Ui::Widget *ui;
+    void callJobComplete();
 
-private:
-    void createTrayIcon();
+Q_SIGNALS:
+    void statusChanged();
 
-    QSystemTrayIcon *trayIcon;
-
-private:
-    QTimer * pTimer;
-
-    MappingTable * pMappingTable;
-
-    QDBusInterface * iface;
-
-private:
-    void flightToggleClick();
-
-public slots:
-    void showTipsOnDesktop(int index);
-    void refreshTrayIcon();
+    void jobComplete();
 };
 
-#endif // WIDGET_H
+#endif // RFKILLMONITORTHREAD_H

@@ -111,6 +111,10 @@ void ClassRealize::emitMediaKeyTrans(int code){
     emit signalMediaKeyTrans(code);
 }
 
+void ClassRealize::emitRfkillStatusChanged(){
+    emit signalRfkillStatusChanged();
+}
+
 QString ClassRealize::getCameraBusinfo(){
 
     QString path = QString("/sys/bus/usb/devices/");

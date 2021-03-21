@@ -151,6 +151,9 @@ void EventMonitorThread::run(){
     }
 
     close(fd);
+
+    //线程结束
+    callJobComplete();
 }
 
 void EventMonitorThread::callJobComplete(){
