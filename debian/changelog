@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin11) v101; urgency=medium
+
+  * WiFi的状态图标文件异常，更新
+
+ -- hebing <hebing@kylinos.cn>  Fri, 19 Mar 2021 17:24:24 +0800
+
 kylin-display-switch (3.0.13kylin10) v101; urgency=medium
 
   * 触发触摸板热键的同时更新gsettings
