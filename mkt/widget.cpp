@@ -77,6 +77,8 @@ Widget::Widget(QWidget *parent) :
 
 
     QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalShowTips", this, SLOT(showTipsOnDesktop(int)));
+
+    QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalRfkillStatusChanged", this, SLOT(refreshTrayIcon()));
 }
 
 Widget::~Widget()
@@ -176,6 +178,25 @@ void Widget::showTipsOnDesktop(int index){
     ui->stackedWidget->setCurrentIndex(index);
     this->show();
     pTimer->start();
+}
+
+void Widget::refreshTrayIcon(){
+    QDBusReply<int> reply = iface->call("getCurrentFlightMode");
+    /* 未获取到当前飞行模式状态 */
+    if (!reply.isValid())
+        return;
+
+    int current = reply.value();
+
+    /* 获取飞行模式出错 | 计算机没有无线设备 */
+    if (current == -1)
+        return;
+
+    if (current){
+        trayIcon->setIcon(QIcon::fromTheme("airplane-mode-symbolic"));
+    } else {
+        trayIcon->setIcon(QIcon::fromTheme("airplane-mode-closed-symbolic"));
+    }
 }
 
 void Widget::flightToggleClick(){

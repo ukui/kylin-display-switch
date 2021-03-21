@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin12) v101; urgency=medium
+
+  * 飞行模式托盘程序状态支持动态变化
+
+ -- hebing <hebing@kylinos.cn>  Sun, 21 Mar 2021 15:49:34 +0800
+
 kylin-display-switch (3.0.13kylin11) v101; urgency=medium
 
   * WiFi的状态图标文件异常，更新

@@ -71,6 +71,27 @@ EMDaemon::EMDaemon()
         thrd->start();
     }
 
+
+    //rfkill monitor start
+    thrd2 = new QThread;
+    rmt = new RfkillMonitorthread;
+
+    connect(rmt, &RfkillMonitorthread::statusChanged, this, [=]{
+        iface->call("emitRfkillStatusChanged");
+    }, Qt::QueuedConnection);
+
+    connect(rmt, &RfkillMonitorthread::jobComplete, this, [=]{
+        thrd2->quit();
+        thrd2->wait();
+    });
+
+    connect(thrd2, &QThread::started, rmt, &RfkillMonitorthread::run);
+    connect(thrd2, &QThread::finished, rmt, &RfkillMonitorthread::deleteLater);
+
+    rmt->moveToThread(thrd2);
+
+    thrd2->start();
+
 }
 
 EMDaemon::~EMDaemon(){
@@ -79,58 +100,7 @@ EMDaemon::~EMDaemon(){
         emt->callJobComplete();
     }
 
+    rmt->callJobComplete();
+
     delete iface;
-}
-
-void EMDaemon:: touchpadToggle(){
-    XDeviceInfo *deviceinfos;
-    int n_devices;
-    int realformat;
-    unsigned long nitems, bytes_after;
-    unsigned char *data;
-
-    Display * display = XOpenDisplay(0);
-
-    deviceinfos = XListInputDevices (display, &n_devices);
-
-    if (deviceinfos == NULL)
-        return;
-
-    for (int i = 0; i < n_devices; i++){
-        XDevice * device;
-        Atom realtype, prop;
-        XDeviceInfo deviceinfo = deviceinfos[i];
-
-        if (deviceinfo.type != XInternAtom (display, XI_MOUSE, False)){
-            continue;
-        }
-
-        prop = XInternAtom (display, "Device Enabled", False);
-
-        if (!prop)
-            continue;
-
-        device = XOpenDevice (display, deviceinfo.id);
-
-        if (!device)
-            continue;
-
-        if (XGetDeviceProperty (display, device, prop, 0, 1, False,
-                                XA_INTEGER, &realtype, &realformat, &nitems,
-                                &bytes_after, &data) == Success) {
-//            qDebug() << "current name" << deviceinfo.name << deviceinfo.id;
-            if (nitems == 1){
-                data[0] = (data[0] == 0) ? 1 : 0;
-
-                XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
-            }
-
-            XFree(data);
-        }
-
-        XCloseDevice (display, device);
-    }
-
-    if (deviceinfos != NULL)
-        XFreeDeviceList (deviceinfos);
 }
