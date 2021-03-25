@@ -72,12 +72,10 @@ private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
 
-    char * primaryName;
-
 private:
     bool _getCloneSize(int * width, int * height);
     bool _isLaptop(MateRROutputInfo * info);
-    bool _findPrimaryOutput(MateRRConfig * config);
+    bool _setNewPrimaryOutput(MateRRConfig * config);
     bool _turnonOutput(MateRROutputInfo * info, int x, int y);
     MateRRMode * _findBestMode(MateRROutput * output);
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);

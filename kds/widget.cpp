@@ -110,8 +110,6 @@ void Widget::initData(){
     kScreen = mate_rr_screen_new (gdk_screen_get_default (), NULL);
 //    kConfig = mate_rr_config_new_current (kScreen, NULL);
 
-    primaryName = NULL;
-
 }
 
 void Widget::setupComponent(){
@@ -426,13 +424,13 @@ void Widget::lastSelectedOption(){
 
 void Widget::confirmCurrentOption(){
     int current = btnsGroup->checkedId();
-//    qDebug() << "current checked" << current;
 
     if (current == -1)
         return;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(current));
-    btn->click();
+//    btn->click();
+    btn->animateClick();
 }
 
 void Widget::closeApp(){
@@ -520,6 +518,8 @@ MateRRConfig * Widget::makePrimarySetup(){
         }
     }
 
+    _setNewPrimaryOutput(current);
+
     if (_configIsAllOff(current)){
         g_object_unref(current);
         current = NULL;
@@ -538,8 +538,6 @@ MateRRConfig * Widget::makeOtherSetup(){
 
     mate_rr_config_set_clone(current, FALSE);
 
-    //found primary output
-//    _findPrimaryOutput(current);
     firstName = _findFirstOutput(current);
 
     for (int i = 0; outputs[i] != NULL; i++){
@@ -555,6 +553,8 @@ MateRRConfig * Widget::makeOtherSetup(){
             }
         }
     }
+
+    _setNewPrimaryOutput(current);
 
     if (_configIsAllOff(current)){
         g_object_unref(current);
@@ -574,13 +574,14 @@ MateRRConfig * Widget::makeXineramaSetup(){
     mate_rr_config_set_clone(current, FALSE);
 
     //found primary output
-    _findPrimaryOutput(current);
+    _setNewPrimaryOutput(current);
 
     x = 0;
     for (int i = 0; outputs[i] != NULL; i++){
         MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_get_primary(info))
+        if (mate_rr_output_info_get_primary(info)){
             x = _turnonGetRightmostOffset(info, x);
+        }
     }
 
     for (int i = 0; outputs[i] != NULL; i++){
@@ -654,21 +655,17 @@ bool Widget::_isLaptop(MateRROutputInfo * info){
     return mate_rr_output_is_laptop(output);
 }
 
-bool Widget::_findPrimaryOutput(MateRRConfig *config){
+bool Widget::_setNewPrimaryOutput(MateRRConfig *config){
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
 
     for (int i = 0; outputs[i] != NULL; i++){
         MateRROutputInfo * info = outputs[i];
 
-        if (mate_rr_output_info_get_primary(info)){
-            primaryName = mate_rr_output_info_get_name(info);
-            return true;
-        }
+        if (mate_rr_output_info_is_active(info)){
 
-        //
-        if (primaryName && strcmp(primaryName, mate_rr_output_info_get_name(info)) == 0){
-            mate_rr_output_info_set_primary(info, TRUE);
-            return true;
+            if (mate_rr_output_info_get_primary(info)){
+                return true;
+            }
         }
     }
 
@@ -680,7 +677,7 @@ bool Widget::_findPrimaryOutput(MateRRConfig *config){
 
 char *Widget::_findFirstOutput(MateRRConfig *config){
 
-    int firstid = 99999;
+    int firstid = -1;
     char * firstname;
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
@@ -689,11 +686,16 @@ char *Widget::_findFirstOutput(MateRRConfig *config){
         MateRROutputInfo * info = outputs[i];
 
         if (mate_rr_output_info_is_connected(info)){
-            int currentid;
 
             MateRROutput * output = mate_rr_screen_get_output_by_name(kScreen, mate_rr_output_info_get_name(info));
 
-            currentid = mate_rr_output_get_id(output);
+            int currentid = mate_rr_output_get_id(output);
+
+            if (firstid == -1){
+                firstid = currentid;
+                firstname = mate_rr_output_info_get_name(info);
+                continue;
+            }
 
             if (firstid > currentid){
                 firstid = currentid;

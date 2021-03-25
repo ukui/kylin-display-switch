@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin13) v101; urgency=medium
+
+  *  解决BUG#44084 【双屏】使用win+p切换为扩展模式，鼠标概率性出现在扩展屏幕
+
+ -- hebing <hebing@kylinos.cn>  Thu, 25 Mar 2021 15:44:33 +0800
+
 kylin-display-switch (3.0.13kylin12) v101; urgency=medium
 
   * 飞行模式托盘程序状态支持动态变化
