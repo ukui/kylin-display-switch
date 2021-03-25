@@ -114,7 +114,8 @@ void Widget::initData(){
 
 void Widget::setupComponent(){
 
-    setCurrentFirstOutputTip();
+    ui->outputPrimaryTip->hide();
+//    setCurrentFirstOutputTip();
 
     for (int i = 0; i < ALLMODESID; i++){
         ExpendButton * btn = new ExpendButton();

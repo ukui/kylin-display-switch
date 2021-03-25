@@ -146,7 +146,8 @@ QPoint KDSWidget::getWinPos(){
 
 void KDSWidget::setupComponent(){
 
-    setCurrentFirstOutputTip();
+    ui->outputPrimaryTip->hide();
+//    setCurrentFirstOutputTip();
 
     for (int i = 0; i < ALLMODES; i++){
         ExpendButton * btn = new ExpendButton();

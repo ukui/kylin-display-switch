@@ -1,6 +1,14 @@
+kylin-display-switch (3.0.13kylin14) v101; urgency=medium
+
+  * 解决BUG#42405【系统投屏】切换主屏，当前实际主屏和osd显示的第一屏幕不一致（系统投屏的第一屏幕没有改变）
+     PS: 根据测试的建议，隐藏win+P界面的第一屏提示信息
+    
+
+ -- hebing <hebing@kylinos.cn>  Thu, 25 Mar 2021 15:44:33 +0800
+
 kylin-display-switch (3.0.13kylin13) v101; urgency=medium
 
-  *  解决BUG#44084 【双屏】使用win+p切换为扩展模式，鼠标概率性出现在扩展屏幕
+  * 解决BUG#44084 【双屏】使用win+p切换为扩展模式，鼠标概率性出现在扩展屏幕
 
  -- hebing <hebing@kylinos.cn>  Thu, 25 Mar 2021 15:44:33 +0800
 
