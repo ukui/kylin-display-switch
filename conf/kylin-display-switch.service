@@ -1,9 +1,0 @@
-[Unit]
-Description=The server of kylin display switch
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/super_kds
-
-[Install]
-WantedBy=graphical.target

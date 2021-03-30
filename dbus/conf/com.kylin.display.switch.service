@@ -1,4 +1,0 @@
-[D-BUS Service]
-Name=com.kylin.display.switch
-Exec=/usr/bin/kdsSysDbusLauncher
-User=root
