@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/CapslockOff.png</file>
+        <file>img/CapslockOn.png</file>
+        <file>img/NumlockOff.png</file>
+        <file>img/NumlockOn.png</file>
+        <file>img/TouchpadOn.png</file>
+        <file>img/TouchpadOff.png</file>
+        <file>img/MicrophoneOn.png</file>
+        <file>img/MicrophoneOff.png</file>
+        <file>img/CameraOff.png</file>
+        <file>img/CameraOn.png</file>
+        <file>img/FlightOff.png</file>
+        <file>img/FlightOn.png</file>
+        <file>zh_CN.qm</file>
+        <file>img/WlanOn.png</file>
+        <file>img/WlanOff.png</file>
+    </qresource>
+</RCC>

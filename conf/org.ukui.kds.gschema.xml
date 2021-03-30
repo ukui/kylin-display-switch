@@ -1,0 +1,14 @@
+<schemalist gettext-domain="kylin-display-switch">
+    <schema path="/org/ukui/kds/osd/" id="org.ukui.kds.osd">
+        <key type="b" name="show-lock-tip">
+            <default>true</default>
+            <summary>show keyboard tip</summary>
+            <description>show keyboard tip or not. eg. Caps Lock. Num Lock</description>
+        </key>
+        <key type="b" name="microphone">
+            <default>true</default>
+            <summary>microphone enable or not</summary>
+            <description>current microphone enable or not</description>
+        </key>
+    </schema>
+</schemalist>

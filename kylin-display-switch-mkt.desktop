@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Kylin Display Switch MKT
+Name[zh_CN]=麒麟显示切换按键提示
+Comment=Kylin Display Switch MKT
+Comment[zh_CN]=麒麟显示切换按键提示
+Exec=/usr/bin/mktip
+StartupNotify=false
+Terminal=false
+Type=Application
+NoDisplay=true

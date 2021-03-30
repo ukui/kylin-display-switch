@@ -1,0 +1,314 @@
+kylin-display-switch (3.0.13kylin12) v101; urgency=medium
+
+  * 飞行模式托盘程序状态支持动态变化
+
+ -- hebing <hebing@kylinos.cn>  Sun, 21 Mar 2021 15:49:34 +0800
+
+kylin-display-switch (3.0.13kylin11) v101; urgency=medium
+
+  * WiFi的状态图标文件异常，更新
+
+ -- hebing <hebing@kylinos.cn>  Fri, 19 Mar 2021 17:24:24 +0800
+
+kylin-display-switch (3.0.13kylin10) v101; urgency=medium
+
+  * 触发触摸板热键的同时更新gsettings
+
+ -- hebing <hebing@kylinos.cn>  Fri, 19 Mar 2021 17:24:24 +0800
+
+kylin-display-switch (3.0.13kylin9) v101; urgency=medium
+
+  * 设置“其他屏”后，代码获取其他屏的判断由主屏改为第一屏。
+
+ -- hebing <hebing@kylinos.cn>  Wed, 17 Mar 2021 16:37:26 +0800
+
+kylin-display-switch (3.0.13kylin8) v101; urgency=medium
+
+  * kds界面不再显示显示器名称，仅显示显示器接口
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin7) v101; urgency=medium
+
+  * 990与V10SP1同源
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw7) v101; urgency=medium
+
+  * 更新主屏数据时同时考虑系统scale
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw6) v101; urgency=medium
+
+  * 解决“其他屏”功能后，更新主屏数据（三屏情况待完善）
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw5) v101; urgency=medium
+
+  * 解禁“其他屏”功能
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6~hw4) v101; urgency=medium
+
+  * 更改显示模式后调用usd接口更新主屏数据
+  * 支持win+p切换选项
+
+ -- hebing <hebing@kylinos.cn>  Thu, 04 Mar 2021 14:24:38 +0800
+
+kylin-display-switch (3.0.13kylin6) v101; urgency=medium
+
+  * 更改大小写锁定及小键盘锁定的初始状态获取方式
+
+ -- hebing <hebing@kylinos.cn>  Tue, 02 Mar 2021 16:39:04 +0800
+
+kylin-display-switch (3.0.13kylin5) v101; urgency=medium
+
+  * 代码优化，通过修改宏定义控制选项数量
+
+ -- hebing <hebing@kylinos.cn>  Fri, 26 Feb 2021 21:06:30 +0800
+
+kylin-display-switch (3.0.12kylin5) v101; urgency=medium
+
+  * KDS按下任意按键退出，屏蔽X86Display。
+
+ -- hebing <hebing@kylinos.cn>  Thu, 25 Feb 2021 15:58:53 +0800
+
+kylin-display-switch (3.0.12kylin4~hw4) v101; urgency=medium
+
+  * 适配wayland下的主屏
+  * lrelease kds.pro解决在990上的汉化问题
+
+ -- hebing <hebing@kylinos.cn>  Thu, 25 Feb 2021 10:02:30 +0800
+
+kylin-display-switch (3.0.12kylin4) v101; urgency=medium
+
+  * 根据系统语言选择国际化文件
+
+ -- hebing <hebing@kylinos.cn>  Sun, 07 Feb 2021 16:24:41 +0800
+
+kylin-display-switch (3.0.12kylin3) v101; urgency=medium
+
+  * 飞行模式返回的非全no非全yes状态由1改为0
+  * 非勾选文字与勾选文字垂直对齐
+
+ -- hebing <hebing@kylinos.cn>  Wed, 03 Feb 2021 19:25:32 +0800
+
+kylin-display-switch (3.0.12kylin2~hw3) v101; urgency=medium
+
+  * 适配990笔记本的Wlan功能
+  * 通过获取任务栏高度决定mkt的高度
+
+ -- hebing <hebing@kylinos.cn>  Tue, 02 Feb 2021 09:11:20 +0800
+
+kylin-display-switch (3.0.12kylin2) v101; urgency=medium
+
+  * 针对部分机型，功能由硬件实现，仅弹出提示图标
+
+ -- hebing <hebing@kylinos.cn>  Thu, 28 Jan 2021 16:35:08 +0800
+
+kylin-display-switch (3.0.12kylin1~hw2) v101; urgency=medium
+
+  * kds增加KScreen接口实现，并且屏蔽其他屏模式
+
+ -- hebing <hebing@kylinos.cn>  Wed, 27 Jan 2021 15:29:32 +0800
+
+kylin-display-switch (3.0.12kylin1) v101; urgency=medium
+
+  * 接管飞行模式、禁用摄像头的键盘灯
+  * 锁屏状态下不再弹出MediaKey Tip
+
+ -- hebing <hebing@kylinos.cn>  Thu, 21 Jan 2021 19:40:21 +0800
+
+kylin-display-switch (3.0.11) v101; urgency=medium
+
+  * 优化飞行模式托盘图标逻辑;优化飞行模式、蓝牙、WiFi的当前状态获取
+
+ -- hebing <hebing@kylinos.cn>  Thu, 21 Jan 2021 19:40:21 +0800
+
+kylin-display-switch (3.0.10) v101; urgency=medium
+
+  * 增加蓝牙，Wlan开启/关闭的dbus接口
+  * 托盘图标切换飞行模式后增加状态提示图标
+  * 不再响应Win+p，由settings-daemon响应
+
+ -- hebing <hebing@kylinos.cn>  Thu, 21 Jan 2021 19:40:21 +0800
+
+kylin-display-switch (3.0.9) v101; urgency=medium
+
+  * 逻辑重新设计，基准由主屏(可变属性)改为屏幕序号(固定属性)
+  * KDS界面不在任务栏显示图标
+
+ -- hebing <hebing@kylinos.cn>  Fri, 15 Jan 2021 20:18:21 +0800
+
+kylin-display-switch (3.0.8) v101; urgency=medium
+
+  * 增加飞行模式
+  * 增加一键锁屏
+  * 增加一键关屏
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
+kylin-display-switch (3.0.7) v101; urgency=medium
+
+  * 增加摄像头功能
+  * 增加功能和键值的映射
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
+kylin-display-switch (3.0.6) v101; urgency=medium
+
+  * 增加触摸板开关，调用X11接口
+  * 增肌右Super+p的支持
+  * 增加麦克风的响应
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
+kylin-display-switch (3.0.5) v101; urgency=medium
+
+  * kds界面增加当前主屏的显示
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Dec 2020 16:17:38 +0800
+
+kylin-display-switch (3.0.4) v101; urgency=medium
+
+  * 注释debug语句
+  * 解决：切换到不支持模式时，app未退出
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
+kylin-display-switch (3.0.3) v101; urgency=medium
+
+  * 增加evdev event 监听进程
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
+kylin-display-switch (3.0.2) v100; urgency=medium
+
+  * 解决BUG#27821，kds程序在V10.1下启动段错误，V10下正常
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
+kylin-display-switch (3.0.1) v100; urgency=medium
+
+  * recode used by qt
+
+ -- hebing <hebing@kylinos.cn>  Thu, 03 Dec 2020 20:51:31 +0800
+
+kylin-display-switch (2.0.13-1+1125) v101; urgency=medium
+
+  * hide "control phone"
+
+ -- hebing <hebing@kylinos.cn>  Sat, 21 Nov 2020 16:52:27 +0800
+
+kylin-display-switch (2.0.12-1) unstable; urgency=medium
+
+  * Fix lintian error.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 29 Oct 2020 20:12:24 +0800
+
+kylin-display-switch (2.0.11-1) unstable; urgency=medium
+
+  [hebing]
+    * osd revision
+
+ -- hebing <hebing@kylinos.cn>  Wed, 23 Sep 2020 17:08:19 +0800
+
+kylin-display-switch (2.0.10-1) unstable; urgency=medium
+
+  [hebing]
+    * desktop add NoDisplay=true
+
+ -- hebing <hebing@kylinos.cn>  Thu, 17 Sep 2020 16:24:49 +0800
+
+kylin-display-switch (2.0.9-1) unstable; urgency=medium
+
+  [hebing]
+    * support 4k
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.8-1) unstable; urgency=medium
+
+  [hebing]
+    * enable/disable key press tip
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.7-1) unstable; urgency=medium
+
+  [hebing]
+    * add feature, the switch window will esc when pressed any key or click any where that outof window
+    * add feature, pressed win + p the selected will continue change when the switch window is shown
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.6-1) unstable; urgency=medium
+
+  [hebing]
+    * add function of touchpad on/off, bluetooth on/off, wlan on/off
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.4-1) unstable; urgency=medium
+
+  [hebing]
+    * add dbus module
+    * add evdev monitor but not enable because lintian
+
+ -- hebing <hebing@kylinos.cn>  Wed, 19 Aug 2020 08:58:53 +0800
+
+kylin-display-switch (2.0.3-1) unstable; urgency=medium
+
+  * support qt 5.6.
+
+ -- shine <shenghuang@ubuntukylin.com>  Mon, 25 May 2020 11:00:46 +0800
+
+kylin-display-switch (2.0.2-1) unstable; urgency=medium
+
+  * fix bug: active display switch > donot confirm any mode > active lock tip > then cannot active display switch again.
+  * replace lock_key pic.
+
+ -- shine <shenghuang@ubuntukylin.com>  Wed, 22 Apr 2020 10:40:43 +0800
+
+kylin-display-switch (2.0.1-1) unstable; urgency=medium
+
+  * use high definition pic.
+  * fix components position.
+
+ -- shine <shenghuang@ubuntukylin.com>  Sat, 18 Apr 2020 14:59:41 +0800
+
+kylin-display-switch (2.0.0-1) unstable; urgency=medium
+
+  * New upstream version release:
+    - UKUI3.0 version.
+    - support keyboard and mouse click to swtich mode.
+
+ -- shine <shenghuang@ubuntukylin.com>  Fri, 17 Apr 2020 12:07:14 +0800
+
+kylin-display-switch (1.0.4-1) unstable; urgency=medium
+
+  * New upstream bugfix release:
+    - Fix the crash when switch user.
+  * debian:
+    - Use debhelper-compat notation.
+    - Bump standards-version to 4.5.0.
+    - Set Rules-Requires-Root to no.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 07 Apr 2020 14:21:34 +0800
+
+kylin-display-switch (1.0.3-1) unstable; urgency=medium
+
+  * Fix the wrong permission of file 'instance.lock' again.
+  * Fix the crash when press numlock.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 28 Sep 2018 15:05:40 +0800
+
+kylin-display-switch (1.0.2-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903688)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 13 Jul 2018 11:37:06 +0800
