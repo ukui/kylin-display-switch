@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.13kylin15) v101; urgency=medium
+
+  * ChangeDesc1: 屏蔽右下角飞行模式的注册函数
+    · V10SP1 0521-1
+      - DEMAND# 6533 任务栏内隐藏飞行模式按钮
+
+ -- hebing <hebing@kylinos.cn>  Sun, 30 May 2021 11:47:29 +0800
+
 kylin-display-switch (3.0.13kylin14) v101; urgency=medium
 
   * 解决BUG#42405【系统投屏】切换主屏，当前实际主屏和osd显示的第一屏幕不一致（系统投屏的第一屏幕没有改变）

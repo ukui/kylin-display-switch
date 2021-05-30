@@ -88,9 +88,9 @@ EMDaemon::EMDaemon()
     connect(thrd2, &QThread::started, rmt, &RfkillMonitorthread::run);
     connect(thrd2, &QThread::finished, rmt, &RfkillMonitorthread::deleteLater);
 
-    rmt->moveToThread(thrd2);
+//    rmt->moveToThread(thrd2);
 
-    thrd2->start();
+//    thrd2->start();
 
 }
 
