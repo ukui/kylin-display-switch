@@ -72,39 +72,7 @@ KMDaemon::KMDaemon()
 
     modifyKeyPressed = false;
     stInstalled = true;
-
-    //X data init
-    display = XOpenDisplay(0);
-
-
-    const QByteArray id2(UK_KEYBOARD_SCHEMA);
-    if (QGSettings::isSchemaInstalled(id2)){
-        QGSettings * kbGSettings = new QGSettings(id2);
-
-        capslockStatus = kbGSettings->get(CAPSLOCK_STATUS_KEY).toBool();
-        numlockStatus = QString::compare(kbGSettings->get(NUMLOCK_STATUS_KEY).toString(), QString("on")) == 0;
-
-        delete kbGSettings;
-    } else {
-        capslockStatus = false;
-        numlockStatus = false;
-    }
-
-//    capslockStatus = getCurrentCapslockStatus();
-//    numlockStatus = getCurrentNumlockStatus();
-
-    QDBusReply<int> reply = iface->call("getCameraDeviceEnable");
-    if (reply.isValid()){
-        int current = reply.value();
-
-        if (current == -1)
-            cameraEnableStatus = true;
-        else{
-            cameraEnableStatus = current ? true : false;
-        }
-
-    }
-
+    kbInstalled = false;
 
     const QByteArray id(UKCCOSD_SCHEMA);
     const QByteArray idd(KYCCOSD_SCHEMA);
@@ -118,6 +86,74 @@ KMDaemon::KMDaemon()
         settings = new QGSettings(iid);
     } else {
         stInstalled = false;
+    }
+
+    //X data init
+    display = XOpenDisplay(0);
+
+
+    const QByteArray id2(UK_KEYBOARD_SCHEMA);
+    if (QGSettings::isSchemaInstalled(id2)){
+
+        kbInstalled = true;
+
+        kbGSettings = new QGSettings(id2);
+
+        connect(kbGSettings, &QGSettings::changed, this, [=](QString key){
+
+            if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
+                qWarning("MediaKey Tip is Closed\n");
+                return;
+            }
+
+            if (ifaceScreenSaver->isValid()){
+                QDBusReply<bool>reply = ifaceScreenSaver->call("GetLockState");
+                if (reply.isValid()){
+                    if (reply.value()){
+                        qWarning("MediaKey Tip is Closed because ScreenLock\n");
+                        return;
+                    }
+                }
+            }
+
+            if (QString::compare(key, "capslockState") == 0){
+
+                bool current = kbGSettings->get(CAPSLOCK_STATUS_KEY).toBool();
+
+                if (current){
+                    iface->call("emitShowTipsSignal", MappingTable::CapslockOn);
+                } else {
+                    iface->call("emitShowTipsSignal", MappingTable::CapslockOff);
+                }
+
+            } else if (QString::compare(key, "numlockState") == 0){
+
+                bool current = QString::compare(kbGSettings->get(NUMLOCK_STATUS_KEY).toString(), QString("on")) == 0;
+
+                if (current){
+                    iface->call("emitShowTipsSignal", MappingTable::NumlockOn);
+                } else {
+                    iface->call("emitShowTipsSignal", MappingTable::NumlockOff);
+                }
+
+            }
+        });
+
+    } else {
+        capslockStatus = false;
+        numlockStatus = false;
+    }
+
+    QDBusReply<int> reply = iface->call("getCameraDeviceEnable");
+    if (reply.isValid()){
+        int current = reply.value();
+
+        if (current == -1)
+            cameraEnableStatus = true;
+        else{
+            cameraEnableStatus = current ? true : false;
+        }
+
     }
 
     keyboardLightInit();
@@ -207,6 +243,9 @@ KMDaemon::KMDaemon()
             iface->call("emitNextOption");
 
         } else if (mks == XK_Caps_Lock){
+
+            capslockStatus = !capslockStatus;
+
             if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
                 qWarning("MediaKey Tip is Closed\n");
                 return;
@@ -222,7 +261,9 @@ KMDaemon::KMDaemon()
                 }
             }
 
-            capslockStatus = !capslockStatus;
+            /* usd的键盘GSettings已安装，使用gsettings来触发，这里直接返回 */
+            if (kbInstalled)
+                return;
 
             if (capslockStatus){
                 iface->call("emitShowTipsSignal", MappingTable::CapslockOn);
@@ -231,6 +272,9 @@ KMDaemon::KMDaemon()
             }
 
         } else if (mks == XK_Num_Lock){
+
+            numlockStatus = !numlockStatus;
+
             if (stInstalled && !settings->get(SHOW_TIP_KEY).toBool()){
                 qWarning("MediaKey Tip is Closed\n");
                 return;
@@ -246,7 +290,9 @@ KMDaemon::KMDaemon()
                 }
             }
 
-            numlockStatus = !numlockStatus;
+            /* usd的键盘GSettings已安装，使用gsettings来触发，这里直接返回 */
+            if (kbInstalled)
+                return;
 
             if (numlockStatus){
                 iface->call("emitShowTipsSignal", MappingTable::NumlockOn);
@@ -298,6 +344,9 @@ KMDaemon::~KMDaemon()
 
     if (stInstalled)
         delete settings;
+
+    if (kbInstalled)
+        delete kbGSettings;
 }
 
 void KMDaemon::begin(){

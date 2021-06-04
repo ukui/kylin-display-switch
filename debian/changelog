@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.13kylin16) v101; urgency=medium
+
+  * ChangeDesc1: 通过监控USD的大写锁定、小键盘锁定的GSettings弹出状态提示图标
+    · V10SP1 0610
+      - BUG#  50704 【大小写】大小写提示图标和键盘大小写状态相反
+
+ -- hebing <hebing@kylinos.cn>  Fri, 04 Jun 2021 17:34:24 +0800
+
 kylin-display-switch (3.0.13kylin15) v101; urgency=medium
 
   * ChangeDesc1: 屏蔽右下角飞行模式的注册函数

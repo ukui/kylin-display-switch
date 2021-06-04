@@ -77,8 +77,10 @@ private:
     bool cameraEnableStatus;
 
     QGSettings * settings;
+    QGSettings * kbGSettings;
 
     bool stInstalled;
+    bool kbInstalled;
 
 public slots:
     void mediaKeyManager(int code);
