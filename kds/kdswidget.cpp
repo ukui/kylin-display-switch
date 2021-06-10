@@ -40,6 +40,14 @@ KDSWidget::KDSWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+}
+
+KDSWidget::~KDSWidget()
+{
+    delete ui;
+}
+
+void KDSWidget::beginSetupKF5(){
     QObject::connect(new KScreen::GetConfigOperation(), &KScreen::GetConfigOperation::finished,
                      [&](KScreen::ConfigOperation *op) {
         setConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config());
@@ -84,13 +92,6 @@ KDSWidget::KDSWidget(QWidget *parent) :
                                          "org.ukui.kds.interface", \
                                          "signalButtonClicked", \
                                          this, SLOT(receiveButtonClick(int,int)));
-
-
-}
-
-KDSWidget::~KDSWidget()
-{
-    delete ui;
 }
 
 

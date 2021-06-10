@@ -45,6 +45,14 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::beginSetup(){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -93,12 +101,6 @@ Widget::Widget(QWidget *parent) :
                                          "org.ukui.kds.interface", \
                                          "signalButtonClicked", \
                                          this, SLOT(receiveButtonClick(int,int)));
-
-}
-
-Widget::~Widget()
-{
-    delete ui;
 }
 
 void Widget::initData(){

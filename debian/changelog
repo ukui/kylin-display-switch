@@ -1,3 +1,11 @@
+kylin-display-switch (3.0.13kylin17) v101; urgency=medium
+
+  * ChangeDesc1: 通过监控USD的大写锁定、小键盘锁定的GSettings弹出状态提示图标
+    · V10SP1 0610 【青松D2000】
+      - BUG#  59093 【亮剑行动】【长城嘉翔一体机】【双屏】win+P来回切换镜像屏与扩展屏会出现桌面不显示现象  
+
+ -- hebing <hebing@kylinos.cn>  Thu, 10 Jun 2021 19:48:48 +0800
+
 kylin-display-switch (3.0.13kylin16) v101; urgency=medium
 
   * ChangeDesc1: 通过监控USD的大写锁定、小键盘锁定的GSettings弹出状态提示图标

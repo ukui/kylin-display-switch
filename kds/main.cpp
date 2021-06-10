@@ -68,11 +68,13 @@ int main(int argc, char *argv[])
 
     QString sessionType = qgetenv("XDG_SESSION_TYPE");
     if (QString::compare(sessionType, "wayland") == 0){
+        kdsw.beginSetupKF5();
         //    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
         QObject::connect(&app, &QtSingleApplication::messageReceived, &kdsw, &KDSWidget::msgReceiveAnotherOne);
         kdsw.show();
 
     } else {
+        w.beginSetup();
         //    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
         QObject::connect(&app, &QtSingleApplication::messageReceived, &w, &Widget::msgReceiveAnotherOne);
         w.show();

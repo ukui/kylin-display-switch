@@ -50,6 +50,8 @@ public:
     ~Widget();
 
 public:
+    void beginSetup();
+
     void initData();
     void setupComponent();
     void setupConnect();

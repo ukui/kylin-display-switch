@@ -23,6 +23,8 @@ public:
     explicit KDSWidget(QWidget *parent = nullptr);
     ~KDSWidget();
 
+    void beginSetupKF5();
+
     QPoint getWinPos();
     QString getCurrentPrimaryScreenName();
     int getCurrentScale();
