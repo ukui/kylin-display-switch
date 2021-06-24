@@ -491,7 +491,13 @@ void KMDaemon::touchpadToggle(){
         XDeviceInfo deviceinfo = deviceinfos[i];
 
         if (deviceinfo.type != XInternAtom (display, XI_TOUCHPAD, False)){
-            continue;
+
+            if (deviceinfo.type == XInternAtom(display, XI_MOUSE, False) && strstr(deviceinfo.name, "PS\/2")){
+
+            } else {
+                continue;
+            }
+
         }
 
         prop = XInternAtom (display, "Device Enabled", False);

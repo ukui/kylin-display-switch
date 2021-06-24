@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.13kylin18~rc1) v101; urgency=medium
+
+  * ChangeDesc1: 适配PS/2触摸板没有厂商定制驱动情况下的触摸板热键 
+  * ChangeDesc2: quilt -> native
+
+ -- hebing <hebing@kylinos.cn>  Mon, 21 Jun 2021 16:51:24 +0800
+
 kylin-display-switch (3.0.13kylin17) v101; urgency=medium
 
   * ChangeDesc1: 通过监控USD的大写锁定、小键盘锁定的GSettings弹出状态提示图标
