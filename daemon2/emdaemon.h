@@ -26,7 +26,6 @@
 #include <QDBusInterface>
 
 #include <QDebug>
-
 #include "eventmonitorthread.h"
 #include "rfkillmonitorthread.h"
 

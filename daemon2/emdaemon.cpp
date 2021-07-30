@@ -76,8 +76,9 @@ EMDaemon::EMDaemon()
     thrd2 = new QThread;
     rmt = new RfkillMonitorthread;
 
-    connect(rmt, &RfkillMonitorthread::statusChanged, this, [=]{
-        iface->call("emitRfkillStatusChanged");
+    connect(rmt, &RfkillMonitorthread::wlanStatusChanged, this, [=](int current){
+        // WLANON: 12; WLANOFF: 13;
+        current ? iface->call("emitShowTipsSignal", 13) : iface->call("emitShowTipsSignal", 12);
     }, Qt::QueuedConnection);
 
     connect(rmt, &RfkillMonitorthread::jobComplete, this, [=]{
@@ -88,9 +89,9 @@ EMDaemon::EMDaemon()
     connect(thrd2, &QThread::started, rmt, &RfkillMonitorthread::run);
     connect(thrd2, &QThread::finished, rmt, &RfkillMonitorthread::deleteLater);
 
-//    rmt->moveToThread(thrd2);
+    rmt->moveToThread(thrd2);
 
-//    thrd2->start();
+    thrd2->start();
 
 }
 
