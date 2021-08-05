@@ -1,8 +1,8 @@
-kylin-display-switch (3.0.13-1) focal; urgency=medium
+kylin-display-switch (3.0.14-1~0805) unstable; urgency=medium
 
   * New upstream release.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 18 Jun 2021 20:00:05 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 05 Aug 2021 16:22:33 +0800
 
 kylin-display-switch (1.0.4-1) unstable; urgency=medium
 
