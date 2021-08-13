@@ -33,6 +33,11 @@ extern "C" {
 
 #define RFKILL_EVENT_SIZE_V1	8
 
+#define VIRTUAL_PATH "/sys/devices/virtual/ieee80211"
+
+const char * getRFkillType(__u32 idx);
+const char * getRFkillName(__u32 idx);
+
 struct rfkill_event {
     __u32 idx;
     __u8  type;
@@ -233,6 +238,36 @@ QString ClassRealize::toggleCameraDevice(QString businfo){
     }
 }
 
+bool ClassRealize::isVirtualWlan(QString dp){
+    QDir dir(VIRTUAL_PATH);
+    if (!dir.exists()){
+        return false;
+    }
+
+    dir.setFilter(QDir::Dirs);
+    dir.setSorting(QDir::Name);
+
+    int count = dir.count();
+    if (count <= 0){
+        return false;
+    }
+
+    QFileInfoList fileinfoList = dir.entryInfoList();
+
+    for(QFileInfo fileinfo : fileinfoList){
+        if (fileinfo.fileName() == "." || fileinfo.fileName() == ".."){
+            continue;
+        }
+
+        if (QString::compare(fileinfo.fileName(), dp) == 0){
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
 int ClassRealize::getCurrentWlanMode(){
     struct rfkill_event event;
     ssize_t len;
@@ -270,6 +305,11 @@ int ClassRealize::getCurrentWlanMode(){
 //        printf("%u - %u: %u\n", event.idx, event.type, event.soft);
         if (event.type != RFKILL_TYPE_WLAN)
             continue;
+
+        if (isVirtualWlan(QString(getRFkillName(event.idx)))){
+            continue;
+        }
+
 
         status.append(event.soft ? 1 : 0);
     }
@@ -418,6 +458,93 @@ QString ClassRealize::toggleBluetoothMode(bool enable){
     return block ? QString("blocked") : QString("unblocked");
 }
 
+QList<int> ClassRealize::getStatusBeforeFlightModeEnable(){
+
+    QList<int> re;
+
+    struct rfkill_event event;
+    ssize_t len;
+    int fd;
+    int bls = 0, unbls = 0;
+
+    QList<int> status;
+
+    fd = open("/dev/rfkill", O_RDONLY);
+    if (fd < 0) {
+        qCritical("Can't open RFKILL control device");
+        return re;
+    }
+
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
+        qCritical("Can't set RFKILL control device to non-blocking");
+        close(fd);
+        return re;
+    }
+
+    while (1) {
+        len = read(fd, &event, sizeof(event));
+
+        if (len < 0) {
+            if (errno == EAGAIN)
+                break;
+            qWarning("Reading of RFKILL events failed");
+            break;
+        }
+
+        if (len != RFKILL_EVENT_SIZE_V1) {
+            qWarning("Wrong size of RFKILL event\n");
+            continue;
+        }
+
+        if (isVirtualWlan(QString(getRFkillName(event.idx)))){
+            continue;
+        }
+
+//        printf("%u: %u\n", event.idx, event.soft);
+//        status.append(event.soft ? 1 : 0);
+        if (!event.soft && !re.contains(event.type)){
+            re.append(event.type);
+        }
+
+    }
+
+    close(fd);
+
+    return re;
+}
+
+QString ClassRealize::setSingleFlightMode(int type){
+
+    struct rfkill_event event;
+    int fd;
+    ssize_t len;
+
+    __u8 block = 0;
+
+    fd = open("/dev/rfkill", O_RDWR);
+    if (fd < 0) {
+        return QString("Can't open RFKILL control device");
+    }
+
+    memset(&event, 0, sizeof(event));
+
+    event.op= RFKILL_OP_CHANGE_ALL;
+
+    /* RFKILL_TYPE_ALL = 0 */
+    event.type = type;
+
+    event.soft = block;
+
+    len = write(fd, &event, sizeof(event));
+
+    if (len < 0){
+        return QString("Failed to change RFKILL state");
+    }
+
+    close(fd);
+    return QString();
+}
+
 int ClassRealize::getCurrentFlightMode(){
 
     struct rfkill_event event;
@@ -451,6 +578,10 @@ int ClassRealize::getCurrentFlightMode(){
 
         if (len != RFKILL_EVENT_SIZE_V1) {
             qWarning("Wrong size of RFKILL event\n");
+            continue;
+        }
+
+        if (isVirtualWlan(QString(getRFkillName(event.idx)))){
             continue;
         }
 
@@ -509,7 +640,7 @@ QString ClassRealize::toggleFlightMode(bool enable){
     }
 
     close(fd);
-    return block ? QString("blocked") : QString("unblocked");
+    return QString();
 }
 
 int ClassRealize::setCameraKeyboardLight(bool lightup){
@@ -542,4 +673,54 @@ int ClassRealize::setAirplaneModeKeyboardLight(bool lightup){
     system(cmd);
 
     return 1;
+}
+
+const char * getRFkillName(__u32 idx){
+
+    static char name[128] = {};
+    char *pos, filename[64];
+    int fd;
+
+    snprintf(filename, sizeof(filename) - 1,
+             "/sys/class/rfkill/rfkill%u/name", idx);
+
+    fd = open(filename, O_RDONLY);
+    if (fd < 0)
+        return NULL;
+
+    memset(name, 0, sizeof(name));
+    read(fd, name, sizeof(name) - 1);
+
+    pos = strchr(name, '\n');
+    if (pos)
+        *pos = '\0';
+
+    close(fd);
+
+    return name;
+}
+
+const char * getRFkillType(__u32 idx){
+
+    static char name[128] = {};
+    char *pos, filename[64];
+    int fd;
+
+    snprintf(filename, sizeof(filename) - 1,
+                "/sys/class/rfkill/rfkill%u/type", idx);
+
+    fd = open(filename, O_RDONLY);
+    if (fd < 0)
+        return NULL;
+
+    memset(name, 0, sizeof(name));
+    read(fd, name, sizeof(name) - 1);
+
+    pos = strchr(name, '\n');
+    if (pos)
+        *pos = '\0';
+
+    close(fd);
+
+    return name;
 }

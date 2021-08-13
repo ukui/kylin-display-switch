@@ -1,3 +1,10 @@
+kylin-display-switch (3.0.13kylin21) v101; urgency=medium
+
+  * ChangeDesc1: 安卓兼容想rfkill注册了虚拟设备节点，修正飞行模式状态的获取
+   -  Bug#61917 【飞行模式】【103539】多次开关飞行模式热键，飞行模式图标显示错误 
+
+ -- hebing <hebing@kylinos.cn>  Fri, 13 Aug 2021 16:15:10 +0800
+
 kylin-display-switch (3.0.13kylin20) v101; urgency=medium
 
   * ChangeDesc1: 设置4种模式前调用控制面板的dbus以便告知控制面板同步当前状态

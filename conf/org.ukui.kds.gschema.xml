@@ -10,5 +10,15 @@
             <summary>microphone enable or not</summary>
             <description>current microphone enable or not</description>
         </key>
+        <key type="b" name="airplanemode">
+            <default>false</default>
+            <summary>microphone enable or not</summary>
+            <description>current microphone enable or not</description>
+        </key>
+        <key type="as" name="beforeairplanemode">
+            <default>['0']</default>
+            <summary>microphone enable or not</summary>
+            <description>current microphone enable or not</description>
+        </key>
     </schema>
 </schemalist>

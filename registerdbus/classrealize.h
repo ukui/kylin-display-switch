@@ -35,6 +35,8 @@ public:
     explicit ClassRealize();
     ~ClassRealize();
 
+public:
+    bool isVirtualWlan(QString dp);
 
 signals:
     Q_SCRIPTABLE void debug0(QString);
@@ -66,6 +68,8 @@ public slots:
     Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
     Q_SCRIPTABLE int setCameraKeyboardLight(bool lightup);
     Q_SCRIPTABLE int getCurrentFlightMode();
+    Q_SCRIPTABLE QList<int> getStatusBeforeFlightModeEnable();
+    Q_SCRIPTABLE QString setSingleFlightMode(int type);
     Q_SCRIPTABLE QString toggleFlightMode(bool enable);
     Q_SCRIPTABLE int setAirplaneModeKeyboardLight(bool lightup);
     Q_SCRIPTABLE int getCurrentWlanMode();
