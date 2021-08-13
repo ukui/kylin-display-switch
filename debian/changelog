@@ -1,3 +1,9 @@
+kylin-display-switch (3.0.13kylin20) v101; urgency=medium
+
+  * ChangeDesc1: 设置4种模式前调用控制面板的dbus以便告知控制面板同步当前状态
+
+ -- hebing <hebing@kylinos.cn>  Wed, 30 Jun 2021 14:48:29 +0800
+
 kylin-display-switch (3.0.13kylin19) v101; urgency=medium
 
   * ChangeDesc1: 底层也在响应XKB_KEY_XF86WLAN,KDS放弃控制

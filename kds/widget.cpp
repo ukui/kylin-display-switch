@@ -22,6 +22,7 @@
 
 #include <QDebug>
 #include <QScreen>
+#include <QDBusInterface>
 #include <QDBusConnection>
 
 #include <kwindowsystem.h>
@@ -50,12 +51,18 @@ Widget::Widget(QWidget *parent) :
 Widget::~Widget()
 {
     delete ui;
+    delete ukcciface;
 }
 
 void Widget::beginSetup(){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setAttribute(Qt::WA_TranslucentBackground, true);
+
+    ukcciface = new QDBusInterface("org.ukui.ukcc.session",
+                                   "/",
+                                   "org.ukui.ukcc.session.interface",
+                                   QDBusConnection::sessionBus());
 
     /* 不在任务栏显示图标 */
     KWindowSystem::setState(winId(), NET::SkipTaskbar | NET::SkipPager);
@@ -442,6 +449,8 @@ void Widget::closeApp(){
 
 MateRRConfig * Widget::makeCloneSetup() {
 
+    ukcciface->call("setScreenMode", "copy");
+
     MateRRConfig * current;
     MateRROutputInfo ** outputs;
 
@@ -496,6 +505,8 @@ MateRRConfig * Widget::makeCloneSetup() {
 
 MateRRConfig * Widget::makePrimarySetup(){
 
+    ukcciface->call("setScreenMode", "first");
+
     char * firstName;
 
     /* Turn on the first screen, disable everything else */
@@ -533,6 +544,8 @@ MateRRConfig * Widget::makePrimarySetup(){
 
 MateRRConfig * Widget::makeOtherSetup(){
 
+    ukcciface->call("setScreenMode", "second");
+
     char * firstName;
 
     /* Turn off primary output, and make all external monitors clone from (0, 0) */
@@ -568,6 +581,8 @@ MateRRConfig * Widget::makeOtherSetup(){
 }
 
 MateRRConfig * Widget::makeXineramaSetup(){
+
+    ukcciface->call("setScreenMode", "expand");
 
     /* Turn on everything that has a preferred mode, and position it from left to right */
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
