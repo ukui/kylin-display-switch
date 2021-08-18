@@ -84,11 +84,7 @@ void RfkillMonitorthread::run(){
         }
 
         qDebug("idx %u type %u op %u soft %u hard %u\n", event.idx, event.type, event.op, event.soft, event.hard);
-
-        if (event.type != 1)
-            continue;
-
-        emit wlanStatusChanged(event.soft ? 1 : 0);
+        emit statusChanged();
 
         fflush(stdout);
     }

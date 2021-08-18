@@ -37,7 +37,7 @@ public:
     void callJobComplete();
 
 Q_SIGNALS:
-    void wlanStatusChanged(int status);
+    void statusChanged();
 
     void jobComplete();
 };

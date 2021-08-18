@@ -36,6 +36,8 @@ extern "C" {
 #include <gtk/gtk.h>
 }
 
+class QDBusInterface;
+
 
 namespace Ui {
 class Widget;
@@ -65,6 +67,8 @@ public:
 
     void initCurrentStatus(int id);
     void setCurrentFirstOutputTip();
+
+    QDBusInterface * ukcciface;
 
 private:
     Ui::Widget *ui;

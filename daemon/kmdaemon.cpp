@@ -679,9 +679,6 @@ void KMDaemon::flightToggle(){
 
 void KMDaemon::wlanToggle(){
 
-    //WHO control rfkill when XKB_KEY_XF86WLAN is pressed???
-    return;
-
     QDBusReply<int> reply = iface->call("getCurrentWlanMode");
     if (reply.isValid()){
         int current = reply.value();
