@@ -77,8 +77,7 @@ Widget::Widget(QWidget *parent) :
 
 
     QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalShowTips", this, SLOT(showTipsOnDesktop(int)));
-
-//    QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalRfkillStatusChanged", this, SLOT(refreshTrayIcon()));
+    QDBusConnection::systemBus().connect(QString(), QString(), "org.ukui.kds.interface", "signalRfkillStatusChanged", this, SLOT(refreshTrayIcon()));
 }
 
 Widget::~Widget()
