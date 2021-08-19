@@ -6,7 +6,7 @@ Uploaders: Aron Xu <aron@debian.org>,
            handsome_feng <jianfengli@ubuntukylin.com>,
            shine <huangsheng@kylinos.cn>,
            hebing <hebing@kylinos.cn>,
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper-compat (=12),
                qtbase5-dev,
                libxcb1-dev,
                libxcb-util-dev,
@@ -26,7 +26,7 @@ X-Python3-Version: >= 3.6
 
 Package: kylin-display-switch
 Architecture: any
-Depends: ${misc:Depends},
+Depends: ${misc:Depends},${shlibs:Depends},
 Description: Gui tool for display switching
  Kylin Display Switch is a Gui tool managing display output.
  Super_L + P are utilized to activate display switching.
